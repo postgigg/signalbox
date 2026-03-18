@@ -108,7 +108,7 @@ export async function PATCH(
     action: 'update_ticket',
     target_type: 'support_ticket',
     target_id: idParsed.data,
-    details: parsed.data as Record<string, unknown>,
+    details: JSON.parse(JSON.stringify(parsed.data)) as Record<string, string>,
   });
 
   return NextResponse.json({ data: ticket });
