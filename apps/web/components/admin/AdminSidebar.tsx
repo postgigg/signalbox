@@ -61,6 +61,16 @@ function IconRevenue({ className }: { className?: string }) {
   );
 }
 
+function IconTickets({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <rect x="3" y="3" width="14" height="14" rx="1.5" />
+      <path d="M3 8h14M7 3v14" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function IconTemplates({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -107,6 +117,7 @@ const navItems: { label: string; value: string; icon: React.ComponentType<{ clas
   { label: 'Submissions', value: 'submissions', icon: IconSubmissions },
   { label: 'Analytics', value: 'analytics', icon: IconAnalytics },
   { label: 'Revenue', value: 'revenue', icon: IconRevenue },
+  { label: 'Support Tickets', value: 'tickets', icon: IconTickets },
   { label: 'Templates', value: 'templates', icon: IconTemplates },
   { label: 'Email Templates', value: 'email-templates', icon: IconEmail },
   { label: 'Settings', value: 'settings', icon: IconSettings },

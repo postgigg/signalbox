@@ -220,23 +220,35 @@ export default function PricingPage(): React.ReactElement {
       <section className="pb-16 px-6">
         <div className="max-w-content mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Starter */}
-          <div className="card flex flex-col">
+          <div className="card flex flex-col transition-all duration-normal">
             <h2 className="font-display text-xl font-semibold text-ink">Starter</h2>
             <p className="mt-1 text-sm text-stone">
-              For businesses getting started with lead qualification.
+              One widget. 500 submissions/month.
             </p>
             <p className="mt-1 text-xs text-stone-light">
               Best for solo operators with one site.
             </p>
-            <div className="mt-4">
-              <span className="font-display text-4xl font-bold text-ink">
-                ${starterPrice}
-              </span>
-              <span className="text-sm text-stone">/mo</span>
+            <div className="mt-4 relative h-12 overflow-hidden">
+              <div
+                key={String(isAnnual)}
+                className="animate-price-slide"
+              >
+                <span className="font-display text-4xl font-bold text-ink">
+                  ${starterPrice}
+                </span>
+                <span className="text-sm text-stone">/mo</span>
+              </div>
               {isAnnual && (
-                <span className="ml-2 text-xs text-stone-light">billed annually</span>
+                <p className="mt-0.5 text-xs text-signal font-medium animate-price-fade">
+                  ${99 * 12 - starterPrice * 12} saved per year
+                </p>
               )}
             </div>
+            <ul className="mt-4 space-y-2 flex-1">
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Lead scoring</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Email alerts</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Basic analytics</li>
+            </ul>
             <button
               type="button"
               onClick={() => void handlePlanSelect('starter')}
@@ -253,26 +265,38 @@ export default function PricingPage(): React.ReactElement {
           </div>
 
           {/* Pro */}
-          <div className="card flex flex-col border-signal border-2">
+          <div className="card flex flex-col border-signal border-2 transition-all duration-normal">
             <div className="flex items-center gap-2">
               <h2 className="font-display text-xl font-semibold text-ink">Pro</h2>
               <span className="badge-new text-xs">Most Popular</span>
             </div>
             <p className="mt-1 text-sm text-stone">
-              For growing teams that need more capacity and integrations.
+              Five widgets. 2,000 submissions/month.
             </p>
             <p className="mt-1 text-xs text-stone-light">
-              Best for growing teams that need integrations.
+              Best for growing teams with multiple sites.
             </p>
-            <div className="mt-4">
-              <span className="font-display text-4xl font-bold text-ink">
-                ${proPrice}
-              </span>
-              <span className="text-sm text-stone">/mo</span>
+            <div className="mt-4 relative h-12 overflow-hidden">
+              <div
+                key={String(isAnnual)}
+                className="animate-price-slide"
+              >
+                <span className="font-display text-4xl font-bold text-ink">
+                  ${proPrice}
+                </span>
+                <span className="text-sm text-stone">/mo</span>
+              </div>
               {isAnnual && (
-                <span className="ml-2 text-xs text-stone-light">billed annually</span>
+                <p className="mt-0.5 text-xs text-signal font-medium animate-price-fade">
+                  ${149 * 12 - proPrice * 12} saved per year
+                </p>
               )}
             </div>
+            <ul className="mt-4 space-y-2 flex-1">
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Everything in Starter</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Webhooks</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Advanced analytics</li>
+            </ul>
             <button
               type="button"
               onClick={() => void handlePlanSelect('pro')}
@@ -289,23 +313,35 @@ export default function PricingPage(): React.ReactElement {
           </div>
 
           {/* Agency */}
-          <div className="card flex flex-col">
+          <div className="card flex flex-col transition-all duration-normal">
             <h2 className="font-display text-xl font-semibold text-ink">Agency</h2>
             <p className="mt-1 text-sm text-stone">
-              For agencies managing multiple client accounts.
+              25 widgets. Unlimited submissions.
             </p>
             <p className="mt-1 text-xs text-stone-light">
               Best for agencies managing client accounts.
             </p>
-            <div className="mt-4">
-              <span className="font-display text-4xl font-bold text-ink">
-                ${agencyPrice}
-              </span>
-              <span className="text-sm text-stone">/mo</span>
+            <div className="mt-4 relative h-12 overflow-hidden">
+              <div
+                key={String(isAnnual)}
+                className="animate-price-slide"
+              >
+                <span className="font-display text-4xl font-bold text-ink">
+                  ${agencyPrice}
+                </span>
+                <span className="text-sm text-stone">/mo</span>
+              </div>
               {isAnnual && (
-                <span className="ml-2 text-xs text-stone-light">billed annually</span>
+                <p className="mt-0.5 text-xs text-signal font-medium animate-price-fade">
+                  ${249 * 12 - agencyPrice * 12} saved per year
+                </p>
               )}
             </div>
+            <ul className="mt-4 space-y-2 flex-1">
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Everything in Pro</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> White-label branding</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Priority support</li>
+            </ul>
             <button
               type="button"
               onClick={() => void handlePlanSelect('agency')}

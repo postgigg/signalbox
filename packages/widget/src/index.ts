@@ -15,17 +15,18 @@ const DEFAULT_API_URL = 'https://signalbox.io';
 
 // ── Challenge Token Generator ──────────────────────────────────────────────
 // Simple hash-based challenge: SHA-256 of key + timestamp + salt
+// Token format: sb_{first8ofKey}_{hash} — server validates the prefix
 async function generateToken(
   key: string,
   timestamp: number
 ): Promise<string> {
-  const salt = 'sb_' + Math.random().toString(36).substring(2, 10);
+  const salt = Math.random().toString(36).substring(2, 10);
   const data = `${key}:${timestamp}:${salt}`;
   const encoder = new TextEncoder();
   const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
   const hashArray = Array.from(new Uint8Array(buffer));
   const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-  return `${hashHex}:${salt}`;
+  return `sb_${key.slice(0, 8)}_${hashHex}`;
 }
 
 // ── UTM Param Extractor ───────────────────────────────────────────────────
@@ -46,6 +47,29 @@ function getUtmParams(): {
     return result;
   } catch {
     return {};
+  }
+}
+
+// ── Analytics Tracker ──────────────────────────────────────────────────────
+function trackEvent(
+  apiUrl: string,
+  widgetKey: string,
+  event: string,
+  stepIndex?: number
+): void {
+  const body: Record<string, unknown> = { widgetKey, event };
+  if (stepIndex !== undefined) {
+    body.stepIndex = stepIndex;
+  }
+  try {
+    fetch(`${apiUrl}/api/v1/widget/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      keepalive: true,
+    }).catch(() => { /* tracking failure is non-blocking */ });
+  } catch {
+    /* tracking failure is non-blocking */
   }
 }
 
@@ -108,6 +132,7 @@ class SignalBoxWidget {
       const config = await fetchConfig(this.widgetKey, this.apiUrl);
       this.machine.configLoaded(config);
       this.renderer.init(config);
+      trackEvent(this.apiUrl, this.widgetKey, 'impression');
     } catch (err) {
       if (err instanceof WidgetApiError) {
         if (err.code === 'INACTIVE') {
@@ -133,12 +158,14 @@ class SignalBoxWidget {
     if (ctx.state !== 'ready') return;
 
     this.machine.open();
+    trackEvent(this.apiUrl, this.widgetKey, 'open');
     const config = ctx.config;
     if (!config || config.steps.length === 0) return;
 
     const totalSteps = config.steps.length;
     this.renderer.openPanel(0, totalSteps);
     this.stepDirection = 'forward';
+    trackEvent(this.apiUrl, this.widgetKey, 'step_view', 0);
     this.renderCurrentView();
   }
 
@@ -178,6 +205,15 @@ class SignalBoxWidget {
 
     this.stepDirection = 'forward';
     this.machine.selectOption(answer);
+
+    const nextCtx = this.machine.getContext();
+    const nextIndex = nextCtx.currentStepIndex;
+    if (nextCtx.config && nextIndex < nextCtx.config.steps.length) {
+      trackEvent(this.apiUrl, this.widgetKey, 'step_view', nextIndex);
+    } else {
+      trackEvent(this.apiUrl, this.widgetKey, 'completion');
+    }
+
     this.renderCurrentView();
   }
 
@@ -246,9 +282,9 @@ class SignalBoxWidget {
           stepId: a.stepId,
           optionId: a.optionId,
         })),
-        name: contact.name.trim(),
-        email: contact.email.trim(),
-        token,
+        visitorName: contact.name.trim(),
+        visitorEmail: contact.email.trim(),
+        challengeToken: token,
         loadedAt: ctx.loadedAt,
         sourceUrl: window.location.href,
         referrer: document.referrer || '',
@@ -256,10 +292,10 @@ class SignalBoxWidget {
       };
 
       if (contact.phone?.trim()) {
-        payload.phone = contact.phone.trim();
+        payload.visitorPhone = contact.phone.trim();
       }
       if (contact.message?.trim()) {
-        payload.message = contact.message.trim();
+        payload.visitorMessage = contact.message.trim();
       }
       if (honeypot) {
         payload.honeypot = honeypot;

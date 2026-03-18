@@ -7,6 +7,10 @@ import { RATE_LIMITS } from './constants';
 // Redis client
 // ---------------------------------------------------------------------------
 
+function isRedisConfigured(): boolean {
+  return Boolean(process.env.UPSTASH_REDIS_REST_URL) && Boolean(process.env.UPSTASH_REDIS_REST_TOKEN);
+}
+
 function getRedis(): Redis {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -35,7 +39,10 @@ function createRateLimiter(
   prefix: string,
   tokens: number,
   window: SlidingWindowDuration
-): Ratelimit {
+): Ratelimit | null {
+  if (!isRedisConfigured()) {
+    return null as unknown as Ratelimit;
+  }
   return new Ratelimit({
     redis: getRedis(),
     limiter: Ratelimit.slidingWindow(tokens, window),
@@ -112,6 +119,9 @@ export async function checkRateLimit(
   limiter: Ratelimit,
   identifier: string
 ): Promise<RateLimitResult> {
+  if (!isRedisConfigured()) {
+    return { success: true, limit: 999, remaining: 999, reset: Date.now() + 60000 };
+  }
   const result = await limiter.limit(identifier);
   return {
     success: result.success,

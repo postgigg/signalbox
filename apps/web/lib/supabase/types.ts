@@ -35,6 +35,7 @@ export type Database = {
           suspended_reason: string | null;
           suspended_at: string | null;
           deleted_at: string | null;
+          slack_webhook_url: string | null;
           internal_notes: string | null;
           is_featured: boolean | null;
           referral_source: string | null;
@@ -63,6 +64,7 @@ export type Database = {
           notification_email?: string | null;
           webhook_secret?: string | null;
           branding_removed?: boolean;
+          slack_webhook_url?: string | null;
           is_suspended?: boolean;
           suspended_reason?: string | null;
           suspended_at?: string | null;
@@ -95,6 +97,7 @@ export type Database = {
           notification_email?: string | null;
           webhook_secret?: string | null;
           branding_removed?: boolean;
+          slack_webhook_url?: string | null;
           is_suspended?: boolean;
           suspended_reason?: string | null;
           suspended_at?: string | null;
@@ -161,6 +164,7 @@ export type Database = {
           contact_submit_text: string | null;
           submission_count: number;
           submission_limit: number;
+          client_account_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -183,6 +187,7 @@ export type Database = {
           contact_submit_text?: string | null;
           submission_count?: number;
           submission_limit?: number;
+          client_account_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -205,6 +210,7 @@ export type Database = {
           contact_submit_text?: string | null;
           submission_count?: number;
           submission_limit?: number;
+          client_account_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -364,6 +370,7 @@ export type Database = {
           name: string;
           key_hash: string;
           key_prefix: string;
+          role: 'admin' | 'viewer';
           last_used_at: string | null;
           expires_at: string | null;
           is_active: boolean;
@@ -375,6 +382,7 @@ export type Database = {
           name?: string;
           key_hash: string;
           key_prefix: string;
+          role?: 'admin' | 'viewer';
           last_used_at?: string | null;
           expires_at?: string | null;
           is_active?: boolean;
@@ -386,6 +394,7 @@ export type Database = {
           name?: string;
           key_hash?: string;
           key_prefix?: string;
+          role?: 'admin' | 'viewer';
           last_used_at?: string | null;
           expires_at?: string | null;
           is_active?: boolean;
@@ -540,6 +549,9 @@ export type Database = {
           email_weekly_digest: boolean;
           email_trial_alerts: boolean;
           email_billing_alerts: boolean;
+          slack_on_hot_lead: boolean;
+          slack_on_warm_lead: boolean;
+          slack_on_cold_lead: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -554,6 +566,9 @@ export type Database = {
           email_weekly_digest?: boolean;
           email_trial_alerts?: boolean;
           email_billing_alerts?: boolean;
+          slack_on_hot_lead?: boolean;
+          slack_on_warm_lead?: boolean;
+          slack_on_cold_lead?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -568,6 +583,9 @@ export type Database = {
           email_weekly_digest?: boolean;
           email_trial_alerts?: boolean;
           email_billing_alerts?: boolean;
+          slack_on_hot_lead?: boolean;
+          slack_on_warm_lead?: boolean;
+          slack_on_cold_lead?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -726,9 +744,149 @@ export type Database = {
         };
         Relationships: [];
       };
+      support_tickets: {
+        Row: {
+          id: string;
+          account_id: string | null;
+          requester_email: string;
+          requester_name: string;
+          subject: string;
+          status: 'open' | 'pending' | 'resolved' | 'closed';
+          priority: 'low' | 'normal' | 'high' | 'urgent';
+          category: 'billing' | 'technical' | 'general' | 'bug' | 'feature_request';
+          assigned_to: string | null;
+          resolved_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id?: string | null;
+          requester_email: string;
+          requester_name: string;
+          subject: string;
+          status?: 'open' | 'pending' | 'resolved' | 'closed';
+          priority?: 'low' | 'normal' | 'high' | 'urgent';
+          category?: 'billing' | 'technical' | 'general' | 'bug' | 'feature_request';
+          assigned_to?: string | null;
+          resolved_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string | null;
+          requester_email?: string;
+          requester_name?: string;
+          subject?: string;
+          status?: 'open' | 'pending' | 'resolved' | 'closed';
+          priority?: 'low' | 'normal' | 'high' | 'urgent';
+          category?: 'billing' | 'technical' | 'general' | 'bug' | 'feature_request';
+          assigned_to?: string | null;
+          resolved_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      client_accounts: {
+        Row: {
+          id: string;
+          parent_account_id: string;
+          name: string;
+          slug: string;
+          contact_name: string | null;
+          contact_email: string | null;
+          notes: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          parent_account_id: string;
+          name: string;
+          slug: string;
+          contact_name?: string | null;
+          contact_email?: string | null;
+          notes?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          parent_account_id?: string;
+          name?: string;
+          slug?: string;
+          contact_name?: string | null;
+          contact_email?: string | null;
+          notes?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      stripe_events: {
+        Row: {
+          event_id: string;
+          event_type: string;
+          processed_at: string;
+        };
+        Insert: {
+          event_id: string;
+          event_type: string;
+          processed_at?: string;
+        };
+        Update: {
+          event_id?: string;
+          event_type?: string;
+          processed_at?: string;
+        };
+        Relationships: [];
+      };
+      ticket_messages: {
+        Row: {
+          id: string;
+          ticket_id: string;
+          sender_type: 'customer' | 'admin';
+          sender_email: string;
+          body: string;
+          is_internal_note: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          ticket_id: string;
+          sender_type: 'customer' | 'admin';
+          sender_email: string;
+          body: string;
+          is_internal_note?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          ticket_id?: string;
+          sender_type?: 'customer' | 'admin';
+          sender_email?: string;
+          body?: string;
+          is_internal_note?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      increment_submission_count: {
+        Args: {
+          widget_uuid: string;
+          current_limit: number;
+        };
+        Returns: boolean;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
@@ -761,6 +919,10 @@ export type PlatformMetric = Tables<'platform_metrics'>;
 export type AdminAuditLog = Tables<'admin_audit_log'>;
 export type PlatformSetting = Tables<'platform_settings'>;
 export type EmailTemplate = Tables<'email_templates'>;
+export type ClientAccount = Tables<'client_accounts'>;
+export type SupportTicket = Tables<'support_tickets'>;
+export type TicketMessage = Tables<'ticket_messages'>;
+export type StripeEvent = Tables<'stripe_events'>;
 
 // Plan type
 export type Plan = Account['plan'];
@@ -779,3 +941,9 @@ export type MemberRole = Member['role'];
 
 // Device type
 export type DeviceType = NonNullable<Submission['device_type']>;
+
+// Support ticket types
+export type TicketStatus = SupportTicket['status'];
+export type TicketPriority = SupportTicket['priority'];
+export type TicketCategory = SupportTicket['category'];
+export type TicketSenderType = TicketMessage['sender_type'];

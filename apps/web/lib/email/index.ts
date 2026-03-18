@@ -1,25 +1,24 @@
-import { Resend } from 'resend';
+import { sendEmail } from './client';
+import { renderNewLeadNotification, renderPaymentFailed } from './templates';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+import type { SendEmailResult } from './client';
+import type { NewLeadNotificationData, PaymentFailedData } from './templates';
 
-const FROM_ADDRESS = process.env.EMAIL_FROM ?? 'SignalBox <noreply@signalbox.app>';
+// Re-export client for direct use
+export { sendEmail, sendBatchEmails } from './client';
+export type { SendEmailOptions, SendEmailResult } from './client';
 
-interface SendEmailParams {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
-}
-
-export async function sendEmail(params: SendEmailParams): Promise<void> {
-  await resend.emails.send({
-    from: FROM_ADDRESS,
-    to: params.to,
-    subject: params.subject,
-    html: params.html,
-    text: params.text,
-  });
-}
+// Re-export all template renderers
+export {
+  renderNewLeadNotification,
+  renderHotLeadFollowup,
+  renderWelcome,
+  renderTrialEnding,
+  renderTrialExpired,
+  renderWeeklyDigest,
+  renderPaymentFailed,
+  renderWebhookFailures,
+} from './templates';
 
 export interface NewLeadEmailParams {
   to: string;
@@ -28,40 +27,62 @@ export interface NewLeadEmailParams {
   visitorEmail: string;
   leadTier: 'hot' | 'warm' | 'cold';
   leadScore: number;
+  accountName?: string;
+  submissionId?: string;
+  answers?: Array<{ question: string; label: string }>;
 }
 
-export async function sendNewLeadNotification(params: NewLeadEmailParams): Promise<void> {
-  const tierEmoji =
-    params.leadTier === 'hot' ? '🔥' : params.leadTier === 'warm' ? '🟡' : '🔵';
+export async function sendNewLeadNotification(
+  params: NewLeadEmailParams
+): Promise<SendEmailResult> {
+  const templateData: NewLeadNotificationData = {
+    accountName: params.accountName ?? 'Your Account',
+    widgetName: params.widgetName,
+    visitorName: params.visitorName,
+    visitorEmail: params.visitorEmail,
+    leadScore: params.leadScore,
+    leadTier: params.leadTier,
+    submissionId: params.submissionId ?? '',
+    answers: params.answers ?? [],
+  };
 
-  await sendEmail({
+  const rendered = renderNewLeadNotification(templateData);
+
+  return sendEmail({
     to: params.to,
-    subject: `${tierEmoji} New ${params.leadTier} lead from ${params.widgetName}`,
-    html: `
-      <h2>New Lead Submission</h2>
-      <p><strong>Widget:</strong> ${params.widgetName}</p>
-      <p><strong>Name:</strong> ${params.visitorName}</p>
-      <p><strong>Email:</strong> ${params.visitorEmail}</p>
-      <p><strong>Tier:</strong> ${params.leadTier.toUpperCase()}</p>
-      <p><strong>Score:</strong> ${params.leadScore}/100</p>
-      <p>View this lead in your <a href="${process.env.NEXT_PUBLIC_APP_URL}/leads">SignalBox dashboard</a>.</p>
-    `,
-    text: `New ${params.leadTier} lead from ${params.widgetName}: ${params.visitorName} (${params.visitorEmail}), score: ${params.leadScore}/100`,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text,
+    tags: [
+      { name: 'type', value: 'new_lead' },
+      { name: 'tier', value: params.leadTier },
+    ],
   });
 }
 
 export async function sendPaymentFailedEmail(params: {
   to: string;
   accountName: string;
-}): Promise<void> {
-  await sendEmail({
+  fullName?: string;
+  amount?: number;
+  currency?: string;
+  nextRetryDate?: string | null;
+}): Promise<SendEmailResult> {
+  const templateData: PaymentFailedData = {
+    accountName: params.accountName,
+    fullName: params.fullName ?? 'there',
+    amount: params.amount ?? 0,
+    currency: params.currency ?? 'usd',
+    nextRetryDate: params.nextRetryDate ?? null,
+  };
+
+  const rendered = renderPaymentFailed(templateData);
+
+  return sendEmail({
     to: params.to,
-    subject: 'Payment failed — action required',
-    html: `
-      <h2>Payment Failed</h2>
-      <p>We were unable to process the payment for your SignalBox account <strong>${params.accountName}</strong>.</p>
-      <p>Please update your payment method in <a href="${process.env.NEXT_PUBLIC_APP_URL}/settings/billing">billing settings</a> to avoid service interruption.</p>
-    `,
-    text: `Payment failed for ${params.accountName}. Please update your payment method.`,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text,
+    tags: [{ name: 'type', value: 'payment_failed' }],
   });
 }

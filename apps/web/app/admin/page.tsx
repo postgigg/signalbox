@@ -39,6 +39,16 @@ export default async function AdminOverviewPage(): Promise<React.ReactElement> {
 
   const mrrEstimate = ((starterAccounts ?? 0) * 99) + ((proAccounts ?? 0) * 149) + ((agencyAccounts ?? 0) * 249);
 
+  const { count: openTickets } = await supabase
+    .from('support_tickets')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'open');
+
+  const { count: pendingTickets } = await supabase
+    .from('support_tickets')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending');
+
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
@@ -99,6 +109,21 @@ export default async function AdminOverviewPage(): Promise<React.ReactElement> {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Support Tickets */}
+      <div className="mt-8">
+        <h2 className="font-display text-lg font-semibold text-ink mb-4">Support Tickets</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="card">
+            <p className="text-sm text-stone font-body">Open Tickets</p>
+            <p className="mt-1 font-mono text-3xl font-semibold text-ink">{openTickets ?? 0}</p>
+          </div>
+          <div className="card">
+            <p className="text-sm text-stone font-body">Pending Reply</p>
+            <p className="mt-1 font-mono text-3xl font-semibold text-ink">{pendingTickets ?? 0}</p>
           </div>
         </div>
       </div>

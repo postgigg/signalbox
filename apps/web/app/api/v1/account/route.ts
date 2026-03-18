@@ -26,6 +26,10 @@ const createAccountSchema = z.object({
 
 const patchAccountSchema = z.object({
   name: z.string().min(1).max(100).optional(),
+  slug: z.string().min(3).max(50).regex(
+    /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
+    'Slug must be lowercase alphanumeric with hyphens',
+  ).optional(),
   timezone: z.string().max(50).optional(),
   notification_email: z.string().email().nullable().optional(),
   hot_lead_threshold: z.number().int().min(1).max(100).optional(),

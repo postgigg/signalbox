@@ -134,6 +134,28 @@ export default function TeamSettingsPage(): React.ReactElement {
     }
   }
 
+  async function handleRemoveMember(memberId: string): Promise<void> {
+    if (!confirm('Remove this team member?')) return;
+    try {
+      const { createBrowserClient } = await import('@supabase/ssr');
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+      );
+      const { error: deleteError } = await supabase
+        .from('members')
+        .delete()
+        .eq('id', memberId);
+      if (deleteError) {
+        setError(deleteError.message);
+        return;
+      }
+      setMembers((prev) => prev.filter((m) => m.id !== memberId));
+    } catch {
+      setError('Failed to remove member.');
+    }
+  }
+
   function getRoleBadgeClass(role: string): string {
     switch (role) {
       case 'owner':
@@ -274,7 +296,11 @@ export default function TeamSettingsPage(): React.ReactElement {
                     </td>
                     <td className="py-3 px-4 text-right">
                       {member.role !== 'owner' && (
-                        <button type="button" className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast">
+                        <button
+                          type="button"
+                          onClick={() => void handleRemoveMember(member.id)}
+                          className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast"
+                        >
                           Remove
                         </button>
                       )}

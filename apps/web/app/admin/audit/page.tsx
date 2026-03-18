@@ -14,7 +14,7 @@ interface AuditEntry {
 }
 
 const PAGE_SIZE = 25;
-const ACTION_FILTERS = ['all', 'impersonate', 'change_plan', 'suspend', 'unsuspend', 'delete', 'extend_trial', 'gift_plan', 'reset_limit'] as const;
+const ACTION_FILTERS = ['all', 'impersonate', 'change_plan', 'suspend', 'unsuspend', 'delete', 'extend_trial', 'gift_plan', 'reset_limit', 'create_ticket', 'update_ticket', 'reply_to_ticket', 'add_internal_note'] as const;
 
 export default function AdminAuditPage(): React.ReactElement {
   const [entries, setEntries] = useState<AuditEntry[]>([]);

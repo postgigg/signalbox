@@ -250,6 +250,250 @@
 .stagger-4 { animation-delay: 320ms !important; }
 .stagger-5 { animation-delay: 400ms !important; }
 
+/* ── Step illustration animations (How It Works section) ── */
+
+/* Step 1: Flow Builder — cards slide in, bars grow */
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes draw-down {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes grow-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.step-illustration {
+  /* Illustrations only animate when parent has is-visible */
+}
+
+.is-visible .step-flow-card-1 {
+  animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .step-flow-card-2 {
+  animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+.is-visible .step-flow-connector-1 {
+  stroke-dashoffset: 24;
+  animation: draw-down 300ms ease-out 400ms both;
+}
+.is-visible .step-flow-connector-2 {
+  stroke-dashoffset: 24;
+  animation: draw-down 300ms ease-out 700ms both;
+}
+.is-visible .step-flow-weights {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+.is-visible .step-flow-bar-1,
+.is-visible .step-flow-bar-2,
+.is-visible .step-flow-bar-3 {
+  transform-origin: left center;
+}
+.is-visible .step-flow-bar-1 { animation: grow-bar 500ms ease-out 900ms both; }
+.is-visible .step-flow-bar-2 { animation: grow-bar 500ms ease-out 1000ms both; }
+.is-visible .step-flow-bar-3 { animation: grow-bar 500ms ease-out 1100ms both; }
+
+/* Step 2: Embed Snippet — lines type in, cursor blinks */
+@keyframes type-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes pop-in {
+  0% { opacity: 0; transform: scale(0.6); }
+  70% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.is-visible .step-embed-line-1 { animation: type-in 300ms ease-out 300ms both; }
+.is-visible .step-embed-line-2 { animation: type-in 300ms ease-out 600ms both; }
+.is-visible .step-embed-line-3 { animation: type-in 300ms ease-out 900ms both; }
+.is-visible .step-embed-cursor { animation: blink-cursor 1s step-end 400ms infinite; }
+.is-visible .step-embed-copied {
+  transform-origin: center center;
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms both;
+}
+
+/* Step 3: Scored Leads — rows slide in staggered, bars fill, bell pings */
+@keyframes slide-row-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ping-ring {
+  0% { r: 4; opacity: 0.6; }
+  100% { r: 12; opacity: 0; }
+}
+
+.is-visible .step-leads-row-1 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .step-leads-row-2 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both; }
+.is-visible .step-leads-row-3 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
+
+.is-visible .step-leads-bar-1,
+.is-visible .step-leads-bar-2,
+.is-visible .step-leads-bar-3 {
+  transform-origin: left center;
+}
+.is-visible .step-leads-bar-1 { animation: grow-bar 600ms ease-out 500ms both; }
+.is-visible .step-leads-bar-2 { animation: grow-bar 600ms ease-out 750ms both; }
+.is-visible .step-leads-bar-3 { animation: grow-bar 600ms ease-out 1000ms both; }
+
+.is-visible .step-leads-ping {
+  animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+.is-visible .step-leads-ping-ring {
+  animation: ping-ring 1s ease-out 800ms both;
+}
+
+/* ── Feature illustration animations (What you get section) ── */
+
+/* Feature 1: Lead Scoring — gauge arc sweeps, needle rotates, tiers pop in */
+@keyframes sweep-arc {
+  from { stroke-dashoffset: 188; }
+  to { stroke-dashoffset: 25; }
+}
+@keyframes rotate-needle {
+  from { transform: rotate(-90deg); }
+  to { transform: rotate(46deg); }
+}
+@keyframes count-fade {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.is-visible .feat-score-arc {
+  animation: sweep-arc 1s cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
+}
+.is-visible .feat-score-needle {
+  animation: rotate-needle 1s cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
+}
+.is-visible .feat-score-number {
+  animation: count-fade 400ms ease-out 800ms both;
+}
+.is-visible .feat-score-tiers {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+
+/* Feature 2: Instant Alerts — email slides up, card pops in, timer appears */
+@keyframes slide-up-alert {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.is-visible .feat-alert-email {
+  animation: slide-up-alert 400ms cubic-bezier(0.16, 1, 0.3, 1) 300ms both;
+}
+.is-visible .feat-alert-card {
+  animation: pop-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+.is-visible .feat-alert-timer {
+  animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+/* Feature 3: Conversion Analytics — funnel bars grow staggered, drop-off pops, rate slides in */
+.is-visible .feat-funnel-fill-1,
+.is-visible .feat-funnel-fill-2,
+.is-visible .feat-funnel-fill-3 {
+  transform-origin: left center;
+}
+.is-visible .feat-funnel-fill-1 { animation: grow-bar 600ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .feat-funnel-fill-2 { animation: grow-bar 600ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both; }
+.is-visible .feat-funnel-fill-3 { animation: grow-bar 600ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
+
+.is-visible .feat-funnel-bar-1 { animation: type-in 300ms ease-out 200ms both; }
+.is-visible .feat-funnel-bar-2 { animation: type-in 300ms ease-out 450ms both; }
+.is-visible .feat-funnel-bar-3 { animation: type-in 300ms ease-out 700ms both; }
+
+.is-visible .feat-funnel-dropoff {
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+.is-visible .feat-funnel-rate {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 1100ms both;
+}
+
+/* Feature 4: Custom Branding — widget fades in, panel slides in, swatch highlights, label pops */
+.is-visible .feat-brand-widget {
+  animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .feat-brand-panel {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+.is-visible .feat-brand-swatch-row {
+  animation: type-in 300ms ease-out 700ms both;
+}
+.is-visible .feat-brand-label {
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+/* ── Before/After illustration animations ── */
+
+/* Before side — rows appear flat, then question mark and clock fade in */
+.is-visible .ba-before-row-1 { animation: type-in 300ms ease-out 200ms both; }
+.is-visible .ba-before-row-2 { animation: type-in 300ms ease-out 350ms both; }
+.is-visible .ba-before-row-3 { animation: type-in 300ms ease-out 500ms both; }
+.is-visible .ba-before-question {
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
+}
+.is-visible .ba-before-clock {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both;
+}
+.is-visible .ba-before-label {
+  animation: type-in 300ms ease-out 1000ms both;
+}
+
+/* After side — rows slide in with color, bars grow, bell pings, timer pops */
+.is-visible .ba-after-row-1 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .ba-after-row-2 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both; }
+.is-visible .ba-after-row-3 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+
+.is-visible .ba-after-bar-1,
+.is-visible .ba-after-bar-2,
+.is-visible .ba-after-bar-3 {
+  transform-origin: left center;
+}
+.is-visible .ba-after-bar-1 { animation: grow-bar 500ms ease-out 500ms both; }
+.is-visible .ba-after-bar-2 { animation: grow-bar 500ms ease-out 700ms both; }
+.is-visible .ba-after-bar-3 { animation: grow-bar 500ms ease-out 900ms both; }
+
+.is-visible .ba-after-bell {
+  animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+.is-visible .ba-after-ping-ring {
+  animation: ping-ring 1s ease-out 700ms both;
+}
+.is-visible .ba-after-timer {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both;
+}
+.is-visible .ba-after-label {
+  animation: type-in 300ms ease-out 1000ms both;
+}
+
+/* ── CTA dashboard illustration animations ── */
+.is-visible .cta-row-1 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .cta-row-2 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both; }
+.is-visible .cta-row-3 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+.is-visible .cta-row-4 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both; }
+
+.is-visible .cta-bar-1,
+.is-visible .cta-bar-2,
+.is-visible .cta-bar-3,
+.is-visible .cta-bar-4 {
+  transform-origin: left center;
+}
+.is-visible .cta-bar-1 { animation: grow-bar 500ms ease-out 500ms both; }
+.is-visible .cta-bar-2 { animation: grow-bar 500ms ease-out 700ms both; }
+.is-visible .cta-bar-3 { animation: grow-bar 500ms ease-out 900ms both; }
+.is-visible .cta-bar-4 { animation: grow-bar 500ms ease-out 1100ms both; }
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-on-enter,
@@ -257,6 +501,15 @@
   .animate-fade {
     opacity: 1;
     animation: none !important;
+  }
+
+  .step-illustration *,
+  .step-illustration g,
+  .step-illustration rect,
+  .step-illustration line,
+  .step-illustration circle {
+    animation: none !important;
+    opacity: 1 !important;
   }
 
   .skeleton {
@@ -332,4 +585,34 @@
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
+}
+
+/* ── Price toggle animations ── */
+
+@keyframes price-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes price-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-price-slide {
+  animation: price-slide-in 200ms ease-out;
+}
+
+.animate-price-fade {
+  animation: price-fade-in 200ms ease-out 100ms both;
 }

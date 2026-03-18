@@ -52,10 +52,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const admin = createAdminClient();
 
-  // Idempotency: Stripe may deliver the same event more than once.
-  // Once a `stripe_events` migration is added (with unique constraint on event_id),
-  // insert event.id here and skip duplicates on conflict.
+  // Idempotency: skip duplicate events
+  const { error: idempotencyError } = await admin
+    .from('stripe_events')
+    .insert({ event_id: event.id, event_type: event.type });
 
+  if (idempotencyError) {
+    // Duplicate event (unique constraint violation) — acknowledge without reprocessing
+    return NextResponse.json({ received: true });
+  }
+
+  try {
   switch (event.type) {
     // -----------------------------------------------------------------
     // checkout.session.completed
@@ -81,6 +88,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       const priceId = subscription.items.data[0]?.price.id;
       const plan = priceId ? planFromPriceId(priceId) : null;
+
+      if (!plan && priceId) {
+        console.error(`[stripe-webhook] Unknown price ID: ${priceId} for account ${accountId}`);
+      }
 
       await admin
         .from('accounts')
@@ -117,6 +128,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       const priceId = subscription.items.data[0]?.price.id;
       const plan = priceId ? planFromPriceId(priceId) : null;
+
+      if (!plan && priceId) {
+        console.error(`[stripe-webhook] Unknown price ID on subscription update: ${priceId}`);
+      }
 
       const statusMap: Record<string, string> = {
         active: 'active',
@@ -247,7 +262,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // Unhandled event type — acknowledged
       break;
   }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown webhook handler error';
+    console.error(`[stripe-webhook] Error processing ${event.type}: ${message}`);
+  }
 
-  // Always return 200 immediately to acknowledge receipt
+  // Always return 200 to acknowledge receipt and prevent Stripe retries
   return NextResponse.json({ received: true });
 }

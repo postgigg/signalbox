@@ -20,6 +20,7 @@ export interface PlanConfig {
     customBranding: boolean;
     apiAccess: boolean;
     webhookAccess: boolean;
+    advancedAnalytics: boolean;
     prioritySupport: boolean;
   };
 }
@@ -43,6 +44,7 @@ export const PLANS: Record<string, PlanConfig> = {
       customBranding: false,
       apiAccess: false,
       webhookAccess: false,
+      advancedAnalytics: false,
       prioritySupport: false,
     },
   },
@@ -64,6 +66,7 @@ export const PLANS: Record<string, PlanConfig> = {
       customBranding: false,
       apiAccess: false,
       webhookAccess: true,
+      advancedAnalytics: false,
       prioritySupport: false,
     },
   },
@@ -85,6 +88,7 @@ export const PLANS: Record<string, PlanConfig> = {
       customBranding: true,
       apiAccess: true,
       webhookAccess: true,
+      advancedAnalytics: true,
       prioritySupport: false,
     },
   },
@@ -106,6 +110,7 @@ export const PLANS: Record<string, PlanConfig> = {
       customBranding: true,
       apiAccess: true,
       webhookAccess: true,
+      advancedAnalytics: true,
       prioritySupport: true,
     },
   },
@@ -310,6 +315,32 @@ export const RATE_LIMITS = {
 } as const;
 
 // ---------------------------------------------------------------------------
+// Support ticket constants
+// ---------------------------------------------------------------------------
+
+export const TICKET_STATUSES = [
+  { value: 'open', label: 'Open' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'resolved', label: 'Resolved' },
+  { value: 'closed', label: 'Closed' },
+] as const;
+
+export const TICKET_PRIORITIES = [
+  { value: 'low', label: 'Low' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'high', label: 'High' },
+  { value: 'urgent', label: 'Urgent' },
+] as const;
+
+export const TICKET_CATEGORIES = [
+  { value: 'billing', label: 'Billing' },
+  { value: 'technical', label: 'Technical' },
+  { value: 'general', label: 'General' },
+  { value: 'bug', label: 'Bug' },
+  { value: 'feature_request', label: 'Feature Request' },
+] as const;
+
+// ---------------------------------------------------------------------------
 // Email template slugs
 // ---------------------------------------------------------------------------
 
@@ -379,6 +410,7 @@ export const PAGINATION_DEFAULT_PAGE_SIZE = 25;
 export const PAGINATION_MAX_PAGE_SIZE = 100;
 
 export const SUPPORT_EMAIL = 'support@signalbox.io';
+export const PRIORITY_SUPPORT_EMAIL = 'priority@signalbox.io';
 export const NO_REPLY_EMAIL = 'noreply@signalbox.io';
 
 export const APP_NAME = 'SignalBox';

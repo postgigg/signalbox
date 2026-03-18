@@ -96,11 +96,11 @@ export interface ContactInfo {
 export interface SubmitPayload {
   widgetKey: string;
   answers: Array<{ stepId: string; optionId: string }>;
-  name: string;
-  email: string;
-  phone?: string;
-  message?: string;
-  token: string;
+  visitorName: string;
+  visitorEmail: string;
+  visitorPhone?: string;
+  visitorMessage?: string;
+  challengeToken: string;
   loadedAt: number;
   honeypot?: string;
   sourceUrl: string;

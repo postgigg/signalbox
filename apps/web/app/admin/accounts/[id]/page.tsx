@@ -172,6 +172,15 @@ export default function AdminAccountDetailPage(): React.ReactElement {
 
         {/* Admin Actions */}
         <div className="space-y-4">
+          {/* Support Tickets */}
+          <div className="card">
+            <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">Support Tickets</h3>
+            <p className="text-xs text-stone mb-2">View tickets from this account.</p>
+            <Link href={`/admin/tickets?account=${accountId}`} className="btn-secondary w-full text-xs text-center block">
+              View Tickets
+            </Link>
+          </div>
+
           {/* Impersonate */}
           <div className="card">
             <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">Impersonate</h3>

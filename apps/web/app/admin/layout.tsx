@@ -17,6 +17,7 @@ const ADMIN_NAV: readonly AdminNavItem[] = [
   { href: '/admin/submissions', label: 'Submissions' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/revenue', label: 'Revenue' },
+  { href: '/admin/tickets', label: 'Support Tickets' },
   { href: '/admin/templates', label: 'Templates' },
   { href: '/admin/email-templates', label: 'Email Templates' },
   { href: '/admin/settings', label: 'Settings' },
