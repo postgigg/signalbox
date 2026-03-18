@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(npx tsc:*)",
+      "Bash(mv:*)",
+      "Bash(cp:*)",
+      "Bash(grep \"\"version\"\":*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(npx supabase:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(echo Cookie names found::*)",
+      "Bash(echo Cookie value \\(first 100 chars\\)::*)",
+      "Bash(npm install:*)",
+      "Bash(rm:*)",
+      "Bash(head:*)",
+      "Bash(wc:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

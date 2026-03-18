@@ -1,0 +1,41 @@
+[build]
+  command = "cd apps/web && npm run build"
+  publish = "apps/web/.next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[functions.hot-lead-followup]
+  schedule = "*/5 * * * *"
+
+[functions.retry-dead-letters]
+  schedule = "*/5 * * * *"
+
+[functions.retry-webhooks]
+  schedule = "*/5 * * * *"
+
+[functions.check-trial-expirations]
+  schedule = "0 8 * * *"
+
+[functions.hash-old-ips]
+  schedule = "0 3 * * *"
+
+[functions.reset-monthly-counts]
+  schedule = "0 0 1 * *"
+
+[functions.cleanup-deleted-accounts]
+  schedule = "0 4 * * 0"
+
+[[headers]]
+  for = "/api/v1/widget/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=60"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

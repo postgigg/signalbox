@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" fill="none">
+  <!-- Browser frame -->
+  <rect x="0" y="0" width="560" height="400" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="560" height="40" rx="12" fill="#F8FAFC"/>
+  <rect x="0" y="28" width="560" height="12" fill="#F8FAFC"/>
+  <line x1="0" y1="40" x2="560" y2="40" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Window dots -->
+  <circle cx="20" cy="20" r="5" fill="#E2E8F0"/>
+  <circle cx="36" cy="20" r="5" fill="#E2E8F0"/>
+  <circle cx="52" cy="20" r="5" fill="#E2E8F0"/>
+
+  <!-- URL bar -->
+  <rect x="80" y="12" width="200" height="16" rx="4" fill="#E2E8F0"/>
+  <text x="110" y="24" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">app.signalbox.io/leads</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="40" width="120" height="360" fill="#F8FAFC"/>
+  <rect x="0" y="388" width="120" height="12" rx="0" fill="#F8FAFC"/>
+  <line x1="120" y1="40" x2="120" y2="400" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- Sidebar nav items -->
+  <rect x="12" y="56" width="96" height="28" rx="6" fill="#EFF6FF"/>
+  <text x="36" y="74" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#2563EB">Leads</text>
+
+  <text x="36" y="104" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">Analytics</text>
+  <text x="36" y="128" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">Widgets</text>
+  <text x="36" y="152" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">Settings</text>
+
+  <!-- Sidebar icons (simple dots) -->
+  <circle cx="24" cy="70" r="3" fill="#2563EB"/>
+  <circle cx="24" cy="100" r="3" fill="#CBD5E1"/>
+  <circle cx="24" cy="124" r="3" fill="#CBD5E1"/>
+  <circle cx="24" cy="148" r="3" fill="#CBD5E1"/>
+
+  <!-- Main content area header -->
+  <text x="140" y="72" font-family="Georgia, serif" font-size="16" font-weight="600" fill="#0F172A">Today's Leads</text>
+  <text x="140" y="88" font-family="system-ui, sans-serif" font-size="10" fill="#94A3B8">7 new leads, 3 hot</text>
+
+  <!-- Stats row -->
+  <rect x="140" y="100" width="120" height="48" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="152" y="118" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">Hot Leads</text>
+  <text x="152" y="138" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#DC2626">3</text>
+
+  <rect x="270" y="100" width="120" height="48" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="282" y="118" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">Warm Leads</text>
+  <text x="282" y="138" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#CA8A04">2</text>
+
+  <rect x="400" y="100" width="120" height="48" rx="6" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="412" y="118" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">Avg. Score</text>
+  <text x="412" y="138" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#0F172A">72</text>
+
+  <!-- Lead list header -->
+  <rect x="140" y="164" width="400" height="28" rx="0" fill="#F8FAFC"/>
+  <text x="152" y="182" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B">NAME</text>
+  <text x="280" y="182" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B">SERVICE</text>
+  <text x="400" y="182" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B">SCORE</text>
+  <text x="470" y="182" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B">TIER</text>
+
+  <!-- Lead row 1 - Hot -->
+  <line x1="140" y1="192" x2="540" y2="192" stroke="#E2E8F0" stroke-width="0.5"/>
+  <text x="152" y="212" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="#0F172A">Sarah Mitchell</text>
+  <text x="152" y="224" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">sarah@westside.co</text>
+  <text x="280" y="216" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">Kitchen remodel</text>
+  <text x="412" y="216" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#0F172A">92</text>
+  <rect x="460" y="206" width="36" height="18" rx="9" fill="#FEF2F2"/>
+  <text x="469" y="218" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#DC2626">Hot</text>
+
+  <!-- Lead row 2 - Hot -->
+  <line x1="140" y1="236" x2="540" y2="236" stroke="#E2E8F0" stroke-width="0.5"/>
+  <text x="152" y="256" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="#0F172A">James Chen</text>
+  <text x="152" y="268" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">jchen@blueoak.dev</text>
+  <text x="280" y="260" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">Full renovation</text>
+  <text x="412" y="260" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#0F172A">87</text>
+  <rect x="460" y="250" width="36" height="18" rx="9" fill="#FEF2F2"/>
+  <text x="469" y="262" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#DC2626">Hot</text>
+
+  <!-- Lead row 3 - Warm -->
+  <line x1="140" y1="280" x2="540" y2="280" stroke="#E2E8F0" stroke-width="0.5"/>
+  <text x="152" y="300" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="#0F172A">Emily Torres</text>
+  <text x="152" y="312" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">emily.t@inbox.com</text>
+  <text x="280" y="304" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">Bathroom update</text>
+  <text x="412" y="304" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#0F172A">64</text>
+  <rect x="460" y="294" width="48" height="18" rx="9" fill="#FEFCE8"/>
+  <text x="469" y="306" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#CA8A04">Warm</text>
+
+  <!-- Lead row 4 - Cold -->
+  <line x1="140" y1="324" x2="540" y2="324" stroke="#E2E8F0" stroke-width="0.5"/>
+  <text x="152" y="344" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="#0F172A">Mike Reynolds</text>
+  <text x="152" y="356" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">mike.r@gmail.com</text>
+  <text x="280" y="348" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">General inquiry</text>
+  <text x="412" y="348" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#0F172A">31</text>
+  <rect x="460" y="338" width="40" height="18" rx="9" fill="#F8FAFC"/>
+  <text x="469" y="350" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#94A3B8">Cold</text>
+
+  <!-- Lead row 5 - Hot -->
+  <line x1="140" y1="368" x2="540" y2="368" stroke="#E2E8F0" stroke-width="0.5"/>
+  <text x="152" y="388" font-family="system-ui, sans-serif" font-size="11" font-weight="500" fill="#0F172A">Laura Kim</text>
+  <text x="280" y="388" font-family="system-ui, sans-serif" font-size="11" fill="#64748B">New construction</text>
+  <text x="412" y="388" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#0F172A">85</text>
+  <rect x="460" y="378" width="36" height="18" rx="9" fill="#FEF2F2"/>
+  <text x="469" y="390" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#DC2626">Hot</text>
+</svg>

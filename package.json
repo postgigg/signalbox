@@ -1,0 +1,23 @@
+{
+  "name": "signalbox",
+  "private": true,
+  "workspaces": ["apps/web", "packages/widget"],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "widget:build": "npm run build --workspace=packages/widget",
+    "widget:dev": "npm run dev --workspace=packages/widget"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0",
+    "eslint-plugin-import": "^2.29.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

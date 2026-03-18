@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500;600;700&amp;family=Inter:wght@400;500&amp;display=swap');
+      .font-serif { font-family: 'Newsreader', Georgia, serif; }
+      .font-sans { font-family: 'Inter', system-ui, sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0F172A"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03" stroke="#FFFFFF" stroke-width="0.5">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="1200" y1="0" x2="1200" y2="630"/>
+    <line x1="0" y1="63" x2="1200" y2="63"/><line x1="0" y1="126" x2="1200" y2="126"/>
+    <line x1="0" y1="189" x2="1200" y2="189"/><line x1="0" y1="252" x2="1200" y2="252"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/><line x1="0" y1="378" x2="1200" y2="378"/>
+    <line x1="0" y1="441" x2="1200" y2="441"/><line x1="0" y1="504" x2="1200" y2="504"/>
+    <line x1="0" y1="567" x2="1200" y2="567"/>
+  </g>
+
+  <!-- Blue accent line -->
+  <rect x="80" y="180" width="4" height="80" rx="2" fill="#2563EB"/>
+
+  <!-- Logo -->
+  <text x="80" y="130" class="font-serif" font-size="28" font-weight="600" fill="#FAFAFA" letter-spacing="-0.5">SignalBox</text>
+
+  <!-- Tagline -->
+  <text x="104" y="222" class="font-serif" font-size="52" font-weight="700" fill="#FAFAFA" letter-spacing="-1">Your contact page</text>
+  <text x="104" y="280" class="font-serif" font-size="52" font-weight="700" fill="#FAFAFA" letter-spacing="-1">is costing you money.</text>
+
+  <!-- Subtitle -->
+  <text x="104" y="330" class="font-sans" font-size="18" fill="#94A3B8">Replace your contact form with a qualifying flow</text>
+  <text x="104" y="356" class="font-sans" font-size="18" fill="#94A3B8">that scores every lead before you pick up the phone.</text>
+
+  <!-- Stats row -->
+  <g transform="translate(104, 420)">
+    <!-- Stat 1 -->
+    <text x="0" y="0" class="font-mono" font-size="36" font-weight="700" fill="#2563EB">78%</text>
+    <text x="0" y="24" class="font-sans" font-size="12" fill="#64748B">of deals go to first responder</text>
+
+    <!-- Divider -->
+    <line x1="220" y1="-20" x2="220" y2="30" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Stat 2 -->
+    <text x="250" y="0" class="font-mono" font-size="36" font-weight="700" fill="#2563EB">47hr</text>
+    <text x="250" y="24" class="font-sans" font-size="12" fill="#64748B">avg response time to forms</text>
+
+    <!-- Divider -->
+    <line x1="470" y1="-20" x2="470" y2="30" stroke="#1E293B" stroke-width="1"/>
+
+    <!-- Stat 3 -->
+    <text x="500" y="0" class="font-mono" font-size="36" font-weight="700" fill="#2563EB">0-100</text>
+    <text x="500" y="24" class="font-sans" font-size="12" fill="#64748B">lead score on every submission</text>
+  </g>
+
+  <!-- Mini widget mockup (right side) -->
+  <g transform="translate(780, 140)">
+    <rect x="0" y="0" width="320" height="400" rx="12" fill="#FFFFFF" opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"/>
+
+    <!-- Progress bar -->
+    <rect x="0" y="0" width="320" height="4" rx="2" fill="#1E293B"/>
+    <rect x="0" y="0" width="213" height="4" rx="2" fill="#2563EB"/>
+
+    <!-- Step indicator -->
+    <text x="24" y="36" class="font-sans" font-size="10" fill="#64748B">STEP 2 OF 3</text>
+
+    <!-- Question -->
+    <text x="24" y="72" class="font-sans" font-size="16" font-weight="600" fill="#E2E8F0">What's your budget?</text>
+
+    <!-- Options -->
+    <rect x="24" y="96" width="272" height="44" rx="6" fill="transparent" stroke="#2563EB" stroke-width="1" stroke-opacity="0.5"/>
+    <text x="44" y="122" class="font-sans" font-size="12" fill="#E2E8F0">$5,000 - $15,000</text>
+
+    <rect x="24" y="152" width="272" height="44" rx="6" fill="transparent" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
+    <text x="44" y="178" class="font-sans" font-size="12" fill="#94A3B8">$15,000 - $50,000</text>
+
+    <rect x="24" y="208" width="272" height="44" rx="6" fill="transparent" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
+    <text x="44" y="234" class="font-sans" font-size="12" fill="#94A3B8">$50,000+</text>
+
+    <rect x="24" y="264" width="272" height="44" rx="6" fill="transparent" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.08"/>
+    <text x="44" y="290" class="font-sans" font-size="12" fill="#94A3B8">Not sure yet</text>
+
+    <!-- Score badge -->
+    <g transform="translate(120, 340)">
+      <rect x="-60" y="-14" width="120" height="28" rx="14" fill="#DC2626" opacity="0.15"/>
+      <text x="0" y="4" class="font-mono" font-size="11" font-weight="600" fill="#FCA5A5" text-anchor="middle">SCORE: 85 / HOT</text>
+    </g>
+
+    <!-- Footer -->
+    <text x="100" y="390" class="font-sans" font-size="9" fill="#475569" text-anchor="middle" opacity="0.4">Powered by </text>
+    <text x="150" y="390" class="font-serif" font-size="9" font-weight="600" fill="#475569" opacity="0.4">SignalBox</text>
+  </g>
+
+  <!-- Bottom border accent -->
+  <rect x="0" y="626" width="1200" height="4" fill="#2563EB"/>
+</svg>
