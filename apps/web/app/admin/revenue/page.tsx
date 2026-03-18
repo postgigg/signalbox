@@ -57,7 +57,7 @@ export default async function AdminRevenuePage(): Promise<React.ReactElement> {
       </div>
 
       {/* MRR */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-5 gap-4">
         <div className="card">
           <p className="text-sm text-stone">Current MRR</p>
           <p className="mt-1 font-mono text-3xl font-semibold text-ink">${mrr.toLocaleString()}</p>
@@ -65,6 +65,10 @@ export default async function AdminRevenuePage(): Promise<React.ReactElement> {
         <div className="card">
           <p className="text-sm text-stone">Paying Accounts</p>
           <p className="mt-1 font-mono text-3xl font-semibold text-ink">{totalPaying}</p>
+        </div>
+        <div className="card">
+          <p className="text-sm text-stone">Converted from Trial</p>
+          <p className="mt-1 font-mono text-3xl font-semibold text-ink">{convertedFromTrial ?? 0}</p>
         </div>
         <div className="card">
           <p className="text-sm text-stone">Trial Conversion</p>
