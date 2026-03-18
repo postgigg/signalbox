@@ -12,6 +12,7 @@ import {
 } from '@/lib/scoring';
 import { sendNewLeadNotification } from '@/lib/email';
 import { fireWebhooks } from '@/lib/webhooks';
+import { sendSlackNotification } from '@/lib/slack';
 import { stripHtml } from '@/lib/sanitize';
 
 export const runtime = 'nodejs';
@@ -153,13 +154,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return corsJson({ error: 'Subscription inactive' }, { status: 402 });
   }
 
-  // 8. Check submission limit
-  if (widget.submission_count >= widget.submission_limit) {
-    return corsJson(
-      { error: 'Submission limit reached for this widget' },
-      { status: 403 },
-    );
-  }
+  // 8. Check submission limit (atomic increment handled after insert below)
 
   // 9. Fetch active flow
   const { data: flow, error: flowError } = await admin
@@ -256,7 +251,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       visitor_email: payload.visitorEmail,
       visitor_phone: payload.visitorPhone ?? null,
       visitor_message: payload.visitorMessage ?? null,
-      answers: denormalized,
+      answers: JSON.parse(JSON.stringify(denormalized)) as Record<string, string>[],
       raw_score: rawScore,
       lead_score: leadScore,
       lead_tier: leadTier,
@@ -281,11 +276,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 16. Increment widget submission_count
-  await admin
-    .from('widgets')
-    .update({ submission_count: widget.submission_count + 1 })
-    .eq('id', widget.id);
+  // 16. Atomically increment widget submission_count (prevents race conditions)
+  const { data: incremented } = await admin.rpc('increment_submission_count', {
+    widget_uuid: widget.id,
+    current_limit: widget.submission_limit,
+  });
+
+  if (!incremented) {
+    // Submission was inserted but limit was reached concurrently — remove it
+    await admin.from('submissions').delete().eq('id', submission.id);
+    return corsJson(
+      { error: 'Submission limit reached for this widget' },
+      { status: 403 },
+    );
+  }
 
   // 17. Update widget_analytics for today
   const today = new Date().toISOString().split('T')[0]!;
@@ -354,6 +358,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       })
       .catch(() => {
         // Email delivery failure — non-blocking
+      });
+  }
+
+  // 19. Fire Slack notification if configured
+  if (account.slack_webhook_url) {
+    const slackWebhookUrl = account.slack_webhook_url;
+
+    // Fetch notification preferences to check if slack is enabled for this tier
+    Promise.resolve(
+      admin
+        .from('notification_preferences')
+        .select('slack_on_hot_lead, slack_on_warm_lead, slack_on_cold_lead')
+        .eq('account_id', account.id)
+        .limit(1)
+        .maybeSingle()
+    )
+      .then(({ data: slackPref }: { data: { slack_on_hot_lead: boolean; slack_on_warm_lead: boolean; slack_on_cold_lead: boolean } | null }) => {
+        if (!slackPref) return;
+        const shouldNotify =
+          (leadTier === 'hot' && slackPref.slack_on_hot_lead) ||
+          (leadTier === 'warm' && slackPref.slack_on_warm_lead) ||
+          (leadTier === 'cold' && slackPref.slack_on_cold_lead);
+        if (shouldNotify) {
+          void sendSlackNotification(slackWebhookUrl, {
+            leadName: payload.visitorName,
+            leadEmail: payload.visitorEmail,
+            leadTier,
+            leadScore,
+            widgetName: widget.name,
+          });
+        }
+      })
+      .catch(() => {
+        // Slack delivery failure — non-blocking
       });
   }
 

@@ -53,7 +53,7 @@ export default async function handler(): Promise<void> {
         updated_at: new Date().toISOString(),
       })
       .in('id', widgetIds)
-      .select('id', { count: 'exact', head: true });
+      .select('id');
 
     if (updateError) {
       console.error('[reset-monthly-counts] Failed to reset widget counts:', updateError.message);

@@ -51,15 +51,17 @@ export async function sendEmail(
   const from = options.from ?? `${APP_NAME} <${NO_REPLY_EMAIL}>`;
 
   try {
-    const { data, error } = await resend.emails.send({
+    const emailPayload: Parameters<typeof resend.emails.send>[0] = {
       from,
       to: Array.isArray(options.to) ? options.to : [options.to],
       subject: options.subject,
       html: options.html,
-      text: options.text,
-      reply_to: options.replyTo,
-      tags: options.tags,
-    });
+    };
+    if (options.text) emailPayload.text = options.text;
+    if (options.replyTo) emailPayload.reply_to = options.replyTo;
+    if (options.tags) emailPayload.tags = options.tags;
+
+    const { data, error } = await resend.emails.send(emailPayload);
 
     if (error) {
       return { success: false, id: null, error: error.message };
@@ -84,17 +86,20 @@ export async function sendBatchEmails(
   const from = `${APP_NAME} <${NO_REPLY_EMAIL}>`;
 
   try {
-    const { data, error } = await resend.batch.send(
-      emails.map((email) => ({
+    const batch = emails.map((email) => {
+      const item: Parameters<typeof resend.emails.send>[0] = {
         from: email.from ?? from,
         to: Array.isArray(email.to) ? email.to : [email.to],
         subject: email.subject,
         html: email.html,
-        text: email.text,
-        reply_to: email.replyTo,
-        tags: email.tags,
-      }))
-    );
+      };
+      if (email.text) item.text = email.text;
+      if (email.replyTo) item.reply_to = email.replyTo;
+      if (email.tags) item.tags = email.tags;
+      return item;
+    });
+
+    const { data, error } = await resend.batch.send(batch);
 
     if (error) {
       return emails.map(() => ({

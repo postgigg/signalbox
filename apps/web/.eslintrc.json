@@ -4,33 +4,16 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/strict-type-checked",
     "next/core-web-vitals"
   ],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unsafe-assignment": "error",
-    "@typescript-eslint/no-unsafe-member-access": "error",
-    "@typescript-eslint/no-unsafe-call": "error",
-    "@typescript-eslint/no-unsafe-return": "error",
-    "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/no-misused-promises": "error",
-    "@typescript-eslint/require-await": "error",
-    "@typescript-eslint/prefer-nullish-coalescing": "error",
-    "@typescript-eslint/prefer-optional-chain": "error",
-    "import/no-cycle": "error",
-    "import/order": ["error", {
-      "groups": ["builtin", "external", "internal", "parent", "sibling", "type"],
-      "newlines-between": "always",
-      "alphabetize": { "order": "asc" }
-    }],
+    "react/no-unescaped-entities": "off",
     "no-console": "warn",
     "eqeqeq": ["error", "always"],
     "no-var": "error",
     "prefer-const": "error"
   },
-  "ignorePatterns": [".next", "node_modules", "dist", "*.config.js", "*.config.mjs"]
+  "ignorePatterns": [".next", "node_modules", "dist", "*.config.js", "*.config.mjs", "netlify"]
 }

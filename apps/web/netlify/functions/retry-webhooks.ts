@@ -7,7 +7,6 @@ import type { Database } from '../../lib/supabase/types';
 
 type WebhookEndpointRow = Database['public']['Tables']['webhook_endpoints']['Row'];
 type SubmissionRow = Database['public']['Tables']['submissions']['Row'];
-type AccountRow = Database['public']['Tables']['accounts']['Row'];
 
 const BATCH_SIZE = 50;
 const MAX_FAILURE_COUNT = 10;

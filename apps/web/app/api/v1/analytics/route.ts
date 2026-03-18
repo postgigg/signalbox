@@ -7,8 +7,8 @@ export const runtime = 'nodejs';
 
 const querySchema = z.object({
   widget_id: z.string().uuid().optional(),
-  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]),
-  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(new Date().toISOString().split('T')[0]),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(new Date().toISOString().slice(0, 10)),
   granularity: z.enum(['day', 'week', 'month']).default('day'),
 }).strict();
 

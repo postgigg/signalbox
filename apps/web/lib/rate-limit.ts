@@ -39,7 +39,7 @@ function createRateLimiter(
   prefix: string,
   tokens: number,
   window: SlidingWindowDuration
-): Ratelimit | null {
+): Ratelimit {
   if (!isRedisConfigured()) {
     return null as unknown as Ratelimit;
   }

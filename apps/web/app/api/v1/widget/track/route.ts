@@ -89,23 +89,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         .eq('id', existing.id);
     }
   } else {
-    const row: Record<string, unknown> = {
+    const stepNum = event === 'step_view' ? (stepIndex ?? 0) + 1 : 0;
+
+    await admin.from('widget_analytics').insert({
       widget_id: widget.id,
       account_id: widget.account_id,
       date: today,
       impressions: event === 'impression' ? 1 : 0,
       opens: event === 'open' ? 1 : 0,
       completions: event === 'completion' ? 1 : 0,
-    };
-
-    if (event === 'step_view') {
-      const stepNum = (stepIndex ?? 0) + 1;
-      if (stepNum >= 1 && stepNum <= 5) {
-        row[`step_${String(stepNum)}_views`] = 1;
-      }
-    }
-
-    await admin.from('widget_analytics').insert(row);
+      step_1_views: stepNum === 1 ? 1 : 0,
+      step_2_views: stepNum === 2 ? 1 : 0,
+      step_3_views: stepNum === 3 ? 1 : 0,
+      step_4_views: stepNum === 4 ? 1 : 0,
+      step_5_views: stepNum === 5 ? 1 : 0,
+    });
   }
 
   return corsJson({ ok: true }, { status: 200 });

@@ -18,9 +18,9 @@ export default function PrivacyPage(): React.ReactElement {
         {/* Intro */}
         <section>
           <p>
-            This Privacy Policy describes how SignalBox ("we," "us," or "our") collects, uses, stores, shares,
+            This Privacy Policy describes how SignalBox (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, stores, shares,
             and protects information when you use our platform at app.signalbox.io, our embeddable widget, our
-            APIs, and related services (collectively, the "Service"). This policy applies to two categories of
+            APIs, and related services (collectively, the &ldquo;Service&rdquo;). This policy applies to two categories of
             individuals: <span className="font-medium text-ink">Customers</span> (account holders who use
             SignalBox to collect and manage leads) and <span className="font-medium text-ink">End Users</span>
             (visitors who interact with SignalBox widgets embedded on Customer websites).

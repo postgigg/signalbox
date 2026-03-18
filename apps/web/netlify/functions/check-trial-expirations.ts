@@ -110,7 +110,6 @@ async function processTrialEndingSoon(
     }
 
     for (const account of accounts) {
-      const notificationEmail = account.notification_email ?? account.owner_id;
       if (!account.notification_email) {
         // Look up the owner's email from the members table or skip
         console.warn(`[check-trial-expirations] No notification email for account ${account.id}, skipping`);

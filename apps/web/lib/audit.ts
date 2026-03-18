@@ -17,8 +17,8 @@ interface AuditLogEntry {
  */
 export function logAdminAction(entry: AuditLogEntry): void {
   const db = createAdminClient();
-  db.from('admin_audit_log')
-    .insert({
+  void Promise.resolve(
+    db.from('admin_audit_log').insert({
       admin_email: entry.admin_email,
       action: entry.action,
       target_type: entry.target_type,
@@ -26,6 +26,5 @@ export function logAdminAction(entry: AuditLogEntry): void {
       details: entry.details ?? null,
       ip_address: entry.ip_address ?? null,
     })
-    .then(() => { /* logged */ })
-    .catch(() => { /* audit log failure is non-blocking */ });
+  ).catch(() => { /* audit log failure is non-blocking */ });
 }
