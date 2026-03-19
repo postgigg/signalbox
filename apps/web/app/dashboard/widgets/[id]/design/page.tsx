@@ -412,19 +412,6 @@ export default function WidgetDesignPage(): React.ReactElement {
             </div>
           </div>
 
-          {/* Mode */}
-          <div className="card">
-            <h3 className="font-body text-sm font-semibold text-ink mb-4">Mode</h3>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="mode" className="input-label">Color Mode</label>
-                <select id="mode" value={theme.mode} onChange={(e) => updateTheme('mode', e.target.value)} className="input-field h-10">
-                  {MODE_OPTIONS.map((m) => (<option key={m.value} value={m.value}>{m.label}</option>))}
-                </select>
-              </div>
-            </div>
-          </div>
-
           {/* Trigger */}
           <div className="card">
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Trigger Button</h3>
