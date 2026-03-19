@@ -73,18 +73,18 @@ export default function FlowBuilderPage(): React.ReactElement {
         if (res.ok) {
           const result = await res.json() as { data?: { steps?: FlowStep[] } };
           if (result.data?.steps && Array.isArray(result.data.steps) && result.data.steps.length > 0) {
-            const loaded = result.data.steps.map((s: Record<string, unknown>, i: number) => ({
-              id: (s.id as string) ?? `step_${String(i + 1)}`,
+            const loaded = result.data.steps.map((s: FlowStep, i: number) => ({
+              id: s.id ?? `step_${String(i + 1)}`,
               order: i + 1,
-              question: (s.question as string) ?? '',
-              description: (s.description as string) ?? '',
+              question: s.question ?? '',
+              description: s.description ?? '',
               type: 'single_select' as const,
               options: Array.isArray(s.options)
-                ? (s.options as Array<Record<string, unknown>>).map((o, j) => ({
-                    id: (o.id as string) ?? `opt_${String(j + 1)}`,
-                    label: (o.label as string) ?? '',
-                    icon: (o.icon as string) ?? '',
-                    scoreWeight: ((o.scoreWeight ?? o.score) as number) ?? 0,
+                ? s.options.map((o: FlowOption, j: number) => ({
+                    id: o.id ?? `opt_${String(j + 1)}`,
+                    label: o.label ?? '',
+                    icon: o.icon ?? '',
+                    scoreWeight: o.scoreWeight ?? 0,
                   }))
                 : [],
             }));
