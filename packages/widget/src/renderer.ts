@@ -962,8 +962,34 @@ export class WidgetRenderer {
       });
     }
 
+    // Straggler waves: a few pieces float up then fall, repeating 3x at 4s intervals
+    const addStragglers = (delayFrames: number): void => {
+      for (let i = 0; i < 12; i++) {
+        pieces.push({
+          x: Math.random() * w,
+          y: h + 20,
+          w: 7 + Math.random() * 9,
+          h: 5 + Math.random() * 7,
+          vx: (Math.random() - 0.5) * 2,
+          vy: -(3 + Math.random() * 4),
+          rot: Math.random() * Math.PI * 2,
+          vr: (Math.random() - 0.5) * 0.12,
+          color: colors[Math.floor(Math.random() * colors.length)] ?? '#8B5CF6',
+          life: 1,
+          shape: Math.floor(Math.random() * 3),
+          sway: Math.random() * Math.PI * 2,
+          swaySpeed: 0.01 + Math.random() * 0.015,
+          delay: delayFrames + Math.floor(Math.random() * 30),
+        });
+      }
+    };
+
+    addStragglers(240);  // ~4s
+    addStragglers(480);  // ~8s
+    addStragglers(720);  // ~12s
+
     let frame = 0;
-    const maxFrames = 400;
+    const maxFrames = 900;
 
     const animate = (): void => {
       frame++;
