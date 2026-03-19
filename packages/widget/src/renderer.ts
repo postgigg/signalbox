@@ -744,6 +744,23 @@ export class WidgetRenderer {
     });
     if (required) input.setAttribute('required', 'true');
     if (value) input.value = value;
+
+    // Auto-format phone numbers as (XXX) XXX-XXXX
+    if (type === 'tel') {
+      input.setAttribute('inputmode', 'tel');
+      input.addEventListener('input', () => {
+        const digits = input.value.replace(/\D/g, '').slice(0, 10);
+        if (digits.length === 0) {
+          input.value = '';
+        } else if (digits.length <= 3) {
+          input.value = `(${digits}`;
+        } else if (digits.length <= 6) {
+          input.value = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+        } else {
+          input.value = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+        }
+      });
+    }
     if (error) {
       input.classList.add('sb-field__input--error');
       input.setAttribute('aria-invalid', 'true');
