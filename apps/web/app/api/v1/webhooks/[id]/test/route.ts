@@ -129,7 +129,7 @@ export async function POST(
     account_id: member.account_id,
     webhook_endpoint_id: endpoint.id,
     event: 'test',
-    request_body: testPayload as unknown as Record<string, unknown>,
+    request_body: JSON.parse(JSON.stringify(testPayload)),
     response_status: responseStatus,
     response_body: responseBody,
     duration_ms: durationMs,
