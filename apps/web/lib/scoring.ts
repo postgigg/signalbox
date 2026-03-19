@@ -154,10 +154,11 @@ export function parseFlowSteps(stepsJson: Json): FlowStep[] {
         throw new Error(`Step ${idx} option ${oidx} must be an object`);
       }
       const o = opt as Record<string, Json | undefined>;
+      const scoreVal = o['scoreWeight'] ?? o['score'];
       if (
         typeof o['id'] !== 'string' ||
         typeof o['label'] !== 'string' ||
-        typeof o['scoreWeight'] !== 'number'
+        typeof scoreVal !== 'number'
       ) {
         throw new Error(
           `Step ${idx} option ${oidx} must have string id, string label, number scoreWeight`,
@@ -166,7 +167,7 @@ export function parseFlowSteps(stepsJson: Json): FlowStep[] {
       return {
         id: o['id'],
         label: o['label'],
-        scoreWeight: o['scoreWeight'],
+        scoreWeight: scoreVal,
       };
     });
 

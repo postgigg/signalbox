@@ -854,6 +854,80 @@ export class WidgetRenderer {
 
     this.contentEl.appendChild(wrapper);
     animateConfirmation(wrapper);
+
+    // Full-page confetti burst
+    this.launchConfetti();
+  }
+
+  private launchConfetti(): void {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;inset:0;z-index:2147483647;pointer-events:none;width:100vw;height:100vh;';
+    document.body.appendChild(canvas);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) { canvas.remove(); return; }
+
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
+    const pieces: Array<{
+      x: number; y: number; w: number; h: number;
+      vx: number; vy: number; rot: number; vr: number;
+      color: string; life: number;
+    }> = [];
+
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.5,
+        w: 6 + Math.random() * 6,
+        h: 4 + Math.random() * 8,
+        vx: (Math.random() - 0.5) * 6,
+        vy: 2 + Math.random() * 4,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.3,
+        color: colors[Math.floor(Math.random() * colors.length)] ?? '#3B82F6',
+        life: 1,
+      });
+    }
+
+    let frame = 0;
+    const maxFrames = 180;
+
+    const animate = (): void => {
+      frame++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of pieces) {
+        p.x += p.vx;
+        p.vy += 0.1;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.vx *= 0.99;
+
+        if (frame > maxFrames - 40) {
+          p.life -= 0.025;
+        }
+
+        if (p.life <= 0) continue;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+
+      if (frame < maxFrames) {
+        requestAnimationFrame(animate);
+      } else {
+        canvas.remove();
+      }
+    };
+
+    requestAnimationFrame(animate);
   }
 
   // ── Render Error ─────────────────────────────────────────────────────
