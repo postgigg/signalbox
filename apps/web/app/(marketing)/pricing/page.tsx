@@ -7,16 +7,20 @@ import { useState, useEffect } from 'react';
 const PLAN_FEATURES = [
   { feature: 'Widgets', starter: '1', pro: '5', agency: '25' },
   { feature: 'Submissions/month', starter: '500', pro: '2,000', agency: 'Unlimited' },
+  { feature: 'Team members', starter: '3', pro: '10', agency: '25' },
   { feature: 'Lead scoring', starter: true, pro: true, agency: true },
   { feature: 'Email alerts', starter: true, pro: true, agency: true },
   { feature: 'Custom branding', starter: true, pro: true, agency: true },
   { feature: 'Flow templates', starter: true, pro: true, agency: true },
   { feature: 'Basic analytics', starter: true, pro: true, agency: true },
+  { feature: 'Webhook integrations', starter: true, pro: true, agency: true },
   { feature: 'Advanced analytics', starter: false, pro: true, agency: true },
   { feature: 'Slack notifications', starter: false, pro: true, agency: true },
-  { feature: 'Webhooks', starter: false, pro: true, agency: true },
+  { feature: 'Lead routing rules', starter: false, pro: true, agency: true },
+  { feature: 'A/B testing', starter: false, pro: true, agency: true },
   { feature: 'API access', starter: false, pro: true, agency: true },
   { feature: 'Remove branding', starter: false, pro: true, agency: true },
+  { feature: 'Shared analytics links', starter: false, pro: false, agency: true },
   { feature: 'White-label', starter: false, pro: false, agency: true },
   { feature: 'Multi-client dashboard', starter: false, pro: false, agency: true },
   { feature: 'Priority support', starter: false, pro: false, agency: true },
@@ -248,6 +252,7 @@ export default function PricingPage(): React.ReactElement {
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Lead scoring</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Email alerts</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Basic analytics</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Webhook integrations</li>
             </ul>
             <button
               type="button"
@@ -294,7 +299,8 @@ export default function PricingPage(): React.ReactElement {
             </div>
             <ul className="mt-4 space-y-2 flex-1">
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Everything in Starter</li>
-              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Webhooks</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Lead routing rules</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> A/B testing</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Advanced analytics</li>
             </ul>
             <button
@@ -339,6 +345,7 @@ export default function PricingPage(): React.ReactElement {
             </div>
             <ul className="mt-4 space-y-2 flex-1">
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Everything in Pro</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Shared analytics links</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> White-label branding</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Priority support</li>
             </ul>
@@ -371,12 +378,12 @@ export default function PricingPage(): React.ReactElement {
             <div className="px-6 py-6 sm:px-8 sm:py-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <h3 className="font-display text-xl font-semibold text-ink">
-                  5 hot leads in 14 days, or 6 months free.
+                  5 hot leads in 14 days, or 6 months of Pro free.
                 </h3>
                 <p className="mt-2 text-sm text-stone leading-relaxed max-w-[480px]">
                   If we do not surface at least 5 hot-tier leads in your first 14 days
-                  on a paid plan, we extend your subscription by 6 months at no charge.
-                  Up to $600 value. No forms, no approval process, automatic.
+                  on a paid plan, we extend your subscription by 6 months of Pro at no charge.
+                  $894 in savings. No forms, no approval process, automatic.
                 </p>
               </div>
               <div className="flex items-center gap-6 text-center">
@@ -391,8 +398,8 @@ export default function PricingPage(): React.ReactElement {
                 </div>
                 <div className="w-px h-10 bg-border" />
                 <div>
-                  <span className="font-display text-3xl font-bold text-ink">6</span>
-                  <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Months free</p>
+                  <span className="font-display text-3xl font-bold text-ink">$894</span>
+                  <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">In savings</p>
                 </div>
               </div>
             </div>

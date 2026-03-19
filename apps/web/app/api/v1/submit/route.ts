@@ -14,6 +14,10 @@ import { sendNewLeadNotification } from '@/lib/email';
 import { fireWebhooks } from '@/lib/webhooks';
 import { sendSlackNotification } from '@/lib/slack';
 import { stripHtml } from '@/lib/sanitize';
+import { evaluateRoutingRules } from '@/lib/lead-routing';
+import { getPlanLimits } from '@/lib/plan-limits';
+
+import type { Plan } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
 
@@ -37,6 +41,8 @@ const submitSchema = z.object({
   loadedAt: z.number(),
   honeypot: z.string().optional(),
   challengeToken: z.string().min(1),
+  abTestId: z.string().uuid().optional(),
+  abVariant: z.enum(['a', 'b']).optional(),
 }).strict();
 
 type SubmitPayload = z.infer<typeof submitSchema>;
@@ -240,6 +246,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const deviceType = parseDeviceType(userAgent);
   const country = getCountry(request);
 
+  // 14b. Evaluate lead routing rules (Pro+ only)
+  const planLimits = getPlanLimits(account.plan as Plan);
+  let assignedTo: string | null = null;
+  let assignedByRuleId: string | null = null;
+
+  if (planLimits.leadRouting) {
+    const routingResult = await evaluateRoutingRules(
+      account.id,
+      widget.id,
+      leadTier,
+      payload.answers,
+    );
+    if (routingResult) {
+      assignedTo = routingResult.memberId;
+      assignedByRuleId = routingResult.ruleId;
+    }
+  }
+
   // 15. Insert submission
   const { data: submission, error: insertError } = await admin
     .from('submissions')
@@ -265,6 +289,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       country,
       device_type: deviceType,
       status: 'new',
+      assigned_to: assignedTo,
+      assigned_at: assignedTo ? new Date().toISOString() : null,
+      assigned_by_rule_id: assignedByRuleId,
+      ab_test_id: payload.abTestId ?? null,
+      ab_variant: payload.abVariant ?? null,
     })
     .select('id')
     .single();
@@ -274,6 +303,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { error: 'Failed to save submission' },
       { status: 500 },
     );
+  }
+
+  // 15b. Update A/B test results if applicable
+  if (payload.abTestId && payload.abVariant) {
+    const today = new Date().toISOString().split('T')[0]!;
+    const { data: existingAbResult } = await admin
+      .from('ab_test_results')
+      .select('id, submissions, total_score, hot_count, warm_count, cold_count')
+      .eq('ab_test_id', payload.abTestId)
+      .eq('variant', payload.abVariant)
+      .eq('date', today)
+      .maybeSingle();
+
+    if (existingAbResult) {
+      await admin
+        .from('ab_test_results')
+        .update({
+          submissions: existingAbResult.submissions + 1,
+          total_score: existingAbResult.total_score + leadScore,
+          hot_count: existingAbResult.hot_count + (leadTier === 'hot' ? 1 : 0),
+          warm_count: existingAbResult.warm_count + (leadTier === 'warm' ? 1 : 0),
+          cold_count: existingAbResult.cold_count + (leadTier === 'cold' ? 1 : 0),
+        })
+        .eq('id', existingAbResult.id);
+    } else {
+      await admin.from('ab_test_results').insert({
+        ab_test_id: payload.abTestId,
+        variant: payload.abVariant,
+        date: today,
+        submissions: 1,
+        total_score: leadScore,
+        hot_count: leadTier === 'hot' ? 1 : 0,
+        warm_count: leadTier === 'warm' ? 1 : 0,
+        cold_count: leadTier === 'cold' ? 1 : 0,
+      });
+    }
   }
 
   // 16. Atomically increment widget submission_count (prevents race conditions)

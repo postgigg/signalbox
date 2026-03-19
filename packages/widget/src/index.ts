@@ -4,6 +4,8 @@ import type {
   SubmitPayload,
   ConfirmationConfig,
   ValidationErrors,
+  AbTestConfig,
+  FlowStep,
 } from './types';
 import { WidgetStateMachine } from './state';
 import { fetchConfig, submitForm, WidgetApiError } from './api';
@@ -55,11 +57,19 @@ function trackEvent(
   apiUrl: string,
   widgetKey: string,
   event: string,
-  stepIndex?: number
+  stepIndex?: number,
+  abTestId?: string | null,
+  abVariant?: 'a' | 'b' | null,
 ): void {
   const body: Record<string, unknown> = { widgetKey, event };
   if (stepIndex !== undefined) {
     body.stepIndex = stepIndex;
+  }
+  if (abTestId) {
+    body.abTestId = abTestId;
+  }
+  if (abVariant) {
+    body.abVariant = abVariant;
   }
   try {
     fetch(`${apiUrl}/api/v1/widget/track`, {
@@ -81,6 +91,8 @@ class SignalBoxWidget {
   private widgetKey: string;
   private stepDirection: 'forward' | 'backward' = 'forward';
   private validationErrors: ValidationErrors = {};
+  private abVariant: 'a' | 'b' | null = null;
+  private abTestId: string | null = null;
 
   constructor(key: string, apiUrl: string) {
     this.widgetKey = key;
@@ -127,9 +139,35 @@ class SignalBoxWidget {
     // Fetch configuration
     try {
       const config = await fetchConfig(this.widgetKey, this.apiUrl);
+
+      // A/B variant selection: done client-side to preserve config caching
+      if (config.abTest) {
+        this.abTestId = config.abTest.testId;
+        const roll = Math.random() * 100;
+        this.abVariant = roll < config.abTest.trafficSplit ? 'a' : 'b';
+
+        // If variant B, swap the target step's question and options
+        if (this.abVariant === 'b') {
+          const targetIdx = config.steps.findIndex(
+            (s) => s.id === config.abTest?.targetStepId
+          );
+          if (targetIdx !== -1) {
+            const originalStep = config.steps[targetIdx];
+            if (originalStep) {
+              const modifiedStep: FlowStep = {
+                ...originalStep,
+                question: config.abTest.variantB.question,
+                options: config.abTest.variantB.options,
+              };
+              config.steps[targetIdx] = modifiedStep;
+            }
+          }
+        }
+      }
+
       this.machine.configLoaded(config);
       this.renderer.init(config);
-      trackEvent(this.apiUrl, this.widgetKey, 'impression');
+      trackEvent(this.apiUrl, this.widgetKey, 'impression', undefined, this.abTestId, this.abVariant);
 
       // Attention-grabbing triggers
       this.scheduleAttentionGrabbers();
@@ -202,14 +240,14 @@ class SignalBoxWidget {
     if (ctx.state !== 'ready') return;
 
     this.machine.open();
-    trackEvent(this.apiUrl, this.widgetKey, 'open');
+    trackEvent(this.apiUrl, this.widgetKey, 'open', undefined, this.abTestId, this.abVariant);
     const config = ctx.config;
     if (!config || config.steps.length === 0) return;
 
     const totalSteps = config.steps.length;
     this.renderer.openPanel(0, totalSteps);
     this.stepDirection = 'forward';
-    trackEvent(this.apiUrl, this.widgetKey, 'step_view', 0);
+    trackEvent(this.apiUrl, this.widgetKey, 'step_view', 0, this.abTestId, this.abVariant);
     this.renderCurrentView();
   }
 
@@ -253,9 +291,9 @@ class SignalBoxWidget {
     const nextCtx = this.machine.getContext();
     const nextIndex = nextCtx.currentStepIndex;
     if (nextCtx.config && nextIndex < nextCtx.config.steps.length) {
-      trackEvent(this.apiUrl, this.widgetKey, 'step_view', nextIndex);
+      trackEvent(this.apiUrl, this.widgetKey, 'step_view', nextIndex, this.abTestId, this.abVariant);
     } else {
-      trackEvent(this.apiUrl, this.widgetKey, 'completion');
+      trackEvent(this.apiUrl, this.widgetKey, 'completion', undefined, this.abTestId, this.abVariant);
     }
 
     this.renderCurrentView();
@@ -343,6 +381,12 @@ class SignalBoxWidget {
       }
       if (honeypot) {
         payload.honeypot = honeypot;
+      }
+      if (this.abTestId) {
+        payload.abTestId = this.abTestId;
+      }
+      if (this.abVariant) {
+        payload.abVariant = this.abVariant;
       }
 
       const result = await submitForm(payload, this.apiUrl);

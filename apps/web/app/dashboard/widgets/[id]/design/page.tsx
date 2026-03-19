@@ -75,11 +75,6 @@ const ICON_OPTIONS = [
   { value: 'none', label: 'None' },
 ] as const;
 
-const MODE_OPTIONS = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-] as const;
-
 const TRIGGER_TYPE_OPTIONS = [
   { value: 'button', label: 'Button' },
   { value: 'tab', label: 'Tab' },

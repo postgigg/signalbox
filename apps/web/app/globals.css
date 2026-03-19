@@ -434,6 +434,100 @@
   animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
 }
 
+/* Feature 5: Lead Routing — lead appears, arrows branch, members reveal, rule badge pops */
+.is-visible .feat-route-lead {
+  animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .feat-route-arrows {
+  animation: fade-in 400ms ease-out 500ms both;
+}
+.is-visible .feat-route-member-1 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+.is-visible .feat-route-member-2 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 550ms both;
+}
+.is-visible .feat-route-member-3 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both;
+}
+.is-visible .feat-route-rule {
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+/* Feature 6: A/B Testing — variants slide in from sides, VS pops, winner badge drops */
+.is-visible .feat-ab-variant-a {
+  animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .feat-ab-variant-b {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .feat-ab-bar-a {
+  transform-origin: left center;
+  animation: grow-bar 600ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+.is-visible .feat-ab-bar-b {
+  transform-origin: left center;
+  animation: grow-bar 600ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
+}
+.is-visible .feat-ab-vs {
+  animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+.is-visible .feat-ab-winner {
+  animation: pop-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+
+/* Feature 7: Integrations — source fades in, line dashes animate, destinations stagger, log slides up */
+@keyframes dash-flow {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes pulse-dot {
+  0% { opacity: 0; transform: translateX(-20px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(20px); }
+}
+
+.is-visible .feat-int-source {
+  animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+}
+.is-visible .feat-int-dash {
+  animation: dash-flow 1s linear 400ms infinite;
+}
+.is-visible .feat-int-pulse {
+  animation: pulse-dot 1.2s ease-in-out 400ms infinite;
+}
+.is-visible .feat-int-dest-1 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+.is-visible .feat-int-dest-2 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 550ms both;
+}
+.is-visible .feat-int-dest-3 {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both;
+}
+.is-visible .feat-int-log {
+  animation: slide-up-alert 400ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+.is-visible .feat-int-payload {
+  animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both;
+}
+
+/* Feature 8: Shared Analytics — chart bars grow staggered, stats slide in, share overlay pops, tiers fade */
+.is-visible .feat-share-bar-1 { transform-origin: bottom center; animation: grow-bar 500ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .feat-share-bar-2 { transform-origin: bottom center; animation: grow-bar 500ms cubic-bezier(0.16, 1, 0.3, 1) 350ms both; }
+.is-visible .feat-share-bar-3 { transform-origin: bottom center; animation: grow-bar 500ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both; }
+.is-visible .feat-share-bar-4 { transform-origin: bottom center; animation: grow-bar 500ms cubic-bezier(0.16, 1, 0.3, 1) 650ms both; }
+.is-visible .feat-share-bar-5 { transform-origin: bottom center; animation: grow-bar 500ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both; }
+.is-visible .feat-share-stats {
+  animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both;
+}
+.is-visible .feat-share-overlay {
+  animation: pop-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both;
+}
+.is-visible .feat-share-tiers {
+  animation: type-in 300ms ease-out 300ms both;
+}
+
 /* ── Before/After illustration animations ── */
 
 /* Before side — rows appear flat, then question mark and clock fade in */

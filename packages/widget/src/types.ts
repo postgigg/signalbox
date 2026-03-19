@@ -47,6 +47,17 @@ export interface FlowOption {
   scoreWeight: number;
 }
 
+// ── A/B Test Configuration ────────────────────────────────────────────────
+export interface AbTestConfig {
+  testId: string;
+  targetStepId: string;
+  trafficSplit: number;
+  variantB: {
+    question: string;
+    options: FlowOption[];
+  };
+}
+
 // ── Widget Configuration ───────────────────────────────────────────────────
 export interface WidgetConfig {
   widgetKey: string;
@@ -67,6 +78,7 @@ export interface WidgetConfig {
   socialProofText: string;
   socialProofMin: number;
   submissionCount: number;
+  abTest?: AbTestConfig;
 }
 
 export interface ConfirmationConfig {
@@ -108,6 +120,8 @@ export interface SubmitPayload {
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
+  abTestId?: string;
+  abVariant?: 'a' | 'b';
 }
 
 export interface SubmitResponse {

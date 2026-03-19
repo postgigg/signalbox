@@ -39,6 +39,22 @@ export const FEATURES = [
     title: 'Custom branding',
     body: 'Your colors, your fonts, your button styles. The widget looks native to your site. Remove our branding on paid plans.',
   },
+  {
+    title: 'Lead routing',
+    body: 'Auto-assign incoming leads to the right team member based on score tier or specific answers. No manual sorting.',
+  },
+  {
+    title: 'A/B testing',
+    body: 'Split test different questions and options. See which wording gets more conversions with built-in statistical significance.',
+  },
+  {
+    title: 'Integrations',
+    body: 'Connect to any tool with webhooks. Works with Zapier, Make, and custom endpoints. Full delivery log for debugging.',
+  },
+  {
+    title: 'Shared analytics',
+    body: 'Generate password-protected, read-only analytics links for clients. They see results without accessing your dashboard.',
+  },
 ] as const;
 
 export interface PricingPlan {
@@ -62,6 +78,7 @@ export const PLANS: readonly PricingPlan[] = [
       'Lead scoring',
       'Email alerts',
       'Basic analytics',
+      'Webhook integrations',
     ],
     highlighted: false,
   },
@@ -73,7 +90,8 @@ export const PLANS: readonly PricingPlan[] = [
     bestFor: 'Best for growing teams with multiple sites.',
     features: [
       'Everything in Starter',
-      'Webhooks',
+      'Lead routing rules',
+      'A/B testing',
       'Advanced analytics',
     ],
     highlighted: true,
@@ -86,6 +104,7 @@ export const PLANS: readonly PricingPlan[] = [
     bestFor: 'Best for agencies managing client accounts.',
     features: [
       'Everything in Pro',
+      'Shared analytics links',
       'White-label branding',
       'Priority support',
     ],

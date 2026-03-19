@@ -11,6 +11,7 @@ interface WebhookPayload {
 /**
  * Fire webhooks for an account asynchronously.
  * This is a fire-and-forget operation intended to be called without awaiting.
+ * Each delivery attempt is logged to webhook_event_log for debugging.
  */
 export async function fireWebhooks(
   accountId: string,
@@ -49,6 +50,17 @@ export async function fireWebhooks(
             failure_count: endpoint.failure_count + 1,
           })
           .eq('id', endpoint.id);
+
+        // Log the failed attempt
+        await admin.from('webhook_event_log').insert({
+          account_id: accountId,
+          webhook_endpoint_id: endpoint.id,
+          event,
+          request_body: payload as unknown as Record<string, unknown>,
+          response_status: 0,
+          success: false,
+          error_message: `Invalid URL: ${urlCheck.reason ?? 'unknown'}`,
+        });
         return;
       }
 
@@ -56,6 +68,8 @@ export async function fireWebhooks(
         .createHmac('sha256', endpoint.secret)
         .update(body)
         .digest('hex');
+
+      const startTime = Date.now();
 
       try {
         const response = await fetch(endpoint.url, {
@@ -70,6 +84,10 @@ export async function fireWebhooks(
           redirect: 'error',
         });
 
+        const durationMs = Date.now() - startTime;
+        const rawBody = await response.text().catch(() => '');
+        const truncatedBody = rawBody.slice(0, 2000);
+
         await admin
           .from('webhook_endpoints')
           .update({
@@ -78,7 +96,23 @@ export async function fireWebhooks(
             failure_count: response.ok ? 0 : endpoint.failure_count + 1,
           })
           .eq('id', endpoint.id);
-      } catch {
+
+        // Log the delivery attempt
+        await admin.from('webhook_event_log').insert({
+          account_id: accountId,
+          webhook_endpoint_id: endpoint.id,
+          event,
+          request_body: payload as unknown as Record<string, unknown>,
+          response_status: response.status,
+          response_body: truncatedBody,
+          duration_ms: durationMs,
+          success: response.ok,
+          error_message: response.ok ? null : `HTTP ${String(response.status)}`,
+        });
+      } catch (err) {
+        const durationMs = Date.now() - startTime;
+        const errorMessage = err instanceof Error ? err.message : 'Request failed';
+
         await admin
           .from('webhook_endpoints')
           .update({
@@ -87,6 +121,18 @@ export async function fireWebhooks(
             failure_count: endpoint.failure_count + 1,
           })
           .eq('id', endpoint.id);
+
+        // Log the failed attempt
+        await admin.from('webhook_event_log').insert({
+          account_id: accountId,
+          webhook_endpoint_id: endpoint.id,
+          event,
+          request_body: payload as unknown as Record<string, unknown>,
+          response_status: 0,
+          duration_ms: durationMs,
+          success: false,
+          error_message: errorMessage,
+        });
       }
     }),
   );

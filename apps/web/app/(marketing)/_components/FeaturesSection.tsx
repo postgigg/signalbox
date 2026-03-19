@@ -4,14 +4,24 @@ import {
   InstantAlertsIllustration,
   ConversionAnalyticsIllustration,
   CustomBrandingIllustration,
+  LeadRoutingIllustration,
+  AbTestingIllustration,
+  IntegrationsIllustration,
+  SharedAnalyticsIllustration,
 } from './FeatureIllustrations';
 
-const ILLUSTRATIONS = [
+import type { ReactElement } from 'react';
+
+const ILLUSTRATIONS: ReadonlyArray<(() => ReactElement) | undefined> = [
   LeadScoringIllustration,
   InstantAlertsIllustration,
   ConversionAnalyticsIllustration,
   CustomBrandingIllustration,
-] as const;
+  LeadRoutingIllustration,
+  AbTestingIllustration,
+  IntegrationsIllustration,
+  SharedAnalyticsIllustration,
+];
 
 export function FeaturesSection(): React.ReactElement {
   return (
@@ -26,7 +36,7 @@ export function FeaturesSection(): React.ReactElement {
             return (
               <div
                 key={feature.title}
-                className={`card animate-on-enter stagger-${index + 1}`}
+                className={`card animate-on-enter stagger-${String((index % 4) + 1)}`}
               >
                 {Illustration !== undefined && (
                   <div className="mb-4 -mx-5 -mt-5 rounded-t-md border-b border-border bg-surface-alt overflow-hidden">

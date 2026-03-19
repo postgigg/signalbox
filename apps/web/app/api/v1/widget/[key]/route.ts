@@ -107,7 +107,16 @@ export async function GET(
     };
   };
 
-  const response = corsJson({
+  // Fetch running A/B test for this widget (if any)
+  const { data: abTest } = await admin
+    .from('ab_tests')
+    .select('id, target_step_id, traffic_split, variant_b_question, variant_b_options')
+    .eq('widget_id', widget.id)
+    .eq('status', 'running')
+    .limit(1)
+    .maybeSingle();
+
+  const configPayload: Record<string, unknown> = {
     widgetKey: widget.widget_key,
     theme: widget.theme,
     steps: mappedSteps,
@@ -126,7 +135,22 @@ export async function GET(
     socialProofText: widget.social_proof_text ?? '',
     socialProofMin: widget.social_proof_min ?? 0,
     submissionCount: widget.submission_count ?? 0,
-  });
+  };
+
+  // Include A/B test data if there's a running test
+  if (abTest) {
+    configPayload.abTest = {
+      testId: abTest.id,
+      targetStepId: abTest.target_step_id,
+      trafficSplit: abTest.traffic_split,
+      variantB: {
+        question: abTest.variant_b_question,
+        options: abTest.variant_b_options,
+      },
+    };
+  }
+
+  const response = corsJson(configPayload);
 
   response.headers.set('Cache-Control', 'public, max-age=60');
 

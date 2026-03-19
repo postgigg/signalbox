@@ -13,6 +13,11 @@ interface PlanLimits {
   webhookAccess: boolean;
   advancedAnalytics: boolean;
   prioritySupport: boolean;
+  leadRouting: boolean;
+  abTesting: boolean;
+  maxAbTests: number;
+  sharedAnalytics: boolean;
+  maxSharedLinks: number;
 }
 
 export function getPlanLimits(plan: Plan): PlanLimits {

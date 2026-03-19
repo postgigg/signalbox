@@ -22,6 +22,11 @@ export interface PlanConfig {
     webhookAccess: boolean;
     advancedAnalytics: boolean;
     prioritySupport: boolean;
+    leadRouting: boolean;
+    abTesting: boolean;
+    maxAbTests: number;
+    sharedAnalytics: boolean;
+    maxSharedLinks: number;
   };
 }
 
@@ -46,6 +51,11 @@ export const PLANS: Record<string, PlanConfig> = {
       webhookAccess: false,
       advancedAnalytics: false,
       prioritySupport: false,
+      leadRouting: false,
+      abTesting: false,
+      maxAbTests: 0,
+      sharedAnalytics: false,
+      maxSharedLinks: 0,
     },
   },
   starter: {
@@ -68,6 +78,11 @@ export const PLANS: Record<string, PlanConfig> = {
       webhookAccess: true,
       advancedAnalytics: false,
       prioritySupport: false,
+      leadRouting: false,
+      abTesting: false,
+      maxAbTests: 0,
+      sharedAnalytics: false,
+      maxSharedLinks: 0,
     },
   },
   pro: {
@@ -90,6 +105,11 @@ export const PLANS: Record<string, PlanConfig> = {
       webhookAccess: true,
       advancedAnalytics: true,
       prioritySupport: false,
+      leadRouting: true,
+      abTesting: true,
+      maxAbTests: 5,
+      sharedAnalytics: false,
+      maxSharedLinks: 0,
     },
   },
   agency: {
@@ -112,6 +132,11 @@ export const PLANS: Record<string, PlanConfig> = {
       webhookAccess: true,
       advancedAnalytics: true,
       prioritySupport: true,
+      leadRouting: true,
+      abTesting: true,
+      maxAbTests: 10,
+      sharedAnalytics: true,
+      maxSharedLinks: 25,
     },
   },
 } as const;
@@ -311,6 +336,21 @@ export const RATE_LIMITS = {
     tokens: 10,
     window: '1 m' as const,
     prefix: 'rl:widgets_create',
+  },
+  webhook_test: {
+    tokens: 5,
+    window: '1 m' as const,
+    prefix: 'rl:webhook_test',
+  },
+  shared_analytics: {
+    tokens: 30,
+    window: '1 m' as const,
+    prefix: 'rl:shared_analytics',
+  },
+  shared_analytics_password: {
+    tokens: 5,
+    window: '1 m' as const,
+    prefix: 'rl:shared_analytics_pw',
   },
 } as const;
 

@@ -10,6 +10,8 @@ const trackSchema = z.object({
   widgetKey: z.string().min(1).max(48),
   event: z.enum(['impression', 'open', 'step_view', 'completion']),
   stepIndex: z.number().int().min(0).max(4).optional(),
+  abTestId: z.string().uuid().optional(),
+  abVariant: z.enum(['a', 'b']).optional(),
 }).strict();
 
 export async function OPTIONS(): Promise<NextResponse> {
@@ -36,7 +38,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return corsJson({ error: 'Invalid payload' }, { status: 400 });
   }
 
-  const { widgetKey, event, stepIndex } = parsed.data;
+  const { widgetKey, event, stepIndex, abTestId, abVariant } = parsed.data;
   const admin = createAdminClient();
 
   const { data: widget } = await admin
@@ -104,6 +106,39 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       step_4_views: stepNum === 4 ? 1 : 0,
       step_5_views: stepNum === 5 ? 1 : 0,
     });
+  }
+
+  // Track A/B test impressions and completions
+  if (abTestId && abVariant && (event === 'impression' || event === 'completion')) {
+    const today = new Date().toISOString().split('T')[0]!;
+    const { data: existingAbResult } = await admin
+      .from('ab_test_results')
+      .select('id, impressions, completions')
+      .eq('ab_test_id', abTestId)
+      .eq('variant', abVariant)
+      .eq('date', today)
+      .maybeSingle();
+
+    if (existingAbResult) {
+      const abUpdates: Record<string, number> = {};
+      if (event === 'impression') {
+        abUpdates.impressions = existingAbResult.impressions + 1;
+      } else {
+        abUpdates.completions = existingAbResult.completions + 1;
+      }
+      await admin
+        .from('ab_test_results')
+        .update(abUpdates)
+        .eq('id', existingAbResult.id);
+    } else {
+      await admin.from('ab_test_results').insert({
+        ab_test_id: abTestId,
+        variant: abVariant,
+        date: today,
+        impressions: event === 'impression' ? 1 : 0,
+        completions: event === 'completion' ? 1 : 0,
+      });
+    }
   }
 
   return corsJson({ ok: true }, { status: 200 });
