@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface ThemeConfig {
   primaryColor: string;
@@ -102,6 +102,20 @@ export default function WidgetDesignPage(): React.ReactElement {
   const [loading, setLoading] = useState(true);
   const [canRemoveBranding, setCanRemoveBranding] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [previewContact, setPreviewContact] = useState(false);
+  const contactSectionRef = useRef<HTMLDivElement>(null);
+
+  // Switch preview to contact form when that section is in view
+  useEffect(() => {
+    const el = contactSectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry) setPreviewContact(entry.isIntersecting); },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loading]);
 
   useEffect(() => {
     async function loadWidget(): Promise<void> {
@@ -409,7 +423,7 @@ export default function WidgetDesignPage(): React.ReactElement {
           </div>
 
           {/* Contact Form */}
-          <div className="card">
+          <div className="card" ref={contactSectionRef}>
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Contact Form</h3>
             <div className="space-y-3">
               <label className="flex items-center justify-between cursor-pointer">
@@ -529,10 +543,9 @@ export default function WidgetDesignPage(): React.ReactElement {
           <div className="sticky top-6">
             <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">Live Preview</h3>
             <div className="border border-border rounded-lg bg-stone-light/10 min-h-[500px] relative p-6 flex items-end justify-end">
-              {/* Widget Preview */}
               <div className="w-full" style={{ maxWidth: `${String(theme.panelWidth)}px` }}>
                 <div
-                  className="border shadow-lg"
+                  className="border shadow-lg transition-all duration-normal"
                   style={{
                     backgroundColor: theme.backgroundColor,
                     borderRadius: `${String(theme.borderRadius)}px`,
@@ -542,25 +555,86 @@ export default function WidgetDesignPage(): React.ReactElement {
                   {/* Header */}
                   <div className="p-4 pb-0">
                     <div className="h-1 rounded-sm" style={{ backgroundColor: `${theme.accentColor}20` }}>
-                      <div className="h-full rounded-sm" style={{ width: '33%', backgroundColor: theme.accentColor }} />
+                      <div
+                        className="h-full rounded-sm transition-all duration-normal"
+                        style={{ width: previewContact ? '100%' : '33%', backgroundColor: theme.accentColor }}
+                      />
                     </div>
-                    <p className="text-xs mt-3 opacity-50">Step 1 of 3</p>
+                    <p className="text-xs mt-3 opacity-50">
+                      {previewContact ? 'Contact Info' : 'Step 1 of 3'}
+                    </p>
                   </div>
 
-                  {/* Content */}
+                  {/* Content: Step view OR Contact form */}
                   <div className="p-4">
-                    <p className="text-lg font-semibold">What can we help you with?</p>
-                    <div className="mt-4 space-y-2">
-                      {['Consultation', 'Quick question', 'Get a quote'].map((label) => (
-                        <div
-                          key={label}
-                          className="p-3 border text-sm"
-                          style={{ borderRadius: `${String(Math.min(theme.borderRadius, 12))}px` }}
-                        >
-                          {label}
+                    {previewContact ? (
+                      <>
+                        <p className="text-lg font-semibold">Almost done!</p>
+                        <p className="text-xs opacity-50 mt-1">Enter your details to see your results.</p>
+                        <div className="mt-4 space-y-3">
+                          <div>
+                            <label className="text-xs font-medium opacity-60">Name <span style={{ color: theme.accentColor }}>*</span></label>
+                            <div className="mt-1 h-9 border rounded-md px-3 flex items-center text-xs opacity-40" style={{ borderRadius: `${String(Math.min(theme.borderRadius, 8))}px` }}>
+                              Your name
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-xs font-medium opacity-60">Email <span style={{ color: theme.accentColor }}>*</span></label>
+                            <div className="mt-1 h-9 border rounded-md px-3 flex items-center text-xs opacity-40" style={{ borderRadius: `${String(Math.min(theme.borderRadius, 8))}px` }}>
+                              you@example.com
+                            </div>
+                          </div>
+                          {theme.contactShowPhone && (
+                            <div>
+                              <label className="text-xs font-medium opacity-60">
+                                Phone {theme.contactRequirePhone && <span style={{ color: theme.accentColor }}>*</span>}
+                              </label>
+                              <div className="mt-1 h-9 border rounded-md px-3 flex items-center text-xs opacity-40" style={{ borderRadius: `${String(Math.min(theme.borderRadius, 8))}px` }}>
+                                (555) 123-4567
+                              </div>
+                            </div>
+                          )}
+                          {theme.contactShowMessage && (
+                            <div>
+                              <label className="text-xs font-medium opacity-60">
+                                Message {theme.contactRequireMessage && <span style={{ color: theme.accentColor }}>*</span>}
+                              </label>
+                              <div className="mt-1 h-16 border rounded-md px-3 py-2 text-xs opacity-40" style={{ borderRadius: `${String(Math.min(theme.borderRadius, 8))}px` }}>
+                                {theme.contactMessagePlaceholder}
+                              </div>
+                            </div>
+                          )}
+                          <div className="flex items-start gap-2 mt-1">
+                            <div className="w-3.5 h-3.5 border rounded-sm mt-0.5 flex-shrink-0" style={{ borderColor: theme.accentColor }} />
+                            <p className="text-[10px] opacity-50 leading-tight">I agree to the processing of my data and acknowledge the Privacy Policy</p>
+                          </div>
+                          <div
+                            className="h-10 flex items-center justify-center text-white text-sm font-medium mt-2"
+                            style={{
+                              backgroundColor: theme.accentColor,
+                              borderRadius: `${String(Math.min(theme.borderRadius, 8))}px`,
+                            }}
+                          >
+                            {theme.contactSubmitText || 'Submit'}
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-lg font-semibold">What can we help you with?</p>
+                        <div className="mt-4 space-y-2">
+                          {['Consultation', 'Quick question', 'Get a quote'].map((label) => (
+                            <div
+                              key={label}
+                              className="p-3 border text-sm"
+                              style={{ borderRadius: `${String(Math.min(theme.borderRadius, 12))}px` }}
+                            >
+                              {label}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   {/* Footer */}
