@@ -24,7 +24,7 @@ export default function ForgotPasswordPage(): React.ReactElement {
       );
 
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/settings`,
+        redirectTo: `${window.location.origin}/api/auth/callback?type=recovery`,
       });
 
       if (resetError) {

@@ -25,7 +25,7 @@ export function LeadScoringIllustration(): React.ReactElement {
       >
         {/* Gauge background arc */}
         <path
-          d="M60 110 A60 60 0 0 1 180 110"
+          d="M56 98 A64 64 0 0 1 184 98"
           stroke="#F1F5F9"
           strokeWidth="10"
           strokeLinecap="round"
@@ -34,29 +34,28 @@ export function LeadScoringIllustration(): React.ReactElement {
 
         {/* Gauge fill arc — sweeps in */}
         <path
-          d="M60 110 A60 60 0 0 1 180 110"
+          d="M56 98 A64 64 0 0 1 184 98"
           stroke="#2563EB"
           strokeWidth="10"
           strokeLinecap="round"
           fill="none"
-          strokeDasharray="188"
-          strokeDashoffset="188"
+          strokeDasharray="201"
+          strokeDashoffset="201"
           className="feat-score-arc"
         />
 
-        {/* Cold zone tick */}
-        <line x1="68" y1="104" x2="72" y2="100" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Warm zone tick */}
-        <line x1="120" y1="50" x2="120" y2="55" stroke="#CA8A04" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Hot zone tick */}
-        <line x1="170" y1="62" x2="166" y2="66" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
+        {/* Needle — rotates to position */}
+        <g className="feat-score-needle" style={{ transformOrigin: '120px 98px' }}>
+          <line x1="120" y1="98" x2="120" y2="46" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="120" cy="98" r="3" fill="#0F172A" />
+        </g>
 
-        {/* Score number — counts up */}
+        {/* Score number — below gauge, clear of needle */}
         <g className="feat-score-number">
           <text
             x="120"
-            y="100"
-            fontSize="28"
+            y="120"
+            fontSize="22"
             fontFamily="var(--font-mono)"
             fill="#0F172A"
             fontWeight="700"
@@ -66,10 +65,10 @@ export function LeadScoringIllustration(): React.ReactElement {
           </text>
           <text
             x="120"
-            y="116"
+            y="134"
             fontSize="9"
             fontFamily="var(--font-body)"
-            fill="#64748B"
+            fill="#94A3B8"
             textAnchor="middle"
           >
             out of 100
@@ -78,23 +77,17 @@ export function LeadScoringIllustration(): React.ReactElement {
 
         {/* Tier labels on the right */}
         <g className="feat-score-tiers">
-          <rect x="200" y="30" width="64" height="22" rx="6" fill="#FEF2F2" />
-          <circle cx="212" cy="41" r="4" fill="#DC2626" />
-          <text x="220" y="45" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot 70+</text>
+          <rect x="200" y="22" width="64" height="22" rx="6" fill="#FEF2F2" />
+          <circle cx="212" cy="33" r="4" fill="#DC2626" />
+          <text x="220" y="37" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot 70+</text>
 
-          <rect x="200" y="60" width="64" height="22" rx="6" fill="#FEFCE8" />
-          <circle cx="212" cy="71" r="4" fill="#CA8A04" />
-          <text x="220" y="75" fontSize="8" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">Warm 40+</text>
+          <rect x="200" y="50" width="68" height="22" rx="6" fill="#FEFCE8" />
+          <circle cx="212" cy="61" r="4" fill="#CA8A04" />
+          <text x="220" y="65" fontSize="8" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">Warm 40+</text>
 
-          <rect x="200" y="90" width="64" height="22" rx="6" fill="#F8FAFC" />
-          <circle cx="212" cy="101" r="4" fill="#94A3B8" />
-          <text x="220" y="105" fontSize="8" fontFamily="var(--font-body)" fill="#94A3B8" fontWeight="600">Cold 0-39</text>
-        </g>
-
-        {/* Needle — rotates to position */}
-        <g className="feat-score-needle" style={{ transformOrigin: '120px 110px' }}>
-          <line x1="120" y1="110" x2="120" y2="64" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="120" cy="110" r="4" fill="#0F172A" />
+          <rect x="200" y="78" width="64" height="22" rx="6" fill="#F8FAFC" />
+          <circle cx="212" cy="89" r="4" fill="#94A3B8" />
+          <text x="220" y="93" fontSize="8" fontFamily="var(--font-body)" fill="#94A3B8" fontWeight="600">Cold 0-39</text>
         </g>
       </svg>
     </div>
@@ -188,47 +181,43 @@ export function ConversionAnalyticsIllustration(): React.ReactElement {
       >
         {/* Chart frame */}
         <rect x="16" y="8" width="248" height="124" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-        <text x="28" y="28" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Conversion funnel</text>
+        <text x="28" y="26" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Conversion funnel</text>
 
-        {/* Funnel bars — each grows from left, each narrower than the last */}
+        {/* Funnel bars — each grows from left, each narrower */}
         {/* Impressions */}
-        <g className="feat-funnel-bar-1">
-          <rect x="28" y="40" width="180" height="16" rx="3" fill="#2563EB" opacity="0.15" />
-          <rect x="28" y="40" width="180" height="16" rx="3" fill="#2563EB" opacity="0.25" className="feat-funnel-fill-1" />
-          <text x="214" y="52" fontSize="8" fontFamily="var(--font-body)" fill="#64748B">2,847</text>
-        </g>
         <text x="28" y="38" fontSize="6.5" fontFamily="var(--font-body)" fill="#94A3B8">Impressions</text>
-
-        {/* Opens */}
-        <g className="feat-funnel-bar-2">
-          <rect x="28" y="66" width="180" height="16" rx="3" fill="#2563EB" opacity="0.15" />
-          <rect x="28" y="66" width="126" height="16" rx="3" fill="#2563EB" opacity="0.4" className="feat-funnel-fill-2" />
-          <text x="160" y="78" fontSize="8" fontFamily="var(--font-body)" fill="#64748B">1,993</text>
+        <g className="feat-funnel-bar-1">
+          <rect x="28" y="40" width="140" height="14" rx="3" fill="#2563EB" opacity="0.15" />
+          <rect x="28" y="40" width="140" height="14" rx="3" fill="#2563EB" opacity="0.25" className="feat-funnel-fill-1" />
+          <text x="174" y="51" fontSize="8" fontFamily="var(--font-mono)" fill="#0F172A" fontWeight="600">2,847</text>
         </g>
+
+        {/* Widget opens */}
         <text x="28" y="64" fontSize="6.5" fontFamily="var(--font-body)" fill="#94A3B8">Widget opens</text>
+        <g className="feat-funnel-bar-2">
+          <rect x="28" y="66" width="140" height="14" rx="3" fill="#2563EB" opacity="0.15" />
+          <rect x="28" y="66" width="98" height="14" rx="3" fill="#2563EB" opacity="0.4" className="feat-funnel-fill-2" />
+          <text x="174" y="77" fontSize="8" fontFamily="var(--font-mono)" fill="#0F172A" fontWeight="600">1,993</text>
+        </g>
 
         {/* Completions */}
-        <g className="feat-funnel-bar-3">
-          <rect x="28" y="92" width="180" height="16" rx="3" fill="#2563EB" opacity="0.15" />
-          <rect x="28" y="92" width="68" height="16" rx="3" fill="#2563EB" opacity="0.65" className="feat-funnel-fill-3" />
-          <text x="102" y="104" fontSize="8" fontFamily="var(--font-body)" fill="#64748B">541</text>
-        </g>
         <text x="28" y="90" fontSize="6.5" fontFamily="var(--font-body)" fill="#94A3B8">Completions</text>
-
-        {/* Drop-off arrow + percentage — pops in */}
-        <g className="feat-funnel-dropoff">
-          {/* Arrow from bar 1 to bar 2 */}
-          <path d="M216 56 L216 62" stroke="#CA8A04" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M213 60 L216 64 L219 60" stroke="#CA8A04" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="222" y="62" fontSize="7" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="600">-30%</text>
-
-          {/* Arrow from bar 2 to bar 3 */}
-          <path d="M162 82 L162 88" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M159 86 L162 90 L165 86" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="168" y="88" fontSize="7" fontFamily="var(--font-mono)" fill="#DC2626" fontWeight="600">-73%</text>
+        <g className="feat-funnel-bar-3">
+          <rect x="28" y="92" width="140" height="14" rx="3" fill="#2563EB" opacity="0.15" />
+          <rect x="28" y="92" width="38" height="14" rx="3" fill="#2563EB" opacity="0.65" className="feat-funnel-fill-3" />
+          <text x="174" y="103" fontSize="8" fontFamily="var(--font-mono)" fill="#0F172A" fontWeight="600">541</text>
         </g>
 
-        {/* Conversion rate badge — slides in bottom right */}
+        {/* Drop-off badges — right column, clearly separated */}
+        <g className="feat-funnel-dropoff">
+          <rect x="218" y="44" width="36" height="14" rx="7" fill="#FEFCE8" />
+          <text x="228" y="54" fontSize="7" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="600" textAnchor="middle">-30%</text>
+
+          <rect x="218" y="70" width="36" height="14" rx="7" fill="#FEF2F2" />
+          <text x="228" y="80" fontSize="7" fontFamily="var(--font-mono)" fill="#DC2626" fontWeight="600" textAnchor="middle">-73%</text>
+        </g>
+
+        {/* Conversion rate badge — bottom right */}
         <g className="feat-funnel-rate">
           <rect x="186" y="110" width="68" height="16" rx="6" fill="#F0FDF4" />
           <text x="194" y="121" fontSize="8" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="600">19% conv.</text>
@@ -349,15 +338,15 @@ export function LeadRoutingIllustration(): React.ReactElement {
           <text x="39" y="78" fontSize="4.5" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">HOT</text>
         </g>
 
-        {/* Routing arrows — branch out */}
+        {/* Routing arrows — branch out with flowing dashes */}
         <g className="feat-route-arrows">
-          {/* Arrow to top member */}
-          <path d="M84 50 L120 50 L140 36" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 2" />
+          {/* Arrow to top member (active — dashes flow) */}
+          <path d="M84 50 L120 50 L140 36" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="6 3" className="feat-route-dash-active" />
           <circle cx="140" cy="36" r="2" fill="#2563EB" />
-          {/* Arrow to middle member */}
-          <path d="M84 56 L120 56 L140 66" stroke="#E2E8F0" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 2" />
-          {/* Arrow to bottom member */}
-          <path d="M84 62 L120 62 L140 96" stroke="#E2E8F0" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 2" />
+          {/* Arrow to middle member (inactive — slow flow) */}
+          <path d="M84 56 L120 56 L140 66" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 3" className="feat-route-dash-idle-1" />
+          {/* Arrow to bottom member (inactive — slow flow) */}
+          <path d="M84 62 L120 62 L140 96" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" fill="none" strokeDasharray="4 3" className="feat-route-dash-idle-2" />
         </g>
 
         {/* Rule badge in center */}
@@ -570,17 +559,35 @@ export function SharedAnalyticsIllustration(): React.ReactElement {
           <text x="162" y="86" fontSize="12" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="700">18.3%</text>
         </g>
 
-        {/* Share/link overlay — pops in with lock icon */}
+        {/* Share button — pops in with lock icon */}
         <g className="feat-share-overlay">
-          <rect x="152" y="98" width="100" height="26" rx="6" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1" />
-          {/* Link icon */}
-          <path d="M166 107 a3 3 0 0 1 3-3h2a3 3 0 0 1 0 6h-2a3 3 0 0 1-3-3z" fill="none" stroke="#2563EB" strokeWidth="1" />
-          <path d="M178 107 a3 3 0 0 1 3-3h2a3 3 0 0 1 0 6h-2a3 3 0 0 1-3-3z" fill="none" stroke="#2563EB" strokeWidth="1" />
-          <line x1="174" y1="107" x2="177" y2="107" stroke="#2563EB" strokeWidth="1" />
-          <text x="188" y="110" fontSize="6" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="600">Share link</text>
-          {/* Lock */}
-          <rect x="234" y="103" width="8" height="7" rx="1.5" fill="#2563EB" />
-          <path d="M235.5 103v-2a2.5 2.5 0 015 0v2" fill="none" stroke="#2563EB" strokeWidth="1" />
+          <rect x="152" y="98" width="100" height="26" rx="6" fill="#0F172A" />
+
+          {/* Lock icon */}
+          <rect x="165" y="109" width="7" height="6" rx="1.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" />
+          <path
+            d="M166.5 109 v-1.5 a 2 2 0 0 1 4 0 v1.5"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+
+          {/* Text */}
+          <text x="178" y="114" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">
+            Share link
+          </text>
+
+          {/* Arrow icon */}
+          <path
+            d="M236 106 l4 5 l-4 5"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.5"
+          />
         </g>
 
         {/* Tier mini badges */}

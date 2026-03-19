@@ -14,6 +14,7 @@ import { BeforeAfter } from './_components/BeforeAfter';
 import { TrustSignals } from './_components/TrustSignals';
 import { FaqAccordion } from './_components/FaqAccordion';
 import { PricingToggle } from './_components/PricingToggle';
+import { HeroIllustration } from './_components/HeroIllustration';
 import { PLANS, TEMPLATES_PREVIEW } from './_constants';
 
 export default function LandingPage(): React.ReactElement {
@@ -45,15 +46,8 @@ export default function LandingPage(): React.ReactElement {
               14 days free. No credit card.
             </p>
           </div>
-          <div className="hidden lg:block animate-slide-right">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/hero-dashboard.svg"
-              alt="SignalBox dashboard showing a scored lead list with hot, warm, and cold tiers"
-              className="w-full h-auto rounded-lg border border-border shadow-lg"
-              width={560}
-              height={400}
-            />
+          <div className="hidden lg:block">
+            <HeroIllustration />
           </div>
         </div>
       </section>

@@ -14,7 +14,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const type = searchParams.get('type'); // email_confirmation, recovery, etc.
 
   if (!code) {
-    const errorUrl = new URL('/auth/error', origin);
+    const errorUrl = new URL('/error', origin);
     errorUrl.searchParams.set('error', 'missing_code');
     errorUrl.searchParams.set(
       'error_description',
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    const errorUrl = new URL('/auth/error', origin);
+    const errorUrl = new URL('/error', origin);
     errorUrl.searchParams.set('error', 'configuration_error');
     errorUrl.searchParams.set('error_description', 'Server configuration error');
     return NextResponse.redirect(errorUrl);
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    const errorUrl = new URL('/auth/error', origin);
+    const errorUrl = new URL('/error', origin);
     errorUrl.searchParams.set('error', error.message);
     errorUrl.searchParams.set(
       'error_description',
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   switch (type) {
     case 'recovery':
-      redirectPath = '/auth/reset-password';
+      redirectPath = '/reset-password';
       break;
     case 'email_change':
       redirectPath = '/settings?tab=profile&emailChanged=true';
