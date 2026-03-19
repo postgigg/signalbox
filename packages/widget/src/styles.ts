@@ -594,6 +594,50 @@ export function getStyles(theme: WidgetTheme): string {
   margin-top: 4px;
 }
 
+/* ── Consent Checkbox ──────────────────────────────────────────────────── */
+.sb-consent {
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.sb-consent__label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--sb-muted);
+}
+
+.sb-consent__check {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--sb-accent);
+  cursor: pointer;
+}
+
+.sb-consent__text {
+  flex: 1;
+}
+
+.sb-consent__link {
+  color: var(--sb-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sb-consent__link:hover {
+  opacity: 0.8;
+}
+
+.sb-consent__error {
+  margin-top: 4px;
+  margin-left: 24px;
+}
+
 /* ── Honeypot ───────────────────────────────────────────────────────────── */
 .sb-hp {
   display: none !important;

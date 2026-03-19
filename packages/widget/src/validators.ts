@@ -5,6 +5,9 @@ import type { ContactInfo, ValidationErrors, WidgetConfig } from './types';
 const EMAIL_RE =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
+// Phone: digits, spaces, +, -, (, ), .
+const PHONE_RE = /^[+\d\s().-]+$/;
+
 // ── Limits ─────────────────────────────────────────────────────────────────
 const NAME_MAX = 200;
 const PHONE_MAX = 30;
@@ -38,6 +41,8 @@ export function validateContact(
     const phone = (contact.phone ?? '').trim();
     if (config.contactPhoneRequired && !phone) {
       errors.phone = 'Phone number is required.';
+    } else if (phone && !PHONE_RE.test(phone)) {
+      errors.phone = 'Please enter a valid phone number.';
     } else if (phone && phone.length > PHONE_MAX) {
       errors.phone = `Phone must be ${PHONE_MAX} characters or fewer.`;
     }

@@ -632,6 +632,33 @@ export class WidgetRenderer {
       hpField.appendChild(hpInput);
       form.appendChild(hpField);
 
+      // Consent checkbox
+      const consentField = el('div', 'sb-consent');
+      const consentLabel = el('label', 'sb-consent__label');
+      const consentCheckbox = el('input', 'sb-consent__check', {
+        type: 'checkbox',
+        name: 'consent',
+        required: 'true',
+      }) as HTMLInputElement;
+      consentLabel.appendChild(consentCheckbox);
+      const consentText = el('span', 'sb-consent__text');
+      consentText.textContent = 'I agree to the processing of my data and acknowledge the ';
+      const privacyLink = el('a', 'sb-consent__link', {
+        href: '/privacy',
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      });
+      privacyLink.textContent = 'Privacy Policy';
+      consentText.appendChild(privacyLink);
+      consentLabel.appendChild(consentText);
+      consentField.appendChild(consentLabel);
+
+      const consentError = el('p', 'sb-field__error sb-consent__error');
+      consentError.style.display = 'none';
+      consentError.textContent = 'You must agree before submitting.';
+      consentField.appendChild(consentError);
+      form.appendChild(consentField);
+
       // Submit button
       const submitBtn = el('button', 'sb-submit', {
         type: 'submit',
@@ -650,16 +677,31 @@ export class WidgetRenderer {
 
       form.addEventListener('submit', (e: Event) => {
         e.preventDefault();
+
+        // Validate consent
+        if (!consentCheckbox.checked) {
+          consentError.style.display = 'block';
+          consentCheckbox.focus();
+          return;
+        }
+        consentError.style.display = 'none';
+
         const formData = new FormData(form);
+
+        // Sanitize inputs: strip HTML tags
+        const sanitize = (val: string): string =>
+          val.replace(/<[^>]*>?/g, '').trim();
+
         const contact: ContactInfo = {
-          name: (formData.get('name') as string) || '',
-          email: (formData.get('email') as string) || '',
+          name: sanitize((formData.get('name') as string) || ''),
+          email: sanitize((formData.get('email') as string) || '').toLowerCase(),
         };
         if (this.config!.contactShowPhone) {
-          contact.phone = (formData.get('phone') as string) || '';
+          const rawPhone = sanitize((formData.get('phone') as string) || '');
+          contact.phone = rawPhone.replace(/[^+\d\s().-]/g, '');
         }
         if (this.config!.contactShowMessage) {
-          contact.message = (formData.get('message') as string) || '';
+          contact.message = sanitize((formData.get('message') as string) || '');
         }
         const honeypot = (formData.get('website') as string) || '';
         this.callbacks.onContactSubmit(contact, honeypot);
