@@ -11,6 +11,7 @@ interface PlanLimits {
   customBranding: boolean;
   apiAccess: boolean;
   webhookAccess: boolean;
+  advancedAnalytics: boolean;
   prioritySupport: boolean;
 }
 
