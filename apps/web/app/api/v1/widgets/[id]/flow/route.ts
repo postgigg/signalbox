@@ -79,6 +79,12 @@ export async function PUT(
   const roleError = requireRole(member, ['owner', 'admin']);
   if (roleError) return roleError;
 
+  // Demo account is read-only
+  const DEMO_ACCOUNT_ID = 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4';
+  if (account.id === DEMO_ACCOUNT_ID) {
+    return NextResponse.json({ error: 'Demo account: flow editing is disabled' }, { status: 403 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

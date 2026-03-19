@@ -45,11 +45,30 @@ export default function FlowBuilderPage(): React.ReactElement {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
-  // Load existing flow on mount
+  // Load existing flow on mount + detect demo account
   useEffect(() => {
     async function loadFlow(): Promise<void> {
       try {
+        // Check if demo account
+        const { createBrowserClient } = await import('@supabase/ssr');
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+        );
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: member } = await supabase
+            .from('members')
+            .select('account_id')
+            .eq('user_id', user.id)
+            .limit(1)
+            .single();
+          if (member?.account_id === 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4') {
+            setIsDemo(true);
+          }
+        }
         const res = await fetch(`/api/v1/widgets/${widgetId}/flow`);
         if (res.ok) {
           const result = await res.json() as { data?: { steps?: FlowStep[] } };
@@ -223,8 +242,9 @@ export default function FlowBuilderPage(): React.ReactElement {
         <div className="flex items-center gap-2">
           {saved && <span className="text-xs text-success font-body">Saved</span>}
           {error && <span className="text-xs text-danger font-body">{error}</span>}
-          <button type="button" onClick={() => { setError(null); void handleSave(); }} disabled={saving} className="btn-primary">
-            {saving ? 'Saving...' : 'Save Flow'}
+          {isDemo && <span className="text-xs text-warning font-body">Demo account: editing disabled</span>}
+          <button type="button" onClick={() => { setError(null); void handleSave(); }} disabled={saving || isDemo} className="btn-primary">
+            {saving ? 'Saving...' : isDemo ? 'Read Only' : 'Save Flow'}
           </button>
         </div>
       </div>
