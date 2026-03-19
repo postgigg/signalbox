@@ -145,6 +145,94 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
             <CopyButton text={suggestedOpener} />
           </div>
 
+          {/* Activity Timeline */}
+          <div className="card">
+            <h2 className="font-display text-lg font-semibold text-ink mb-4">
+              History
+            </h2>
+            <div className="relative pl-6 space-y-4">
+              {/* Timeline line */}
+              <div className="absolute left-[9px] top-1 bottom-1 w-px bg-border" />
+
+              {/* Submitted */}
+              <div className="relative">
+                <div className="absolute -left-6 top-0.5 w-[18px] h-[18px] rounded-pill bg-signal flex items-center justify-center">
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <p className="text-sm text-ink font-medium">Submitted</p>
+                <p className="text-xs text-stone">{new Date(submission.created_at).toLocaleString()}</p>
+                <p className="text-xs text-stone mt-0.5">
+                  Scored {submission.lead_score}/100, tier: {submission.lead_tier}
+                </p>
+              </div>
+
+              {/* Notification sent */}
+              {submission.notification_sent && submission.notification_sent_at && (
+                <div className="relative">
+                  <div className="absolute -left-6 top-0.5 w-[18px] h-[18px] rounded-pill bg-surface-alt border border-border flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-stone" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-ink font-medium">Notification sent</p>
+                  <p className="text-xs text-stone">{new Date(submission.notification_sent_at).toLocaleString()}</p>
+                </div>
+              )}
+
+              {/* Viewed */}
+              {submission.viewed_at && (
+                <div className="relative">
+                  <div className="absolute -left-6 top-0.5 w-[18px] h-[18px] rounded-pill bg-surface-alt border border-border flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-stone" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-ink font-medium">Viewed</p>
+                  <p className="text-xs text-stone">{new Date(submission.viewed_at).toLocaleString()}</p>
+                </div>
+              )}
+
+              {/* Contacted */}
+              {submission.contacted_at && (
+                <div className="relative">
+                  <div className="absolute -left-6 top-0.5 w-[18px] h-[18px] rounded-pill bg-warning-light border border-warning/30 flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-ink font-medium">Contacted</p>
+                  <p className="text-xs text-stone">{new Date(submission.contacted_at).toLocaleString()}</p>
+                </div>
+              )}
+
+              {/* Current status */}
+              {submission.status !== 'new' && submission.status !== 'viewed' && (
+                <div className="relative">
+                  <div className={`absolute -left-6 top-0.5 w-[18px] h-[18px] rounded-pill flex items-center justify-center ${
+                    submission.status === 'converted' ? 'bg-success-light border border-success/30' :
+                    submission.status === 'qualified' ? 'bg-success-light border border-success/30' :
+                    submission.status === 'disqualified' ? 'bg-danger-light border border-danger/30' :
+                    'bg-surface-alt border border-border'
+                  }`}>
+                    <svg className={`w-2.5 h-2.5 ${
+                      submission.status === 'converted' || submission.status === 'qualified' ? 'text-success' :
+                      submission.status === 'disqualified' ? 'text-danger' : 'text-stone'
+                    }`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-ink font-medium">
+                    {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                  </p>
+                  <p className="text-xs text-stone">{new Date(submission.updated_at).toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Visitor Message */}
           {submission.visitor_message && (
             <div className="card">
