@@ -228,37 +228,6 @@ export default function LandingPage(): React.ReactElement {
 
       <TrustSignals />
 
-      {/* ── Guarantee ── */}
-      <section className="py-20 px-6">
-        <div className="max-w-content mx-auto animate-on-enter">
-          <div className="card border-2 border-signal p-8 sm:p-12 text-center max-w-[720px] mx-auto">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-pill bg-signal-light mb-6">
-              <svg className="w-8 h-8 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-            </div>
-            <h2 className="font-display text-3xl font-semibold text-ink">
-              The 5 Hot Leads Guarantee
-            </h2>
-            <p className="mt-4 text-base text-stone leading-relaxed max-w-[520px] mx-auto">
-              If SignalBox does not identify at least 5 hot leads in your first 30 days,
-              we will extend your subscription by 6 months. Free. No questions asked.
-            </p>
-            <p className="mt-2 text-sm text-signal font-medium">
-              That is $600 in value, on us.
-            </p>
-            <div className="mt-8">
-              <Link href="/signup" className="btn-primary-lg">
-                Start Free Trial (Zero Risk)
-              </Link>
-            </div>
-            <p className="mt-3 text-xs text-stone">
-              14-day trial included. Guarantee applies to all paid plans.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* ── Final CTA ── */}
       <section className="bg-ink py-24 px-6">
         <div className="max-w-content mx-auto animate-on-enter">

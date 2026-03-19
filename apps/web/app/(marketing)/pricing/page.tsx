@@ -359,10 +359,45 @@ export default function PricingPage(): React.ReactElement {
         </div>
       </section>
 
-      <div className="pb-8 px-6">
-        <p className="text-center text-sm text-stone max-w-content mx-auto">
-          Close just one extra deal per month and SignalBox pays for itself.
-        </p>
+      {/* Guarantee */}
+      <div className="py-10 px-6">
+        <div className="max-w-content mx-auto">
+          <div className="border border-ink/10 rounded-md overflow-hidden">
+            <div className="bg-ink px-6 py-3">
+              <p className="text-xs font-body font-semibold text-white/70 uppercase tracking-widest">
+                The SignalBox Guarantee
+              </p>
+            </div>
+            <div className="px-6 py-6 sm:px-8 sm:py-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
+              <div>
+                <h3 className="font-display text-xl font-semibold text-ink">
+                  5 hot leads in 30 days, or 6 months free.
+                </h3>
+                <p className="mt-2 text-sm text-stone leading-relaxed max-w-[480px]">
+                  If we do not surface at least 5 hot-tier leads in your first 30 days
+                  on a paid plan, we extend your subscription by 6 months at no charge.
+                  Up to $600 value. No forms, no approval process, automatic.
+                </p>
+              </div>
+              <div className="flex items-center gap-6 text-center">
+                <div>
+                  <span className="font-display text-3xl font-bold text-signal">5</span>
+                  <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Hot leads</p>
+                </div>
+                <div className="w-px h-10 bg-border" />
+                <div>
+                  <span className="font-display text-3xl font-bold text-ink">30</span>
+                  <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Days</p>
+                </div>
+                <div className="w-px h-10 bg-border" />
+                <div>
+                  <span className="font-display text-3xl font-bold text-ink">6</span>
+                  <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Months free</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Feature Comparison Matrix */}
