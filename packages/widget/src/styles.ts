@@ -463,6 +463,26 @@ export function getStyles(theme: WidgetTheme): string {
   line-height: 1;
 }
 
+.sb-option__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--sb-border);
+  color: var(--sb-text);
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.sb-option:hover .sb-option__num {
+  opacity: 0.8;
+}
+
 .sb-option__label {
   flex: 1;
   display: -webkit-box;

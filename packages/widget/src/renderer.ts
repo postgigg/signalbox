@@ -388,6 +388,19 @@ export class WidgetRenderer {
     panel.appendChild(liveRegion);
     this.ariaLiveRegion = liveRegion;
 
+    // Number key shortcuts: press 1-9 to select option
+    panel.addEventListener('keydown', (e: KeyboardEvent) => {
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= 9) {
+        const opts = panel.querySelectorAll('.sb-option');
+        const target = opts[num - 1] as HTMLButtonElement | undefined;
+        if (target) {
+          e.preventDefault();
+          target.click();
+        }
+      }
+    });
+
     this.shadow.appendChild(panel);
     this.panelEl = panel;
   }
@@ -454,6 +467,11 @@ export class WidgetRenderer {
           'aria-checked': 'false',
           'data-option-id': opt.id,
         });
+
+        // Number key hint
+        const numHint = el('span', 'sb-option__num');
+        numHint.textContent = String(i + 1);
+        btn.appendChild(numHint);
 
         if (opt.icon) {
           const iconSpan = el('span', 'sb-option__icon');
