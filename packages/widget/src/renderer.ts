@@ -886,54 +886,127 @@ export class WidgetRenderer {
     const ctx = canvas.getContext('2d');
     if (!ctx) { canvas.remove(); return; }
 
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4'];
-    const pieces: Array<{
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#F97316'];
+
+    interface Piece {
       x: number; y: number; w: number; h: number;
       vx: number; vy: number; rot: number; vr: number;
-      color: string; life: number;
-    }> = [];
+      color: string; life: number; shape: number; sway: number;
+      swaySpeed: number; delay: number;
+    }
 
-    for (let i = 0; i < 150; i++) {
+    const pieces: Piece[] = [];
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // Wave 1: Big center burst
+    for (let i = 0; i < 100; i++) {
+      const angle = (Math.random() * Math.PI * 2);
+      const speed = 2 + Math.random() * 5;
       pieces.push({
-        x: Math.random() * canvas.width,
-        y: -20 - Math.random() * canvas.height * 0.5,
-        w: 6 + Math.random() * 6,
-        h: 4 + Math.random() * 8,
-        vx: (Math.random() - 0.5) * 6,
-        vy: 2 + Math.random() * 4,
+        x: w / 2 + (Math.random() - 0.5) * 200,
+        y: h / 2 + (Math.random() - 0.5) * 100,
+        w: 8 + Math.random() * 10,
+        h: 5 + Math.random() * 10,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 3,
         rot: Math.random() * Math.PI * 2,
-        vr: (Math.random() - 0.5) * 0.3,
+        vr: (Math.random() - 0.5) * 0.15,
         color: colors[Math.floor(Math.random() * colors.length)] ?? '#3B82F6',
         life: 1,
+        shape: Math.floor(Math.random() * 3),
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.02 + Math.random() * 0.03,
+        delay: 0,
+      });
+    }
+
+    // Wave 2: Side cannons (delayed)
+    for (let i = 0; i < 80; i++) {
+      const fromLeft = i % 2 === 0;
+      pieces.push({
+        x: fromLeft ? -10 : w + 10,
+        y: h * 0.7 + Math.random() * h * 0.3,
+        w: 6 + Math.random() * 8,
+        h: 4 + Math.random() * 8,
+        vx: (fromLeft ? 1 : -1) * (3 + Math.random() * 5),
+        vy: -(4 + Math.random() * 6),
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)] ?? '#10B981',
+        life: 1,
+        shape: Math.floor(Math.random() * 3),
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.015 + Math.random() * 0.02,
+        delay: 30 + Math.floor(Math.random() * 20),
+      });
+    }
+
+    // Wave 3: Gentle rain from top (delayed more)
+    for (let i = 0; i < 120; i++) {
+      pieces.push({
+        x: Math.random() * w,
+        y: -20 - Math.random() * 200,
+        w: 5 + Math.random() * 7,
+        h: 3 + Math.random() * 6,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: 0.5 + Math.random() * 1.5,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.1,
+        color: colors[Math.floor(Math.random() * colors.length)] ?? '#F59E0B',
+        life: 1,
+        shape: Math.floor(Math.random() * 3),
+        sway: Math.random() * Math.PI * 2,
+        swaySpeed: 0.01 + Math.random() * 0.02,
+        delay: 60 + Math.floor(Math.random() * 60),
       });
     }
 
     let frame = 0;
-    const maxFrames = 180;
+    const maxFrames = 400;
 
     const animate = (): void => {
       frame++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const p of pieces) {
-        p.x += p.vx;
-        p.vy += 0.1;
+        if (frame < p.delay) continue;
+
+        p.sway += p.swaySpeed;
+        p.x += p.vx + Math.sin(p.sway) * 0.5;
+        p.vy += 0.04;
         p.y += p.vy;
         p.rot += p.vr;
-        p.vx *= 0.99;
+        p.vx *= 0.995;
+        p.vr *= 0.998;
 
-        if (frame > maxFrames - 40) {
-          p.life -= 0.025;
+        if (frame > maxFrames - 80) {
+          p.life -= 0.0125;
         }
 
-        if (p.life <= 0) continue;
+        if (p.life <= 0 || p.y > canvas.height + 20) continue;
 
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rot);
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+
+        if (p.shape === 0) {
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        } else if (p.shape === 1) {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(0, -p.h / 2);
+          ctx.lineTo(p.w / 2, p.h / 2);
+          ctx.lineTo(-p.w / 2, p.h / 2);
+          ctx.closePath();
+          ctx.fill();
+        }
+
         ctx.restore();
       }
 
