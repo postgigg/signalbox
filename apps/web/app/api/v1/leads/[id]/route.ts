@@ -19,6 +19,7 @@ const patchSchema = z.object({
     ])
     .optional(),
   notes: z.string().max(5000).optional().transform((v) => v ? stripHtml(v) : v),
+  tags: z.array(z.string().max(50)).max(20).optional(),
 }).strict();
 
 export async function GET(
@@ -136,6 +137,10 @@ export async function PATCH(
 
   if (parsed.data.notes !== undefined) {
     updates['notes'] = parsed.data.notes;
+  }
+
+  if (parsed.data.tags !== undefined) {
+    updates['tags'] = parsed.data.tags;
   }
 
   const { data: updated, error: updateError } = await admin

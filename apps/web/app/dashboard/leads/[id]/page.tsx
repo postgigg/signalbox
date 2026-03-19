@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { CopyButton } from './CopyButton';
+import { LeadSidebar } from './LeadSidebar';
 
 import type { Submission } from '@/lib/supabase/types';
 
@@ -175,23 +176,12 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Status */}
-          <div className="card">
-            <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">
-              Status
-            </h3>
-            <StatusBadge status={submission.status} />
-          </div>
-
-          {/* Internal Notes */}
-          <div className="card">
-            <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">
-              Internal Notes
-            </h3>
-            <p className="text-sm text-stone">
-              {submission.notes ?? 'No notes yet.'}
-            </p>
-          </div>
+          <LeadSidebar
+            leadId={submission.id}
+            initialStatus={submission.status}
+            initialNotes={submission.notes}
+            initialTags={(submission as unknown as { tags?: string[] }).tags ?? []}
+          />
 
           {/* Metadata */}
           <div className="card">

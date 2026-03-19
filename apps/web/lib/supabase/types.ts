@@ -280,6 +280,7 @@ export type Database = {
           viewed_at: string | null;
           contacted_at: string | null;
           notes: string | null;
+          tags: string[];
           notification_sent: boolean;
           notification_sent_at: string | null;
           created_at: string;
@@ -318,6 +319,7 @@ export type Database = {
           viewed_at?: string | null;
           contacted_at?: string | null;
           notes?: string | null;
+          tags?: string[];
           notification_sent?: boolean;
           notification_sent_at?: string | null;
           created_at?: string;
@@ -356,6 +358,7 @@ export type Database = {
           viewed_at?: string | null;
           contacted_at?: string | null;
           notes?: string | null;
+          tags?: string[];
           notification_sent?: boolean;
           notification_sent_at?: string | null;
           created_at?: string;
