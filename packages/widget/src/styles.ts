@@ -182,6 +182,7 @@ export function getStyles(theme: WidgetTheme): string {
   font-weight: 500;
   letter-spacing: 0.01em;
   cursor: pointer;
+  pointer-events: auto;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   animation: sb-fadeIn 0.4s ease 1s both;
@@ -247,6 +248,7 @@ export function getStyles(theme: WidgetTheme): string {
   box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 8px 20px rgba(0,0,0,0.08);
   overflow: hidden;
   font-family: var(--sb-font);
+  pointer-events: auto;
   animation: sb-panelIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 

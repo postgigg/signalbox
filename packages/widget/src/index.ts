@@ -97,16 +97,13 @@ class SignalBoxWidget {
       return;
     }
 
-    // Create host element
+    // Create host element — positioned out of flow but allowing pointer events
+    // through to Shadow DOM children
     const host = document.createElement('div');
     host.id = rootId;
-    // The host element should not interfere with page layout
     host.style.position = 'fixed';
     host.style.zIndex = '2147483647';
-    host.style.top = '0';
-    host.style.left = '0';
-    host.style.width = '0';
-    host.style.height = '0';
+    host.style.inset = '0';
     host.style.overflow = 'visible';
     host.style.pointerEvents = 'none';
     document.body.appendChild(host);
