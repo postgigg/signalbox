@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getPlanLimits } from '@/lib/plan-limits';
 
-import type { Plan } from '@/lib/supabase/types';
+import type { Plan, Json } from '@/lib/supabase/types';
 
 const optionSchema = z.object({
   id: z.string().min(1).max(50),
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       target_step_id: targetStepId,
       traffic_split: trafficSplit,
       variant_b_question: variantBQuestion,
-      variant_b_options: variantBOptions as unknown as Record<string, unknown>[],
+      variant_b_options: JSON.parse(JSON.stringify(variantBOptions)) as Json,
     })
     .select('*')
     .single();
