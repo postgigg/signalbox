@@ -66,7 +66,7 @@ export async function POST(
   // Validate URL
   const urlCheck = validateWebhookUrl(endpoint.url);
   if (!urlCheck.valid) {
-    return NextResponse.json({ error: 'Invalid webhook URL: ' + urlCheck.reason }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid webhook URL: ' + (urlCheck.error ?? 'unknown') }, { status: 400 });
   }
 
   // Build test payload

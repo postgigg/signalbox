@@ -59,7 +59,7 @@ export async function fireWebhooks(
           request_body: payload as unknown as Record<string, unknown>,
           response_status: 0,
           success: false,
-          error_message: `Invalid URL: ${urlCheck.reason ?? 'unknown'}`,
+          error_message: `Invalid URL: ${urlCheck.error ?? 'unknown'}`,
         });
         return;
       }
