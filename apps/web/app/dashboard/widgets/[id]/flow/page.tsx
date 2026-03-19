@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface FlowOption {
   id: string;
@@ -43,6 +43,43 @@ export default function FlowBuilderPage(): React.ReactElement {
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load existing flow on mount
+  useEffect(() => {
+    async function loadFlow(): Promise<void> {
+      try {
+        const res = await fetch(`/api/v1/widgets/${widgetId}/flow`);
+        if (res.ok) {
+          const result = await res.json() as { data?: { steps?: FlowStep[] } };
+          if (result.data?.steps && Array.isArray(result.data.steps) && result.data.steps.length > 0) {
+            const loaded = result.data.steps.map((s: Record<string, unknown>, i: number) => ({
+              id: (s.id as string) ?? `step_${String(i + 1)}`,
+              order: i + 1,
+              question: (s.question as string) ?? '',
+              description: (s.description as string) ?? '',
+              type: 'single_select' as const,
+              options: Array.isArray(s.options)
+                ? (s.options as Array<Record<string, unknown>>).map((o, j) => ({
+                    id: (o.id as string) ?? `opt_${String(j + 1)}`,
+                    label: (o.label as string) ?? '',
+                    icon: (o.icon as string) ?? '',
+                    scoreWeight: ((o.scoreWeight ?? o.score) as number) ?? 0,
+                  }))
+                : [],
+            }));
+            setSteps(loaded);
+          }
+        }
+      } catch {
+        // Use defaults
+      } finally {
+        setLoading(false);
+      }
+    }
+    void loadFlow();
+  }, [widgetId]);
 
   const activeStep = steps[activeStepIndex];
 
@@ -119,30 +156,49 @@ export default function FlowBuilderPage(): React.ReactElement {
   async function handleSave(): Promise<void> {
     setSaving(true);
     setSaved(false);
+    setError(null);
+
+    if (steps.length < 2) {
+      setError('Flow must have at least 2 steps');
+      setSaving(false);
+      return;
+    }
+
+    for (const s of steps) {
+      if (s.options.length < 2) {
+        setError(`Step "${s.question}" must have at least 2 options`);
+        setSaving(false);
+        return;
+      }
+    }
+
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
+      // Map to API-expected shape (strict schema)
+      const apiSteps = steps.map((s) => ({
+        id: s.id,
+        question: s.question,
+        options: s.options.map((o) => ({
+          id: o.id,
+          label: o.label,
+          scoreWeight: o.scoreWeight,
+        })),
+      }));
 
-      const { error } = await supabase
-        .from('flows')
-        .upsert(
-          {
-            widget_id: widgetId,
-            steps: steps as unknown as Record<string, unknown>[],
-            is_active: true,
-          },
-          { onConflict: 'widget_id' }
-        );
+      const res = await fetch(`/api/v1/widgets/${widgetId}/flow`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ steps: apiSteps }),
+      });
 
-      if (!error) {
+      if (res.ok) {
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
+      } else {
+        const data = await res.json() as { error?: string };
+        setError(data.error ?? 'Failed to save flow');
       }
     } catch {
-      // Save failed
+      setError('Failed to save flow');
     } finally {
       setSaving(false);
     }
@@ -166,7 +222,8 @@ export default function FlowBuilderPage(): React.ReactElement {
         <h1 className="page-heading">Flow Builder</h1>
         <div className="flex items-center gap-2">
           {saved && <span className="text-xs text-success font-body">Saved</span>}
-          <button type="button" onClick={() => void handleSave()} disabled={saving} className="btn-primary">
+          {error && <span className="text-xs text-danger font-body">{error}</span>}
+          <button type="button" onClick={() => { setError(null); void handleSave(); }} disabled={saving} className="btn-primary">
             {saving ? 'Saving...' : 'Save Flow'}
           </button>
         </div>
