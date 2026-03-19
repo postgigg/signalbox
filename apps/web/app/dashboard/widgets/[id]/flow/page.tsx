@@ -44,7 +44,7 @@ export default function FlowBuilderPage(): React.ReactElement {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
 
   // Load existing flow on mount + detect demo account
