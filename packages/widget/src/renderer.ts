@@ -899,8 +899,8 @@ export class WidgetRenderer {
     const w = canvas.width;
     const h = canvas.height;
 
-    // Wave 1: Big center burst
-    for (let i = 0; i < 100; i++) {
+    // Wave 1: Center burst
+    for (let i = 0; i < 40; i++) {
       const angle = (Math.random() * Math.PI * 2);
       const speed = 2 + Math.random() * 5;
       pieces.push({
@@ -922,7 +922,7 @@ export class WidgetRenderer {
     }
 
     // Wave 2: Side cannons (delayed)
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 30; i++) {
       const fromLeft = i % 2 === 0;
       pieces.push({
         x: fromLeft ? -10 : w + 10,
@@ -943,7 +943,7 @@ export class WidgetRenderer {
     }
 
     // Wave 3: Gentle rain from top (delayed more)
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 40; i++) {
       pieces.push({
         x: Math.random() * w,
         y: -20 - Math.random() * 200,
@@ -964,7 +964,7 @@ export class WidgetRenderer {
 
     // Straggler waves: a few pieces float up then fall, repeating 3x at 4s intervals
     const addStragglers = (delayFrames: number): void => {
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 5; i++) {
         pieces.push({
           x: Math.random() * w,
           y: h + 20,
