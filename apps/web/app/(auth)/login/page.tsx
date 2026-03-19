@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+
+import { safeRedirectUrl } from '@/lib/safe-redirect';
 
 import type { FormEvent } from 'react';
 
@@ -21,8 +23,16 @@ async function serverLogin(email: string, password: string): Promise<LoginRespon
 }
 
 export default function LoginPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="text-sm text-stone">Loading...</p></div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm(): React.ReactElement {
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') ?? '/';
+  const redirectTo = safeRedirectUrl(searchParams.get('redirect') ?? '/', '/dashboard');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
