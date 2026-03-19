@@ -17,7 +17,12 @@
       "Bash(rm:*)",
       "Bash(head:*)",
       "Bash(wc:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(mkdir:*)",
+      "Bash(kill %1:*)",
+      "Bash(npx next:*)",
+      "Bash(npx vitest:*)",
+      "Bash(clip:*)"
     ]
   }
 }

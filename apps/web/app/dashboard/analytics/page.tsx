@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 
 interface AnalyticsData {
@@ -14,6 +15,13 @@ interface AnalyticsData {
   avg_score: number | null;
 }
 
+interface AdvancedData {
+  sourceBreakdown: Array<{ source: string; count: number }>;
+  deviceBreakdown: Array<{ device: string; count: number }>;
+  countryBreakdown: Array<{ country: string; count: number }>;
+  stepDropoff: Array<{ step: number; views: number }>;
+}
+
 const DATE_RANGES = [
   { label: '7 days', days: 7 },
   { label: '30 days', days: 30 },
@@ -24,6 +32,9 @@ export default function AnalyticsPage(): React.ReactElement {
   const [dateRange, setDateRange] = useState(30);
   const [data, setData] = useState<AnalyticsData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [advancedData, setAdvancedData] = useState<AdvancedData | null>(null);
+  const [advancedLoading, setAdvancedLoading] = useState(false);
 
   const fetchAnalytics = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -46,17 +57,47 @@ export default function AnalyticsPage(): React.ReactElement {
 
       if (!memberData) return;
 
+      // Fetch plan
+      const { data: accountData } = await supabase
+        .from('accounts')
+        .select('plan')
+        .eq('id', memberData.account_id)
+        .single();
+
+      if (accountData) {
+        setAccountPlan(accountData.plan);
+      }
+
       const fromDate = new Date();
       fromDate.setDate(fromDate.getDate() - dateRange);
+      const fromStr = fromDate.toISOString().split('T')[0] ?? '';
 
       const { data: analyticsData } = await supabase
         .from('widget_analytics')
         .select('date, impressions, opens, completions, submissions, hot_count, warm_count, cold_count, avg_score')
         .eq('account_id', memberData.account_id)
-        .gte('date', fromDate.toISOString().split('T')[0] ?? '')
+        .gte('date', fromStr)
         .order('date', { ascending: true });
 
       setData((analyticsData as AnalyticsData[]) ?? []);
+
+      // Fetch advanced analytics for Pro/Agency
+      const plan = accountData?.plan ?? 'trial';
+      if (plan === 'pro' || plan === 'agency') {
+        setAdvancedLoading(true);
+        try {
+          const toStr = new Date().toISOString().split('T')[0] ?? '';
+          const advResponse = await fetch(`/api/v1/analytics/advanced?from=${fromStr}&to=${toStr}`);
+          if (advResponse.ok) {
+            const advJson = await advResponse.json() as { data: AdvancedData };
+            setAdvancedData(advJson.data);
+          }
+        } catch {
+          // Advanced analytics fetch failed
+        } finally {
+          setAdvancedLoading(false);
+        }
+      }
     } catch {
       // Error fetching analytics
     } finally {
@@ -74,6 +115,7 @@ export default function AnalyticsPage(): React.ReactElement {
   const totalCold = data.reduce((sum, d) => sum + d.cold_count, 0);
   const totalOpens = data.reduce((sum, d) => sum + d.opens, 0);
   const conversionRate = totalOpens > 0 ? ((totalSubmissions / totalOpens) * 100).toFixed(1) : '0';
+  const hasAdvancedAccess = accountPlan === 'pro' || accountPlan === 'agency';
 
   return (
     <div>
@@ -252,6 +294,121 @@ export default function AnalyticsPage(): React.ReactElement {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Advanced Analytics */}
+          <div className="mt-10">
+            <h2 className="font-display text-lg font-semibold text-ink mb-4">Advanced Analytics</h2>
+
+            {!hasAdvancedAccess ? (
+              <div className="card text-center py-8">
+                <p className="text-sm text-stone mb-1">Source breakdown, device analytics, country data, and step drop-off analysis.</p>
+                <p className="text-sm text-stone mb-4">Available on Pro and Agency plans.</p>
+                <Link href="/dashboard/settings/billing" className="btn-primary text-sm">
+                  Upgrade Plan
+                </Link>
+              </div>
+            ) : advancedLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="card">
+                    <div className="skeleton h-5 w-32 mb-4" />
+                    <div className="space-y-2">
+                      {Array.from({ length: 4 }).map((__, j) => (
+                        <div key={j} className="flex justify-between">
+                          <div className="skeleton h-4 w-24" />
+                          <div className="skeleton h-4 w-10" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : advancedData !== null ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Step Drop-off Funnel */}
+                <div className="card">
+                  <h3 className="font-body text-sm font-semibold text-ink mb-4">Step Drop-off</h3>
+                  {advancedData.stepDropoff.every((s) => s.views === 0) ? (
+                    <p className="text-sm text-stone">No step data for this period.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {advancedData.stepDropoff.map((s) => {
+                        const maxViews = Math.max(...advancedData.stepDropoff.map((x) => x.views), 1);
+                        const pct = (s.views / maxViews) * 100;
+                        return (
+                          <div key={s.step} className="flex items-center gap-3">
+                            <span className="text-xs text-stone font-body w-12 flex-shrink-0">Step {s.step}</span>
+                            <div className="flex-1 h-5 bg-surface-alt rounded-sm overflow-hidden">
+                              <div
+                                className="h-full bg-signal rounded-sm"
+                                style={{ width: `${String(pct)}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-mono text-stone w-10 text-right">{s.views}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Source Breakdown */}
+                <div className="card">
+                  <h3 className="font-body text-sm font-semibold text-ink mb-4">Traffic Sources</h3>
+                  {advancedData.sourceBreakdown.length === 0 ? (
+                    <p className="text-sm text-stone">No source data for this period.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {advancedData.sourceBreakdown.slice(0, 8).map((s) => (
+                        <div key={s.source} className="flex items-center justify-between text-sm">
+                          <span className="text-ink truncate mr-2">{s.source}</span>
+                          <span className="font-mono text-stone flex-shrink-0">{s.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Device Breakdown */}
+                <div className="card">
+                  <h3 className="font-body text-sm font-semibold text-ink mb-4">Devices</h3>
+                  {advancedData.deviceBreakdown.length === 0 ? (
+                    <p className="text-sm text-stone">No device data for this period.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {advancedData.deviceBreakdown.map((d) => {
+                        const total = advancedData.deviceBreakdown.reduce((sum, x) => sum + x.count, 0);
+                        const pct = total > 0 ? ((d.count / total) * 100).toFixed(0) : '0';
+                        return (
+                          <div key={d.device} className="flex items-center justify-between text-sm">
+                            <span className="text-ink capitalize">{d.device}</span>
+                            <span className="font-mono text-stone">{d.count} ({pct}%)</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Country Breakdown */}
+                <div className="card">
+                  <h3 className="font-body text-sm font-semibold text-ink mb-4">Top Countries</h3>
+                  {advancedData.countryBreakdown.length === 0 ? (
+                    <p className="text-sm text-stone">No country data for this period.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {advancedData.countryBreakdown.map((c) => (
+                        <div key={c.country} className="flex items-center justify-between text-sm">
+                          <span className="text-ink">{c.country}</span>
+                          <span className="font-mono text-stone">{c.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
           </div>
         </>
       )}

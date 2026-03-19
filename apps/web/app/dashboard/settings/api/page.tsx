@@ -24,6 +24,12 @@ interface WebhookEntry {
   readonly failure_count: number;
 }
 
+interface KeyLimits {
+  readonly apiAccess: boolean;
+  readonly maxKeys: number;
+  readonly activeKeys: number;
+}
+
 const SETTINGS_NAV = [
   { href: '/dashboard/settings', label: 'Account' },
   { href: '/dashboard/settings/team', label: 'Team' },
@@ -35,6 +41,7 @@ const SETTINGS_NAV = [
 export default function ApiSettingsPage(): React.ReactElement {
   const [apiKeys, setApiKeys] = useState<ApiKeyEntry[]>([]);
   const [webhooks, setWebhooks] = useState<WebhookEntry[]>([]);
+  const [keyLimits, setKeyLimits] = useState<KeyLimits>({ apiAccess: false, maxKeys: 0, activeKeys: 0 });
   const [loading, setLoading] = useState(true);
   const [newKeyName, setNewKeyName] = useState('');
   const [newKeyRevealed, setNewKeyRevealed] = useState<string | null>(null);
@@ -45,6 +52,18 @@ export default function ApiSettingsPage(): React.ReactElement {
   useEffect(() => {
     async function loadData(): Promise<void> {
       try {
+        // Load API keys via server API
+        const keysResponse = await fetch('/api/v1/api-keys');
+        if (keysResponse.ok) {
+          const keysJson = await keysResponse.json() as {
+            data: ApiKeyEntry[];
+            limits: KeyLimits;
+          };
+          setApiKeys(keysJson.data ?? []);
+          setKeyLimits(keysJson.limits);
+        }
+
+        // Load webhooks via Supabase browser client
         const { createBrowserClient } = await import('@supabase/ssr');
         const supabase = createBrowserClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
@@ -63,19 +82,12 @@ export default function ApiSettingsPage(): React.ReactElement {
 
         if (!memberData) return;
 
-        const { data: keysData } = await supabase
-          .from('api_keys')
-          .select('id, name, key_prefix, last_used_at, is_active, created_at')
-          .eq('account_id', memberData.account_id)
-          .order('created_at', { ascending: false });
-
         const { data: webhooksData } = await supabase
           .from('webhook_endpoints')
           .select('id, url, events, is_active, last_triggered_at, last_status_code, failure_count')
           .eq('account_id', memberData.account_id)
           .order('created_at', { ascending: false });
 
-        setApiKeys((keysData as ApiKeyEntry[]) ?? []);
         setWebhooks((webhooksData as WebhookEntry[]) ?? []);
       } catch {
         // Failed to load
@@ -95,58 +107,38 @@ export default function ApiSettingsPage(): React.ReactElement {
     setCreatingKey(true);
 
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
+      const response = await fetch('/api/v1/api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newKeyName.trim() }),
+      });
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError('You must be logged in to create API keys.');
+      const json = await response.json() as {
+        data?: ApiKeyEntry;
+        rawKey?: string;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        setError(json.error ?? 'Failed to create API key.');
         return;
       }
 
-      const { data: memberData } = await supabase
-        .from('members')
-        .select('account_id')
-        .eq('user_id', user.id)
-        .limit(1)
-        .single();
-
-      if (!memberData) {
-        setError('Account not found.');
-        return;
+      if (json.rawKey) {
+        setNewKeyRevealed(json.rawKey);
       }
-
-      const rawKey = `sb_live_${crypto.randomUUID().replace(/-/g, '')}`;
-      const keyPrefix = rawKey.slice(0, 12);
-
-      const { error: insertError } = await supabase
-        .from('api_keys')
-        .insert({
-          account_id: memberData.account_id,
-          name: newKeyName.trim(),
-          key_prefix: keyPrefix,
-          key_hash: rawKey,
-        });
-
-      if (insertError) {
-        setError(insertError.message);
-        return;
-      }
-
-      setNewKeyRevealed(rawKey);
       setNewKeyName('');
 
       // Reload keys list
-      const { data: keysData } = await supabase
-        .from('api_keys')
-        .select('id, name, key_prefix, last_used_at, is_active, created_at')
-        .eq('account_id', memberData.account_id)
-        .order('created_at', { ascending: false });
-
-      setApiKeys((keysData as ApiKeyEntry[]) ?? []);
+      const keysResponse = await fetch('/api/v1/api-keys');
+      if (keysResponse.ok) {
+        const keysJson = await keysResponse.json() as {
+          data: ApiKeyEntry[];
+          limits: KeyLimits;
+        };
+        setApiKeys(keysJson.data ?? []);
+        setKeyLimits(keysJson.limits);
+      }
     } catch {
       setError('Failed to create API key.');
     } finally {
@@ -157,25 +149,23 @@ export default function ApiSettingsPage(): React.ReactElement {
   async function handleRevokeKey(keyId: string): Promise<void> {
     setError(null);
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
+      const response = await fetch(`/api/v1/api-keys/${keyId}`, {
+        method: 'DELETE',
+      });
 
-      const { error: updateError } = await supabase
-        .from('api_keys')
-        .update({ is_active: false })
-        .eq('id', keyId);
-
-      if (updateError) {
-        setError(updateError.message);
+      if (!response.ok) {
+        const json = await response.json() as { error?: string };
+        setError(json.error ?? 'Failed to revoke API key.');
         return;
       }
 
       setApiKeys((prev) =>
         prev.map((k) => (k.id === keyId ? { ...k, is_active: false } : k))
       );
+      setKeyLimits((prev) => ({
+        ...prev,
+        activeKeys: Math.max(0, prev.activeKeys - 1),
+      }));
     } catch {
       setError('Failed to revoke API key.');
     }
@@ -211,11 +201,39 @@ export default function ApiSettingsPage(): React.ReactElement {
         return;
       }
 
+      const trimmedUrl = newWebhookUrl.trim();
+
+      // Validate webhook URL before creating
+      if (!trimmedUrl.startsWith('https://')) {
+        setError('Webhook URLs must use HTTPS.');
+        return;
+      }
+
+      try {
+        const parsedUrl = new URL(trimmedUrl);
+        if (
+          parsedUrl.hostname === 'localhost' ||
+          parsedUrl.hostname.endsWith('.localhost') ||
+          parsedUrl.hostname === '127.0.0.1' ||
+          parsedUrl.hostname === '::1' ||
+          parsedUrl.hostname.startsWith('10.') ||
+          parsedUrl.hostname.startsWith('192.168.') ||
+          /^172\.(1[6-9]|2\d|3[01])\./.test(parsedUrl.hostname) ||
+          parsedUrl.hostname.startsWith('169.254.')
+        ) {
+          setError('Webhook URLs cannot target private or internal addresses.');
+          return;
+        }
+      } catch {
+        setError('Invalid URL format.');
+        return;
+      }
+
       const { error: insertError } = await supabase
         .from('webhook_endpoints')
         .insert({
           account_id: memberData.account_id,
-          url: newWebhookUrl.trim(),
+          url: trimmedUrl,
           events: ['submission.created'],
           secret: crypto.randomUUID(),
         });
@@ -335,99 +353,114 @@ export default function ApiSettingsPage(): React.ReactElement {
               Use API keys to authenticate programmatic access. Keys are shown once on creation.
             </p>
 
-            {newKeyRevealed !== null && (
-              <div className="mt-4 p-4 bg-warning-light border border-warning/20 rounded-sm">
-                <p className="text-sm font-medium text-ink">
-                  Copy this key now. It will not be shown again.
-                </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <code className="flex-1 bg-surface p-2 rounded-sm text-sm font-mono text-ink border border-border">
-                    {newKeyRevealed}
-                  </code>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      void navigator.clipboard.writeText(newKeyRevealed);
-                    }}
-                    className="btn-ghost text-xs h-8"
-                  >
-                    Copy
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewKeyRevealed(null)}
-                    className="btn-ghost text-xs h-8"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <form onSubmit={handleCreateKey} className="mt-4 flex gap-2">
-              <input
-                type="text"
-                placeholder="Key name (e.g. Production)"
-                value={newKeyName}
-                onChange={(e) => setNewKeyName(e.target.value)}
-                required
-                className="input-field h-10 flex-1 max-w-xs"
-              />
-              <button type="submit" disabled={creatingKey} className="btn-primary h-10">
-                {creatingKey ? (
-                  <span className="inline-flex items-center gap-2">
-                    <span className="spinner w-4 h-4" />
-                    Creating...
-                  </span>
-                ) : 'Create Key'}
-              </button>
-            </form>
-
-            {apiKeys.length === 0 ? (
+            {!keyLimits.apiAccess ? (
               <div className="mt-4 card text-center py-8">
-                <p className="text-sm text-stone">No API keys created yet.</p>
+                <p className="text-sm text-stone mb-3">API access is not available on your current plan.</p>
+                <Link href="/dashboard/settings/billing" className="btn-primary text-sm">
+                  Upgrade Plan
+                </Link>
               </div>
             ) : (
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="table-header">
-                      <th className="text-left py-3 px-4 font-medium">Name</th>
-                      <th className="text-left py-3 px-4 font-medium">Prefix</th>
-                      <th className="text-left py-3 px-4 font-medium">Last Used</th>
-                      <th className="text-left py-3 px-4 font-medium">Status</th>
-                      <th className="text-right py-3 px-4 font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {apiKeys.map((key) => (
-                      <tr key={key.id} className="table-row">
-                        <td className="py-3 px-4 font-medium text-ink">{key.name}</td>
-                        <td className="py-3 px-4 font-mono text-stone">{key.key_prefix}...</td>
-                        <td className="py-3 px-4 text-stone">
-                          {key.last_used_at ? new Date(key.last_used_at).toLocaleDateString() : 'Never'}
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className={`text-xs px-2 py-0.5 rounded-pill font-medium ${key.is_active ? 'bg-success-light text-success' : 'bg-surface-alt text-stone'}`}>
-                            {key.is_active ? 'Active' : 'Revoked'}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          {key.is_active && (
-                            <button
-                              type="button"
-                              onClick={() => void handleRevokeKey(key.id)}
-                              className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast"
-                            >
-                              Revoke
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <>
+                <p className="mt-2 text-xs text-stone">
+                  {String(keyLimits.activeKeys)} of {String(keyLimits.maxKeys)} API keys used
+                </p>
+
+                {newKeyRevealed !== null && (
+                  <div className="mt-4 p-4 bg-warning-light border border-warning/20 rounded-sm">
+                    <p className="text-sm font-medium text-ink">
+                      Copy this key now. It will not be shown again.
+                    </p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <code className="flex-1 bg-surface p-2 rounded-sm text-sm font-mono text-ink border border-border">
+                        {newKeyRevealed}
+                      </code>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          void navigator.clipboard.writeText(newKeyRevealed);
+                        }}
+                        className="btn-ghost text-xs h-8"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNewKeyRevealed(null)}
+                        className="btn-ghost text-xs h-8"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleCreateKey} className="mt-4 flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Key name (e.g. Production)"
+                    value={newKeyName}
+                    onChange={(e) => setNewKeyName(e.target.value)}
+                    required
+                    className="input-field h-10 flex-1 max-w-xs"
+                  />
+                  <button type="submit" disabled={creatingKey} className="btn-primary h-10">
+                    {creatingKey ? (
+                      <span className="inline-flex items-center gap-2">
+                        <span className="spinner w-4 h-4" />
+                        Creating...
+                      </span>
+                    ) : 'Create Key'}
+                  </button>
+                </form>
+
+                {apiKeys.length === 0 ? (
+                  <div className="mt-4 card text-center py-8">
+                    <p className="text-sm text-stone">No API keys created yet.</p>
+                  </div>
+                ) : (
+                  <div className="mt-4 overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="table-header">
+                          <th className="text-left py-3 px-4 font-medium">Name</th>
+                          <th className="text-left py-3 px-4 font-medium">Prefix</th>
+                          <th className="text-left py-3 px-4 font-medium">Last Used</th>
+                          <th className="text-left py-3 px-4 font-medium">Status</th>
+                          <th className="text-right py-3 px-4 font-medium">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {apiKeys.map((key) => (
+                          <tr key={key.id} className="table-row">
+                            <td className="py-3 px-4 font-medium text-ink">{key.name}</td>
+                            <td className="py-3 px-4 font-mono text-stone">{key.key_prefix}...</td>
+                            <td className="py-3 px-4 text-stone">
+                              {key.last_used_at ? new Date(key.last_used_at).toLocaleDateString() : 'Never'}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`text-xs px-2 py-0.5 rounded-pill font-medium ${key.is_active ? 'bg-success-light text-success' : 'bg-surface-alt text-stone'}`}>
+                                {key.is_active ? 'Active' : 'Revoked'}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              {key.is_active && (
+                                <button
+                                  type="button"
+                                  onClick={() => void handleRevokeKey(key.id)}
+                                  className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast"
+                                >
+                                  Revoke
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

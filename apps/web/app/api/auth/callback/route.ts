@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { safeRedirectUrl } from '@/lib/safe-redirect';
 import type { Database } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams, origin } = request.nextUrl;
 
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/dashboard';
+  const next = safeRedirectUrl(searchParams.get('next') ?? '/dashboard', '/dashboard');
   const type = searchParams.get('type'); // email_confirmation, recovery, etc.
 
   if (!code) {

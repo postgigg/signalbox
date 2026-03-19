@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
+import { SUPPORT_EMAIL, PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
+
 import type { FormEvent } from 'react';
 
 const SETTINGS_NAV = [
@@ -36,6 +38,7 @@ export default function AccountSettingsPage(): React.ReactElement {
   const [notificationEmail, setNotificationEmail] = useState('');
   const [hotThreshold, setHotThreshold] = useState(70);
   const [warmThreshold, setWarmThreshold] = useState(40);
+  const [accountPlan, setAccountPlan] = useState<string>('trial');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -64,7 +67,7 @@ export default function AccountSettingsPage(): React.ReactElement {
 
         const { data: account } = await supabase
           .from('accounts')
-          .select('name, slug, timezone, notification_email, hot_lead_threshold, warm_lead_threshold')
+          .select('name, slug, timezone, notification_email, hot_lead_threshold, warm_lead_threshold, plan')
           .eq('id', memberData.account_id)
           .single();
 
@@ -75,6 +78,7 @@ export default function AccountSettingsPage(): React.ReactElement {
           setNotificationEmail(account.notification_email ?? '');
           setHotThreshold(account.hot_lead_threshold);
           setWarmThreshold(account.warm_lead_threshold);
+          setAccountPlan(account.plan);
         }
       } catch {
         // Failed to load account
@@ -284,6 +288,33 @@ export default function AccountSettingsPage(): React.ReactElement {
             {saved && <span className="text-xs text-success">Saved</span>}
           </div>
         </form>
+      )}
+
+      {/* Support */}
+      {!loading && (
+        <div className="mt-10 max-w-prose">
+          <h2 className="font-display text-lg font-semibold text-ink">Support</h2>
+          <div className="mt-3 card">
+            {accountPlan === 'agency' ? (
+              <div className="flex items-start gap-3">
+                <span className="text-xs px-2 py-0.5 rounded-pill bg-signal-light text-signal font-medium flex-shrink-0">Priority</span>
+                <div>
+                  <p className="text-sm text-ink font-medium font-body">Priority support included with your Agency plan.</p>
+                  <p className="text-sm text-stone mt-1">
+                    Email <a href={`mailto:${PRIORITY_SUPPORT_EMAIL}`} className="text-signal hover:underline">{PRIORITY_SUPPORT_EMAIL}</a> for faster response times.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm text-ink font-medium font-body">Need help?</p>
+                <p className="text-sm text-stone mt-1">
+                  Email <a href={`mailto:${SUPPORT_EMAIL}`} className="text-signal hover:underline">{SUPPORT_EMAIL}</a> for assistance.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

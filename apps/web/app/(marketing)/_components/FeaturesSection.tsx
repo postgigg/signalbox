@@ -1,4 +1,17 @@
 import { FEATURES } from '../_constants';
+import {
+  LeadScoringIllustration,
+  InstantAlertsIllustration,
+  ConversionAnalyticsIllustration,
+  CustomBrandingIllustration,
+} from './FeatureIllustrations';
+
+const ILLUSTRATIONS = [
+  LeadScoringIllustration,
+  InstantAlertsIllustration,
+  ConversionAnalyticsIllustration,
+  CustomBrandingIllustration,
+] as const;
 
 export function FeaturesSection(): React.ReactElement {
   return (
@@ -8,19 +21,27 @@ export function FeaturesSection(): React.ReactElement {
           What you get.
         </h2>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {FEATURES.map((feature, index) => (
-            <div
-              key={feature.title}
-              className={`card animate-on-enter stagger-${index + 1}`}
-            >
-              <h3 className="font-body text-base font-semibold text-ink">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                {feature.body}
-              </p>
-            </div>
-          ))}
+          {FEATURES.map((feature, index) => {
+            const Illustration = ILLUSTRATIONS[index];
+            return (
+              <div
+                key={feature.title}
+                className={`card animate-on-enter stagger-${index + 1}`}
+              >
+                {Illustration !== undefined && (
+                  <div className="mb-4 -mx-5 -mt-5 rounded-t-md border-b border-border bg-surface-alt overflow-hidden">
+                    <Illustration />
+                  </div>
+                )}
+                <h3 className="font-body text-base font-semibold text-ink">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm text-stone leading-relaxed">
+                  {feature.body}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

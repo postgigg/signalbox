@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ThemeConfig {
   primaryColor: string;
@@ -30,6 +30,33 @@ interface ThemeConfig {
   socialProofText: string;
   socialProofMinThreshold: number;
 }
+
+const DEFAULT_THEME: ThemeConfig = {
+  primaryColor: '#0F172A',
+  accentColor: '#3B82F6',
+  backgroundColor: '#FFFFFF',
+  textColor: '#1E293B',
+  borderRadius: 12,
+  fontFamily: 'system',
+  position: 'bottom-right',
+  triggerText: 'Get Started',
+  triggerIcon: 'arrow',
+  panelWidth: 400,
+  showBranding: true,
+  showSocialProof: false,
+  mode: 'light',
+  triggerType: 'button',
+  triggerOffsetX: 20,
+  triggerOffsetY: 20,
+  contactShowPhone: true,
+  contactRequirePhone: false,
+  contactShowMessage: true,
+  contactRequireMessage: false,
+  contactMessagePlaceholder: 'Tell us more about what you need...',
+  contactSubmitText: 'Submit',
+  socialProofText: 'Join {count}+ others who chose us',
+  socialProofMinThreshold: 10,
+};
 
 const FONT_OPTIONS = [
   { value: 'system', label: 'System Default' },
@@ -62,32 +89,7 @@ export default function WidgetDesignPage(): React.ReactElement {
   const params = useParams();
   const widgetId = typeof params.id === 'string' ? params.id : '';
 
-  const [theme, setTheme] = useState<ThemeConfig>({
-    primaryColor: '#0F172A',
-    accentColor: '#3B82F6',
-    backgroundColor: '#FFFFFF',
-    textColor: '#1E293B',
-    borderRadius: 12,
-    fontFamily: 'system',
-    position: 'bottom-right',
-    triggerText: 'Get Started',
-    triggerIcon: 'arrow',
-    panelWidth: 400,
-    showBranding: true,
-    showSocialProof: false,
-    mode: 'light',
-    triggerType: 'button',
-    triggerOffsetX: 20,
-    triggerOffsetY: 20,
-    contactShowPhone: true,
-    contactRequirePhone: false,
-    contactShowMessage: true,
-    contactRequireMessage: false,
-    contactMessagePlaceholder: 'Tell us more about what you need...',
-    contactSubmitText: 'Submit',
-    socialProofText: 'Join {count}+ others who chose us',
-    socialProofMinThreshold: 10,
-  });
+  const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
 
   const [confirmation, setConfirmation] = useState({
     hot: { headline: 'You are a priority!', body: 'Expect to hear from us within 1 business hour.' },
@@ -97,6 +99,114 @@ export default function WidgetDesignPage(): React.ReactElement {
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [canRemoveBranding, setCanRemoveBranding] = useState(false);
+  const [accountPlan, setAccountPlan] = useState<string>('trial');
+
+  useEffect(() => {
+    async function loadWidget(): Promise<void> {
+      try {
+        const { createBrowserClient } = await import('@supabase/ssr');
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+        );
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: memberData } = await supabase
+          .from('members')
+          .select('account_id')
+          .eq('user_id', user.id)
+          .limit(1)
+          .single();
+
+        if (!memberData) return;
+
+        // Fetch account plan
+        const { data: accountData } = await supabase
+          .from('accounts')
+          .select('plan')
+          .eq('id', memberData.account_id)
+          .single();
+
+        if (accountData) {
+          setAccountPlan(accountData.plan);
+          setCanRemoveBranding(accountData.plan === 'pro' || accountData.plan === 'agency');
+        }
+
+        // Fetch widget theme and confirmation
+        const { data: widget } = await supabase
+          .from('widgets')
+          .select('theme, confirmation, social_proof_text, social_proof_min, contact_show_phone, contact_phone_required, contact_show_message, contact_message_required, contact_message_placeholder, contact_submit_text')
+          .eq('id', widgetId)
+          .eq('account_id', memberData.account_id)
+          .single();
+
+        if (widget) {
+          const savedTheme = widget.theme as Record<string, unknown> | null;
+          if (savedTheme) {
+            setTheme((prev) => ({
+              ...prev,
+              primaryColor: (savedTheme['primaryColor'] as string | undefined) ?? prev.primaryColor,
+              accentColor: (savedTheme['accentColor'] as string | undefined) ?? prev.accentColor,
+              backgroundColor: (savedTheme['backgroundColor'] as string | undefined) ?? prev.backgroundColor,
+              textColor: (savedTheme['textColor'] as string | undefined) ?? prev.textColor,
+              borderRadius: (savedTheme['borderRadius'] as number | undefined) ?? prev.borderRadius,
+              fontFamily: (savedTheme['fontFamily'] as string | undefined) ?? prev.fontFamily,
+              position: (savedTheme['position'] as string | undefined) ?? prev.position,
+              triggerText: (savedTheme['triggerText'] as string | undefined) ?? prev.triggerText,
+              triggerIcon: (savedTheme['triggerIcon'] as string | undefined) ?? prev.triggerIcon,
+              panelWidth: (savedTheme['panelWidth'] as number | undefined) ?? prev.panelWidth,
+              showBranding: (savedTheme['showBranding'] as boolean | undefined) ?? prev.showBranding,
+              showSocialProof: (savedTheme['showSocialProof'] as boolean | undefined) ?? prev.showSocialProof,
+              mode: (savedTheme['mode'] as 'light' | 'dark' | undefined) ?? prev.mode,
+              triggerType: (savedTheme['triggerType'] as 'button' | 'tab' | undefined) ?? prev.triggerType,
+              triggerOffsetX: (savedTheme['triggerOffsetX'] as number | undefined) ?? prev.triggerOffsetX,
+              triggerOffsetY: (savedTheme['triggerOffsetY'] as number | undefined) ?? prev.triggerOffsetY,
+            }));
+          }
+
+          // Populate contact form settings from widget columns
+          setTheme((prev) => ({
+            ...prev,
+            contactShowPhone: widget.contact_show_phone ?? prev.contactShowPhone,
+            contactRequirePhone: widget.contact_phone_required ?? prev.contactRequirePhone,
+            contactShowMessage: widget.contact_show_message ?? prev.contactShowMessage,
+            contactRequireMessage: widget.contact_message_required ?? prev.contactRequireMessage,
+            contactMessagePlaceholder: widget.contact_message_placeholder ?? prev.contactMessagePlaceholder,
+            contactSubmitText: widget.contact_submit_text ?? prev.contactSubmitText,
+            socialProofText: widget.social_proof_text ?? prev.socialProofText,
+            socialProofMinThreshold: widget.social_proof_min ?? prev.socialProofMinThreshold,
+          }));
+
+          const savedConfirmation = widget.confirmation as Record<string, { headline?: string; body?: string }> | null;
+          if (savedConfirmation) {
+            setConfirmation((prev) => ({
+              hot: {
+                headline: savedConfirmation['hot']?.headline ?? prev.hot.headline,
+                body: savedConfirmation['hot']?.body ?? prev.hot.body,
+              },
+              warm: {
+                headline: savedConfirmation['warm']?.headline ?? prev.warm.headline,
+                body: savedConfirmation['warm']?.body ?? prev.warm.body,
+              },
+              cold: {
+                headline: savedConfirmation['cold']?.headline ?? prev.cold.headline,
+                body: savedConfirmation['cold']?.body ?? prev.cold.body,
+              },
+            }));
+          }
+        }
+      } catch {
+        // Failed to load widget
+      } finally {
+        setLoading(false);
+      }
+    }
+    void loadWidget();
+  }, [widgetId]);
 
   function updateTheme(key: keyof ThemeConfig, value: string | number | boolean): void {
     setTheme((prev) => ({ ...prev, [key]: value }));
@@ -116,6 +226,14 @@ export default function WidgetDesignPage(): React.ReactElement {
         .update({
           theme: theme as unknown as Record<string, unknown>,
           confirmation: confirmation as unknown as Record<string, unknown>,
+          social_proof_text: theme.socialProofText,
+          social_proof_min: theme.socialProofMinThreshold,
+          contact_show_phone: theme.contactShowPhone,
+          contact_phone_required: theme.contactRequirePhone,
+          contact_show_message: theme.contactShowMessage,
+          contact_message_required: theme.contactRequireMessage,
+          contact_message_placeholder: theme.contactMessagePlaceholder,
+          contact_submit_text: theme.contactSubmitText,
         })
         .eq('id', widgetId);
 
@@ -128,6 +246,37 @@ export default function WidgetDesignPage(): React.ReactElement {
     } finally {
       setSaving(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="skeleton h-4 w-16" />
+          <span className="text-stone-light">/</span>
+          <div className="skeleton h-4 w-14" />
+          <span className="text-stone-light">/</span>
+          <div className="skeleton h-4 w-14" />
+        </div>
+        <div className="skeleton h-8 w-40 mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="card">
+                <div className="skeleton h-4 w-20 mb-4" />
+                <div className="space-y-3">
+                  <div className="skeleton h-10 w-full" />
+                  <div className="skeleton h-10 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="card min-h-[400px]">
+            <div className="skeleton h-full w-full" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -311,10 +460,26 @@ export default function WidgetDesignPage(): React.ReactElement {
           <div className="card">
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Options</h3>
             <div className="space-y-3">
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="text-sm text-ink font-body">Show branding</span>
-                <input type="checkbox" checked={theme.showBranding} onChange={(e) => updateTheme('showBranding', e.target.checked)} className="rounded-sm border-border text-signal focus:ring-signal" />
-              </label>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-sm text-ink font-body">Show branding</span>
+                  {!canRemoveBranding && (
+                    <p className="text-xs text-stone mt-0.5">
+                      <Link href="/dashboard/settings/billing" className="text-signal hover:underline">Upgrade to Pro</Link> to remove branding.
+                    </p>
+                  )}
+                  {canRemoveBranding && accountPlan === 'agency' && !theme.showBranding && (
+                    <p className="text-xs text-success mt-0.5">White-label mode active</p>
+                  )}
+                </div>
+                <input
+                  type="checkbox"
+                  checked={theme.showBranding}
+                  onChange={(e) => updateTheme('showBranding', e.target.checked)}
+                  disabled={!canRemoveBranding && !theme.showBranding}
+                  className="rounded-sm border-border text-signal focus:ring-signal"
+                />
+              </div>
               <label className="flex items-center justify-between cursor-pointer">
                 <span className="text-sm text-ink font-body">Show social proof</span>
                 <input type="checkbox" checked={theme.showSocialProof} onChange={(e) => updateTheme('showSocialProof', e.target.checked)} className="rounded-sm border-border text-signal focus:ring-signal" />

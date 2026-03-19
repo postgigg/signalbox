@@ -69,7 +69,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (authError) {
     return NextResponse.json(
-      { error: authError.message },
+      { error: 'Invalid email or password' },
       { status: 401 }
     );
   }

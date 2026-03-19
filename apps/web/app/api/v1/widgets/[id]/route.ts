@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { authenticateRequest, requireRole } from '@/lib/auth';
+import { getPlanLimits } from '@/lib/plan-limits';
 import type { Json } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -119,6 +120,20 @@ export async function PATCH(
       },
       { status: 400 },
     );
+  }
+
+  // Validate branding toggle against plan
+  if (parsed.data.theme !== undefined) {
+    const themeObj = parsed.data.theme as Record<string, unknown>;
+    if (themeObj['showBranding'] === false) {
+      const planLimits = getPlanLimits(account.plan);
+      if (!planLimits.customBranding) {
+        return NextResponse.json(
+          { error: 'Removing branding is not available on your current plan' },
+          { status: 403 },
+        );
+      }
+    }
   }
 
   const admin = createAdminClient();

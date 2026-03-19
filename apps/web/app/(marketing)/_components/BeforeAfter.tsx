@@ -1,4 +1,5 @@
 import { BEFORE_ITEMS, AFTER_ITEMS } from '../_constants';
+import { BeforeIllustration, AfterIllustration } from './BeforeAfterIllustrations';
 
 export function BeforeAfter(): React.ReactElement {
   return (
@@ -8,7 +9,10 @@ export function BeforeAfter(): React.ReactElement {
           Before and after.
         </h2>
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="card">
+          <div className="card animate-on-enter stagger-1">
+            <div className="-mx-5 -mt-5 mb-4 rounded-t-md border-b border-border bg-surface-alt overflow-hidden">
+              <BeforeIllustration />
+            </div>
             <h3 className="font-body text-base font-semibold text-stone">
               Before SignalBox
             </h3>
@@ -29,7 +33,10 @@ export function BeforeAfter(): React.ReactElement {
               ))}
             </ul>
           </div>
-          <div className="card border-signal border-2">
+          <div className="card border-signal border-2 animate-on-enter stagger-2">
+            <div className="-mx-5 -mt-5 mb-4 rounded-t-md border-b border-border bg-surface-alt overflow-hidden">
+              <AfterIllustration />
+            </div>
             <h3 className="font-body text-base font-semibold text-ink">
               After SignalBox
             </h3>

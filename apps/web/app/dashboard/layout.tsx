@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import { PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
 
 import type { ReactNode } from 'react';
 
@@ -10,6 +12,7 @@ interface NavItem {
   readonly href: string;
   readonly label: string;
   readonly icon: ReactNode;
+  readonly agencyOnly?: boolean;
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
@@ -50,6 +53,16 @@ const NAV_ITEMS: readonly NavItem[] = [
     ),
   },
   {
+    href: '/dashboard/clients',
+    label: 'Clients',
+    agencyOnly: true,
+    icon: (
+      <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/settings',
     label: 'Settings',
     icon: (
@@ -70,6 +83,44 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [accountPlan, setAccountPlan] = useState<string>('trial');
+
+  useEffect(() => {
+    async function loadPlan(): Promise<void> {
+      try {
+        const { createBrowserClient } = await import('@supabase/ssr');
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+        );
+
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: memberData } = await supabase
+          .from('members')
+          .select('account_id')
+          .eq('user_id', user.id)
+          .limit(1)
+          .single();
+
+        if (!memberData) return;
+
+        const { data: accountData } = await supabase
+          .from('accounts')
+          .select('plan')
+          .eq('id', memberData.account_id)
+          .single();
+
+        if (accountData) {
+          setAccountPlan(accountData.plan);
+        }
+      } catch {
+        // Failed to load plan
+      }
+    }
+    void loadPlan();
+  }, []);
 
   async function handleLogout(): Promise<void> {
     setLoggingOut(true);
@@ -90,6 +141,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
     }
     return pathname.startsWith(href);
   }
+
+  const visibleNavItems = NAV_ITEMS.filter((item) => {
+    if (item.agencyOnly === true && accountPlan !== 'agency') return false;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-paper">
@@ -139,7 +195,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {NAV_ITEMS.map((item) => (
+          {visibleNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -157,6 +213,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
         </nav>
 
         <div className="px-3 py-4 border-t border-border space-y-2">
+          {accountPlan === 'agency' && (
+            <a
+              href={`mailto:${PRIORITY_SUPPORT_EMAIL}`}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-body text-stone hover:text-ink hover:bg-surface-alt transition-colors duration-fast w-full"
+            >
+              <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+              </svg>
+              <span>Priority Support</span>
+              <span className="ml-auto text-xs px-1.5 py-0.5 rounded-pill bg-signal-light text-signal font-medium">Pro</span>
+            </a>
+          )}
           <button
             type="button"
             onClick={() => void handleLogout()}

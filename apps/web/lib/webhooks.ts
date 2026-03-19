@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import crypto from 'crypto';
+import { validateWebhookUrl } from '@/lib/url-validation';
 
 interface WebhookPayload {
   event: string;
@@ -37,6 +38,20 @@ export async function fireWebhooks(
 
   await Promise.allSettled(
     endpoints.map(async (endpoint) => {
+      // Validate webhook URL before dispatching
+      const urlCheck = validateWebhookUrl(endpoint.url);
+      if (!urlCheck.valid) {
+        await admin
+          .from('webhook_endpoints')
+          .update({
+            last_triggered_at: new Date().toISOString(),
+            last_status_code: 0,
+            failure_count: endpoint.failure_count + 1,
+          })
+          .eq('id', endpoint.id);
+        return;
+      }
+
       const signature = crypto
         .createHmac('sha256', endpoint.secret)
         .update(body)
@@ -52,6 +67,7 @@ export async function fireWebhooks(
           },
           body,
           signal: AbortSignal.timeout(10_000),
+          redirect: 'error',
         });
 
         await admin
