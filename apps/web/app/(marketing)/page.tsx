@@ -230,23 +230,138 @@ export default function LandingPage(): React.ReactElement {
 
       {/* ── Final CTA ── */}
       <section className="bg-ink py-24 px-6">
-        <div className="max-w-content mx-auto text-center animate-on-enter">
-          <h2 className="font-display text-4xl font-semibold text-white">
-            Stop guessing. Start closing.
-          </h2>
-          <div className="mt-8">
-            <Link
-              href="/signup"
-              className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
-            >
-              Start scoring your leads
-            </Link>
+        <div className="max-w-content mx-auto animate-on-enter">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <h2 className="font-display text-4xl font-semibold text-white">
+                Stop guessing. Start closing.
+              </h2>
+              <p className="mt-4 text-base text-stone-light leading-relaxed max-w-[440px]">
+                Your next hot lead is already on your site.
+                The only question is whether you call them first.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
+                >
+                  Start scoring your leads
+                </Link>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center justify-center rounded-md border border-white/20 text-white/80 font-body font-medium text-sm h-12 px-5 transition-all duration-fast hover:border-white/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
+                >
+                  See how it works
+                </a>
+              </div>
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-stone-light">
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  5-minute setup
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  14-day free trial
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  No credit card
+                </span>
+              </div>
+            </div>
+
+            {/* Mini dashboard preview */}
+            <div className="hidden lg:block animate-slide-right" aria-hidden="true">
+              <div className="step-illustration">
+                <svg
+                  viewBox="0 0 280 180"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-auto"
+                >
+                  {/* Card frame */}
+                  <rect x="16" y="8" width="248" height="164" rx="8" fill="#1E293B" stroke="#334155" strokeWidth="1" />
+                  <rect x="16" y="8" width="248" height="24" rx="8" fill="#1E293B" />
+                  <rect x="16" y="30" width="248" height="1" fill="#334155" />
+
+                  {/* Header */}
+                  <text x="28" y="24" fontSize="9" fontFamily="var(--font-body)" fill="#94A3B8" fontWeight="500">Call list</text>
+                  <text x="212" y="24" fontSize="8" fontFamily="var(--font-body)" fill="#475569">Score</text>
+
+                  {/* Row 1 — HOT 92 */}
+                  <g className="cta-row-1">
+                    <rect x="24" y="38" width="232" height="28" rx="4" fill="#1E293B" />
+                    <circle cx="40" cy="52" r="8" fill="#DC2626" opacity="0.15" />
+                    <text x="37" y="55" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">S</text>
+                    <rect x="56" y="47" width="60" height="5" rx="2.5" fill="#E2E8F0" opacity="0.6" />
+                    <rect x="56" y="55" width="40" height="3.5" rx="1.75" fill="#334155" />
+                    <rect x="130" y="47" width="28" height="13" rx="6.5" fill="#DC2626" opacity="0.15" />
+                    <text x="137" y="56" fontSize="7" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot</text>
+                    <rect x="208" y="48" width="40" height="8" rx="4" fill="#334155" />
+                    <rect x="208" y="48" width="36" height="8" rx="4" fill="#DC2626" className="cta-bar-1" />
+                    <text x="215" y="55" fontSize="7" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="600">92</text>
+                  </g>
+
+                  {/* Row 2 — HOT 85 */}
+                  <g className="cta-row-2">
+                    <rect x="24" y="70" width="232" height="28" rx="4" fill="#1E293B" />
+                    <circle cx="40" cy="84" r="8" fill="#DC2626" opacity="0.15" />
+                    <text x="37" y="87" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">R</text>
+                    <rect x="56" y="79" width="52" height="5" rx="2.5" fill="#E2E8F0" opacity="0.6" />
+                    <rect x="56" y="87" width="36" height="3.5" rx="1.75" fill="#334155" />
+                    <rect x="130" y="79" width="28" height="13" rx="6.5" fill="#DC2626" opacity="0.15" />
+                    <text x="137" y="88" fontSize="7" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot</text>
+                    <rect x="208" y="80" width="40" height="8" rx="4" fill="#334155" />
+                    <rect x="208" y="80" width="30" height="8" rx="4" fill="#DC2626" opacity="0.8" className="cta-bar-2" />
+                    <text x="214" y="87" fontSize="7" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="600">85</text>
+                  </g>
+
+                  {/* Row 3 — WARM 64 */}
+                  <g className="cta-row-3">
+                    <rect x="24" y="102" width="232" height="28" rx="4" fill="#1E293B" />
+                    <circle cx="40" cy="116" r="8" fill="#CA8A04" opacity="0.15" />
+                    <text x="36" y="119" fontSize="8" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">M</text>
+                    <rect x="56" y="111" width="48" height="5" rx="2.5" fill="#E2E8F0" opacity="0.6" />
+                    <rect x="56" y="119" width="32" height="3.5" rx="1.75" fill="#334155" />
+                    <rect x="130" y="111" width="36" height="13" rx="6.5" fill="#CA8A04" opacity="0.15" />
+                    <text x="134" y="120" fontSize="7" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">Warm</text>
+                    <rect x="208" y="112" width="40" height="8" rx="4" fill="#334155" />
+                    <rect x="208" y="112" width="22" height="8" rx="4" fill="#CA8A04" className="cta-bar-3" />
+                    <text x="212" y="119" fontSize="7" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="600">64</text>
+                  </g>
+
+                  {/* Row 4 — COLD 18 */}
+                  <g className="cta-row-4">
+                    <rect x="24" y="134" width="232" height="28" rx="4" fill="#1E293B" />
+                    <circle cx="40" cy="148" r="8" fill="#94A3B8" opacity="0.1" />
+                    <text x="37" y="151" fontSize="8" fontFamily="var(--font-body)" fill="#64748B" fontWeight="600">J</text>
+                    <rect x="56" y="143" width="44" height="5" rx="2.5" fill="#E2E8F0" opacity="0.4" />
+                    <rect x="56" y="151" width="28" height="3.5" rx="1.75" fill="#334155" />
+                    <rect x="130" y="143" width="30" height="13" rx="6.5" fill="#94A3B8" opacity="0.1" />
+                    <text x="136" y="152" fontSize="7" fontFamily="var(--font-body)" fill="#64748B" fontWeight="600">Cold</text>
+                    <rect x="208" y="144" width="40" height="8" rx="4" fill="#334155" />
+                    <rect x="208" y="144" width="8" height="8" rx="4" fill="#64748B" className="cta-bar-4" />
+                    <text x="210" y="151" fontSize="7" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="600">18</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
           </div>
-          <p className="mt-4 text-sm text-stone-light">
-            Set up in 5 minutes. 14 days free. No credit card.
-          </p>
         </div>
       </section>
+
+      {/* ── Built by ── */}
+      <div className="bg-ink border-t border-white/5 py-6 px-6 text-center">
+        <p className="text-sm text-stone-light font-body">
+          Built by a human, with a little help from AI.
+        </p>
+      </div>
     </div>
   );
 }

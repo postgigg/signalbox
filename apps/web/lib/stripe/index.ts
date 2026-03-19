@@ -20,7 +20,7 @@ export function getStripe(): Stripe {
 /** @deprecated Use getStripe() instead. Kept for backwards compatibility. */
 export const stripe = new Proxy({} as Stripe, {
   get(_target, prop) {
-    return (getStripe() as Record<string | symbol, unknown>)[prop];
+    return (getStripe() as unknown as Record<PropertyKey, unknown>)[prop];
   },
 });
 
