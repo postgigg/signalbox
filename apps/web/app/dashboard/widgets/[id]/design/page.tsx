@@ -103,18 +103,35 @@ export default function WidgetDesignPage(): React.ReactElement {
   const [canRemoveBranding, setCanRemoveBranding] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
   const [previewContact, setPreviewContact] = useState(false);
+  const [previewConfirmation, setPreviewConfirmation] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
   const contactSectionRef = useRef<HTMLDivElement>(null);
+  const confirmationSectionRef = useRef<HTMLDivElement>(null);
 
-  // Switch preview to contact form when that section is in view
+  // Switch preview based on which section is in view
   useEffect(() => {
-    const el = contactSectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry) setPreviewContact(entry.isIntersecting); },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    const contactEl = contactSectionRef.current;
+    const confirmEl = confirmationSectionRef.current;
+    const observers: IntersectionObserver[] = [];
+
+    if (contactEl) {
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry) setPreviewContact(entry.isIntersecting); },
+        { threshold: 0.3 }
+      );
+      obs.observe(contactEl);
+      observers.push(obs);
+    }
+    if (confirmEl) {
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry) setPreviewConfirmation(entry.isIntersecting); },
+        { threshold: 0.3 }
+      );
+      obs.observe(confirmEl);
+      observers.push(obs);
+    }
+
+    return () => observers.forEach((o) => o.disconnect());
   }, [loading]);
 
   useEffect(() => {
@@ -137,6 +154,10 @@ export default function WidgetDesignPage(): React.ReactElement {
           .single();
 
         if (!memberData) return;
+
+        if (memberData.account_id === 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4') {
+          setIsDemo(true);
+        }
 
         // Fetch account plan
         const { data: accountData } = await supabase
@@ -307,8 +328,9 @@ export default function WidgetDesignPage(): React.ReactElement {
         <h1 className="page-heading">Widget Design</h1>
         <div className="flex items-center gap-2">
           {saved && <span className="text-xs text-success font-body">Saved</span>}
-          <button type="button" onClick={() => void handleSave()} disabled={saving} className="btn-primary">
-            {saving ? 'Saving...' : 'Save Design'}
+          {isDemo && <span className="text-xs text-warning font-body">Demo account: editing disabled</span>}
+          <button type="button" onClick={() => void handleSave()} disabled={saving || isDemo} className="btn-primary">
+            {saving ? 'Saving...' : isDemo ? 'Read Only' : 'Save Design'}
           </button>
         </div>
       </div>
@@ -502,7 +524,7 @@ export default function WidgetDesignPage(): React.ReactElement {
           </div>
 
           {/* Confirmation Messages */}
-          <div className="card">
+          <div className="card" ref={confirmationSectionRef}>
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Confirmation Messages</h3>
             {(['hot', 'warm', 'cold'] as const).map((tierKey) => (
               <div key={tierKey} className="mb-4 last:mb-0">
@@ -557,17 +579,37 @@ export default function WidgetDesignPage(): React.ReactElement {
                     <div className="h-1 rounded-sm" style={{ backgroundColor: `${theme.accentColor}20` }}>
                       <div
                         className="h-full rounded-sm transition-all duration-normal"
-                        style={{ width: previewContact ? '100%' : '33%', backgroundColor: theme.accentColor }}
+                        style={{ width: previewConfirmation ? '100%' : previewContact ? '100%' : '33%', backgroundColor: theme.accentColor }}
                       />
                     </div>
                     <p className="text-xs mt-3 opacity-50">
-                      {previewContact ? 'Contact Info' : 'Step 1 of 3'}
+                      {previewConfirmation ? 'Complete' : previewContact ? 'Contact Info' : 'Step 1 of 3'}
                     </p>
                   </div>
 
-                  {/* Content: Step view OR Contact form */}
+                  {/* Content: Step view / Contact form / Confirmation */}
                   <div className="p-4">
-                    {previewContact ? (
+                    {previewConfirmation ? (
+                      <div className="text-center py-4">
+                        <div
+                          className="w-12 h-12 rounded-pill mx-auto flex items-center justify-center mb-3"
+                          style={{ backgroundColor: `${theme.accentColor}20` }}
+                        >
+                          <svg className="w-6 h-6" style={{ color: theme.accentColor }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <p className="text-lg font-semibold">{confirmation.hot.headline}</p>
+                        <p className="text-sm opacity-60 mt-1">{confirmation.hot.body}</p>
+                        <div className="mt-4 flex items-center justify-center gap-1.5">
+                          <span className="inline-block w-1.5 h-1.5 rounded-pill" style={{ backgroundColor: theme.accentColor }} />
+                          <span className="inline-block w-1.5 h-1.5 rounded-pill bg-yellow-400" />
+                          <span className="inline-block w-1.5 h-1.5 rounded-pill bg-red-400" />
+                          <span className="inline-block w-1.5 h-1.5 rounded-pill bg-green-400" />
+                        </div>
+                        <p className="text-[10px] opacity-30 mt-2">Full-screen confetti plays on submission</p>
+                      </div>
+                    ) : previewContact ? (
                       <>
                         <p className="text-lg font-semibold">Almost done!</p>
                         <p className="text-xs opacity-50 mt-1">Enter your details to see your results.</p>
