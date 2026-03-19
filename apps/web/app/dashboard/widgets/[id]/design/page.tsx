@@ -104,9 +104,11 @@ export default function WidgetDesignPage(): React.ReactElement {
   const [accountPlan, setAccountPlan] = useState<string>('trial');
   const [previewContact, setPreviewContact] = useState(false);
   const [previewConfirmation, setPreviewConfirmation] = useState(false);
+  const [previewLayout, setPreviewLayout] = useState(false);
   const [isDemo, setIsDemo] = useState(false);
   const contactSectionRef = useRef<HTMLDivElement>(null);
   const confirmationSectionRef = useRef<HTMLDivElement>(null);
+  const layoutSectionRef = useRef<HTMLDivElement>(null);
 
   // Switch preview based on which section is in view
   useEffect(() => {
@@ -128,6 +130,16 @@ export default function WidgetDesignPage(): React.ReactElement {
         { threshold: 0.3 }
       );
       obs.observe(confirmEl);
+      observers.push(obs);
+    }
+
+    const layoutEl = layoutSectionRef.current;
+    if (layoutEl) {
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry) setPreviewLayout(entry.isIntersecting); },
+        { threshold: 0.3 }
+      );
+      obs.observe(layoutEl);
       observers.push(obs);
     }
 
@@ -374,7 +386,7 @@ export default function WidgetDesignPage(): React.ReactElement {
           </div>
 
           {/* Layout */}
-          <div className="card">
+          <div className="card" ref={layoutSectionRef}>
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Layout</h3>
             <div className="space-y-4">
               <div>
@@ -564,7 +576,45 @@ export default function WidgetDesignPage(): React.ReactElement {
         <div>
           <div className="sticky top-6">
             <h3 className="text-xs font-medium text-stone uppercase tracking-wide mb-3">Live Preview</h3>
-            <div className="border border-border rounded-lg bg-stone-light/10 min-h-[500px] relative p-6 flex items-end justify-end">
+            <div className={`border border-border rounded-lg bg-stone-light/10 min-h-[500px] relative p-6 flex transition-all duration-normal ${
+              previewLayout
+                ? theme.position === 'bottom-left' ? 'items-end justify-start' : theme.position === 'bottom-center' ? 'items-end justify-center' : 'items-end justify-end'
+                : 'items-end justify-end'
+            }`}>
+              {/* Position indicator when editing layout */}
+              {previewLayout && (
+                <div className="absolute inset-0 pointer-events-none">
+                  {/* Desktop frame */}
+                  <div className="absolute top-3 left-3 right-3 bottom-3 border border-dashed border-stone/20 rounded-md">
+                    <p className="absolute top-2 left-3 text-[9px] text-stone/40 font-mono uppercase tracking-wider">Desktop viewport</p>
+                    {/* Position dot */}
+                    <div
+                      className="absolute w-2.5 h-2.5 rounded-pill transition-all duration-normal"
+                      style={{
+                        backgroundColor: theme.accentColor,
+                        bottom: '12px',
+                        left: theme.position === 'bottom-left' ? '12px' : theme.position === 'bottom-center' ? '50%' : 'auto',
+                        right: theme.position === 'bottom-right' ? '12px' : 'auto',
+                        transform: theme.position === 'bottom-center' ? 'translateX(-50%)' : 'none',
+                      }}
+                    />
+                  </div>
+                  {/* Mobile frame */}
+                  <div className="absolute top-3 right-3 w-[60px] h-[100px] border border-dashed border-stone/20 rounded-md">
+                    <p className="absolute top-1 left-1.5 text-[6px] text-stone/40 font-mono">Mobile</p>
+                    <div
+                      className="absolute w-1.5 h-1.5 rounded-pill"
+                      style={{
+                        backgroundColor: theme.accentColor,
+                        bottom: '6px',
+                        left: theme.position === 'bottom-left' ? '6px' : theme.position === 'bottom-center' ? '50%' : 'auto',
+                        right: theme.position === 'bottom-right' ? '6px' : 'auto',
+                        transform: theme.position === 'bottom-center' ? 'translateX(-50%)' : 'none',
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="w-full" style={{ maxWidth: `${String(theme.panelWidth)}px` }}>
                 <div
                   className="border shadow-lg transition-all duration-normal"
@@ -688,7 +738,9 @@ export default function WidgetDesignPage(): React.ReactElement {
                 </div>
 
                 {/* Trigger */}
-                <div className="mt-4 flex justify-end">
+                <div className={`mt-4 flex ${
+                  theme.position === 'bottom-left' ? 'justify-start' : theme.position === 'bottom-center' ? 'justify-center' : 'justify-end'
+                }`}>
                   <div
                     className="px-5 h-12 flex items-center gap-2 text-white text-sm font-medium shadow-lg"
                     style={{
