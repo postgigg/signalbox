@@ -6,9 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/dashboard/', '/admin/', '/api/'],
+        disallow: ['/dashboard/', '/admin/', '/api/', '/onboarding/'],
       },
     ],
-    sitemap: 'https://signalbox.io/sitemap.xml',
+    sitemap: 'https://signalbox.netlify.app/sitemap.xml',
   };
 }
