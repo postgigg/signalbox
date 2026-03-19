@@ -371,10 +371,10 @@ export default function PricingPage(): React.ReactElement {
             <div className="px-6 py-6 sm:px-8 sm:py-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <h3 className="font-display text-xl font-semibold text-ink">
-                  5 hot leads in 30 days, or 6 months free.
+                  5 hot leads in 14 days, or 6 months free.
                 </h3>
                 <p className="mt-2 text-sm text-stone leading-relaxed max-w-[480px]">
-                  If we do not surface at least 5 hot-tier leads in your first 30 days
+                  If we do not surface at least 5 hot-tier leads in your first 14 days
                   on a paid plan, we extend your subscription by 6 months at no charge.
                   Up to $600 value. No forms, no approval process, automatic.
                 </p>
@@ -386,7 +386,7 @@ export default function PricingPage(): React.ReactElement {
                 </div>
                 <div className="w-px h-10 bg-border" />
                 <div>
-                  <span className="font-display text-3xl font-bold text-ink">30</span>
+                  <span className="font-display text-3xl font-bold text-ink">14</span>
                   <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Days</p>
                 </div>
                 <div className="w-px h-10 bg-border" />
