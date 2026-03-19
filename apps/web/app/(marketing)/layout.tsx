@@ -83,6 +83,19 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
 
       <main className="flex-1 pt-16">{children}</main>
 
+      {/* SignalBox demo widget */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.SignalBoxConfig = {
+              key: "f60fc7fb2a37017dbcf20a28",
+              apiUrl: "https://signalbox.netlify.app"
+            };
+          `,
+        }}
+      />
+      <script src="/widget/sb.js" async />
+
       <footer className="border-t border-border bg-paper">
         <div className="max-w-content mx-auto px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
