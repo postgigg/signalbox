@@ -32,22 +32,6 @@ function TierBadge({ tier }: { readonly tier: string }): React.ReactElement {
   );
 }
 
-function StatusBadge({ status }: { readonly status: string }): React.ReactElement {
-  const classes: Record<string, string> = {
-    new: 'bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    viewed: 'bg-surface-alt text-stone text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    contacted: 'bg-warning-light text-warning text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    qualified: 'bg-success-light text-success text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    disqualified: 'bg-danger-light text-danger text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    converted: 'bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-    archived: 'bg-surface-alt text-stone-light text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center',
-  };
-  return (
-    <span className={classes[status] ?? 'bg-surface-alt text-stone text-xs px-2 py-0.5 rounded-pill font-medium inline-flex items-center'}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
-    </span>
-  );
-}
 
 export default async function LeadDetailPage({ params }: LeadDetailPageProps): Promise<React.ReactElement> {
   const { id } = await params;
