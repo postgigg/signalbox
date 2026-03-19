@@ -133,6 +133,9 @@ class SignalBoxWidget {
       this.machine.configLoaded(config);
       this.renderer.init(config);
       trackEvent(this.apiUrl, this.widgetKey, 'impression');
+
+      // Attention-grabbing triggers
+      this.scheduleAttentionGrabbers();
     } catch (err) {
       if (err instanceof WidgetApiError) {
         if (err.code === 'INACTIVE') {
@@ -150,6 +153,50 @@ class SignalBoxWidget {
         this.machine.fetchFailed('Failed to load widget configuration.');
       }
     }
+  }
+
+  // ── Attention Grabbers ──────────────────────────────────────────────
+  private scheduleAttentionGrabbers(): void {
+    const ctx = this.machine.getContext();
+    if (!ctx.config) return;
+
+    // 1. Teaser bubble after 3 seconds
+    setTimeout(() => {
+      if (this.machine.getState() !== 'ready') return;
+      this.renderer.showTeaser('See how you qualify in 30 seconds');
+    }, 3000);
+
+    // 2. Pulse the trigger button after 8 seconds
+    setTimeout(() => {
+      if (this.machine.getState() !== 'ready') return;
+      this.renderer.pulseTrigger();
+    }, 8000);
+
+    // 3. On scroll past 40% of page, show a nudge
+    let scrollTriggered = false;
+    const handleScroll = (): void => {
+      if (scrollTriggered || this.machine.getState() !== 'ready') return;
+      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPct > 0.4) {
+        scrollTriggered = true;
+        this.renderer.showTeaser('Quick question before you go?');
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // 4. Exit intent on desktop (mouse leaves viewport top)
+    let exitTriggered = false;
+    const handleMouseLeave = (e: MouseEvent): void => {
+      if (exitTriggered || this.machine.getState() !== 'ready') return;
+      if (e.clientY <= 0) {
+        exitTriggered = true;
+        this.renderer.showTeaser('Wait! Get a personalized recommendation');
+        this.renderer.pulseTrigger();
+        document.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+    document.addEventListener('mouseleave', handleMouseLeave);
   }
 
   // ── Event Handlers ────────────────────────────────────────────────────

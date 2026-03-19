@@ -78,23 +78,54 @@ export async function GET(
     .eq('is_active', true)
     .single();
 
+  // Map flow steps to widget format (score -> scoreWeight)
+  const rawSteps = Array.isArray(flow?.steps) ? flow.steps : [];
+  const mappedSteps = (rawSteps as Array<Record<string, unknown>>).map((step) => ({
+    id: step['id'] as string,
+    question: step['question'] as string,
+    description: step['description'] as string | undefined,
+    type: 'single_select' as const,
+    options: Array.isArray(step['options'])
+      ? (step['options'] as Array<Record<string, unknown>>).map((opt) => ({
+          id: opt['id'] as string,
+          label: opt['label'] as string,
+          icon: opt['icon'] as string | undefined,
+          scoreWeight: (opt['scoreWeight'] ?? opt['score'] ?? 0) as number,
+        }))
+      : [],
+  }));
+
+  // Map confirmation tiers
+  const rawConf = (widget.confirmation ?? {}) as Record<string, unknown>;
+  const mapTier = (tier: unknown): { headline: string; body: string; ctaText: string | null; ctaUrl: string | null } => {
+    const t = (tier ?? {}) as Record<string, unknown>;
+    return {
+      headline: (t['headline'] as string) ?? 'Thank you!',
+      body: (t['body'] as string) ?? '',
+      ctaText: (t['ctaText'] as string) ?? null,
+      ctaUrl: (t['ctaUrl'] as string) ?? null,
+    };
+  };
+
   const response = corsJson({
+    widgetKey: widget.widget_key,
     theme: widget.theme,
-    steps: flow?.steps ?? [],
+    steps: mappedSteps,
     flowVersion: flow?.version ?? 0,
-    confirmation: widget.confirmation,
-    contact: {
-      showPhone: widget.contact_show_phone ?? false,
-      phoneRequired: widget.contact_phone_required ?? false,
-      showMessage: widget.contact_show_message ?? false,
-      messageRequired: widget.contact_message_required ?? false,
-      messagePlaceholder: widget.contact_message_placeholder ?? '',
-      submitText: widget.contact_submit_text ?? 'Submit',
+    confirmation: {
+      hot: mapTier(rawConf['hot']),
+      warm: mapTier(rawConf['warm']),
+      cold: mapTier(rawConf['cold']),
     },
-    socialProof: {
-      text: widget.social_proof_text,
-      min: widget.social_proof_min,
-    },
+    contactShowPhone: widget.contact_show_phone ?? false,
+    contactPhoneRequired: widget.contact_phone_required ?? false,
+    contactShowMessage: widget.contact_show_message ?? false,
+    contactMessageRequired: widget.contact_message_required ?? false,
+    contactMessagePlaceholder: widget.contact_message_placeholder ?? 'Tell us more...',
+    contactSubmitText: widget.contact_submit_text ?? 'Submit',
+    socialProofText: widget.social_proof_text ?? '',
+    socialProofMin: widget.social_proof_min ?? 0,
+    submissionCount: widget.submission_count ?? 0,
   });
 
   response.headers.set('Cache-Control', 'public, max-age=60');

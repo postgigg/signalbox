@@ -939,6 +939,81 @@ export class WidgetRenderer {
     return Array.from(elements) as HTMLElement[];
   }
 
+  // ── Attention Grabbers ──────────────────────────────────────────────
+  showTeaser(message: string): void {
+    if (!this.triggerEl) return;
+
+    // Remove existing teaser if any
+    const existing = this.shadow.querySelector('.sb-teaser');
+    if (existing) existing.remove();
+
+    const teaser = document.createElement('div');
+    teaser.className = 'sb-teaser';
+    teaser.setAttribute('role', 'status');
+    teaser.style.cssText = `
+      position: fixed; bottom: 90px; right: 20px; z-index: 2147483646;
+      background: #fff; color: #1E293B; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px; font-weight: 500; padding: 10px 16px; border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); max-width: 240px;
+      opacity: 0; transform: translateY(8px) scale(0.95);
+      transition: opacity 200ms ease, transform 200ms ease;
+      cursor: pointer; pointer-events: auto;
+    `;
+    teaser.textContent = message;
+
+    // Small arrow pointing down
+    const arrow = document.createElement('div');
+    arrow.style.cssText = `
+      position: absolute; bottom: -6px; right: 24px;
+      width: 12px; height: 12px; background: #fff;
+      transform: rotate(45deg); border-radius: 2px;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.08);
+    `;
+    teaser.appendChild(arrow);
+
+    teaser.addEventListener('click', () => {
+      teaser.remove();
+      this.callbacks.onTriggerClick();
+    });
+
+    this.shadow.appendChild(teaser);
+
+    // Animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        teaser.style.opacity = '1';
+        teaser.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Auto dismiss after 6 seconds
+    setTimeout(() => {
+      teaser.style.opacity = '0';
+      teaser.style.transform = 'translateY(8px) scale(0.95)';
+      setTimeout(() => teaser.remove(), 200);
+    }, 6000);
+  }
+
+  pulseTrigger(): void {
+    if (!this.triggerEl) return;
+    const btn = this.triggerEl;
+    const origTransform = btn.style.transform;
+
+    // Pulse animation: scale up then back
+    btn.style.transition = 'transform 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    btn.style.transform = 'scale(1.15)';
+    setTimeout(() => {
+      btn.style.transform = 'scale(1)';
+      setTimeout(() => {
+        btn.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          btn.style.transform = origTransform || 'scale(1)';
+          btn.style.transition = '';
+        }, 300);
+      }, 300);
+    }, 300);
+  }
+
   // ── Destroy ──────────────────────────────────────────────────────────
   destroy(): void {
     this.disableFocusTrap();
