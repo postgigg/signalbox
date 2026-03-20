@@ -39,6 +39,7 @@ interface MarketingLayoutProps {
 export default function MarketingLayout({ children }: MarketingLayoutProps): React.ReactElement {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     function handleScroll(): void {
@@ -47,6 +48,11 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -60,7 +66,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
             <Logo size="md" />
           </Link>
 
-          <div className="flex items-center gap-6">
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -78,7 +85,61 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
               Log In
             </Link>
           </div>
+
+          {/* Mobile hamburger button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="md:hidden p-2 -mr-2 rounded-sm hover:bg-surface-alt transition-colors duration-fast"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            )}
+          </button>
         </nav>
+
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-paper px-6 py-4 space-y-1">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block py-2.5 text-sm font-body transition-colors duration-fast ${
+                  pathname === link.href
+                    ? 'text-ink font-medium'
+                    : 'text-stone hover:text-ink'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-2 border-t border-border mt-2">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2.5 text-sm font-body text-stone hover:text-ink transition-colors duration-fast"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-primary w-full mt-2 text-center text-sm"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1 pt-16">{children}</main>
