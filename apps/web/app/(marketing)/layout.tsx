@@ -141,9 +141,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-border text-xs text-stone space-y-1">
-            <p>&copy; 2026 HawkLeads. All rights reserved.</p>
-            <p>A Workbird LLC Company.</p>
+          <div className="mt-10 pt-6 border-t border-border text-xs text-stone" suppressHydrationWarning>
+            &copy; 2026 HawkLeads. All rights reserved. A Workbird LLC Company.
           </div>
         </div>
       </footer>
