@@ -149,7 +149,7 @@ export interface WidgetContext {
 }
 
 // ── Global Config ──────────────────────────────────────────────────────────
-export interface SignalBoxWindowConfig {
+export interface HawkLeadsWindowConfig {
   key: string;
   apiUrl?: string;
 }
@@ -157,6 +157,6 @@ export interface SignalBoxWindowConfig {
 // Extend Window
 declare global {
   interface Window {
-    SignalBoxConfig?: SignalBoxWindowConfig;
+    HawkLeadsConfig?: HawkLeadsWindowConfig;
   }
 }

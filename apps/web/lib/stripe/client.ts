@@ -18,9 +18,9 @@ export function getStripe(): Stripe {
     apiVersion: '2024-04-10',
     typescript: true,
     appInfo: {
-      name: 'SignalBox',
+      name: 'HawkLeads',
       version: '0.1.0',
-      url: 'https://signalbox.io',
+      url: 'https://hawkleads.io',
     },
   });
 

@@ -310,7 +310,7 @@ export class WidgetRenderer {
   private buildPanel(): void {
     const panel = el('div', 'sb-panel sb-panel--hidden', {
       role: 'dialog',
-      'aria-label': 'SignalBox Widget',
+      'aria-label': 'HawkLeads Widget',
       'aria-modal': 'true',
     });
 
@@ -371,11 +371,11 @@ export class WidgetRenderer {
     if (this.config?.theme.showBranding) {
       const footer = el('div', 'sb-footer');
       const link = el('a', 'sb-footer__link', {
-        href: 'https://signalbox.io?ref=widget',
+        href: 'https://hawkleads.io?ref=widget',
         target: '_blank',
         rel: 'noopener noreferrer',
       });
-      link.textContent = 'Powered by SignalBox';
+      link.textContent = 'Powered by HawkLeads';
       footer.appendChild(link);
       panel.appendChild(footer);
     }

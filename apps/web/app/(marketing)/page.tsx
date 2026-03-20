@@ -8,7 +8,6 @@ import { useInViewAnimations } from '@/lib/use-in-view';
 import { StatsSection } from './_components/StatsSection';
 import { ComparisonTable } from './_components/ComparisonTable';
 import { HowItWorks } from './_components/HowItWorks';
-import { IndustryHooks } from './_components/IndustryHooks';
 import { FeaturesSection } from './_components/FeaturesSection';
 import { BeforeAfter } from './_components/BeforeAfter';
 import { TrustSignals } from './_components/TrustSignals';
@@ -75,7 +74,7 @@ export default function LandingPage(): React.ReactElement {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/widget-mockup.svg"
-              alt="SignalBox widget on a plumbing website showing a multi-step qualifying flow"
+              alt="HawkLeads widget on a plumbing website showing a multi-step qualifying flow"
               className="w-full h-auto rounded-lg border border-border"
               width={1200}
               height={720}
@@ -84,7 +83,6 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
-      <IndustryHooks />
       <FeaturesSection />
       <BeforeAfter />
 
@@ -159,7 +157,7 @@ export default function LandingPage(): React.ReactElement {
             ))}
           </div>
           <p className="mt-6 text-center text-sm text-stone">
-            Close just one extra deal per month and SignalBox pays for itself.
+            Close just one extra deal per month and HawkLeads pays for itself.
           </p>
           <p className="mt-2 text-center text-sm text-stone-light">
             <Link href="/pricing" className="underline hover:text-ink transition-colors duration-fast">

@@ -116,15 +116,15 @@ export default function IntegrationsPage(): React.ReactElement {
     <div>
       <h1 className="page-heading">Integrations</h1>
       <p className="mt-1 text-sm text-stone font-body">
-        Connect SignalBox to your tools via webhooks. Works with Zapier, Make, and custom integrations.
+        Connect HawkLeads to your tools via webhooks. Works with Zapier, Make, and custom integrations.
       </p>
 
       {/* Webhook Documentation */}
       <section className="mt-8">
         <h2 className="font-display text-lg font-semibold text-ink">Webhook Events</h2>
         <p className="mt-1 text-sm text-stone font-body">
-          SignalBox sends POST requests to your configured URLs when events occur.
-          Each request includes an HMAC-SHA256 signature in the X-SignalBox-Signature header.
+          HawkLeads sends POST requests to your configured URLs when events occur.
+          Each request includes an HMAC-SHA256 signature in the X-HawkLeads-Signature header.
         </p>
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {WEBHOOK_EVENTS.map((event) => (
@@ -332,7 +332,7 @@ export default function IntegrationsPage(): React.ReactElement {
               <li>Create a new Zap and choose "Webhooks by Zapier" as the trigger</li>
               <li>Select "Catch Hook" as the trigger event</li>
               <li>Copy the webhook URL provided by Zapier</li>
-              <li>Add it as a webhook endpoint in your SignalBox settings</li>
+              <li>Add it as a webhook endpoint in your HawkLeads settings</li>
               <li>Use the "Send Test" button to verify the connection</li>
               <li>Configure your Zapier actions (CRM, email, Slack, etc.)</li>
             </ol>
@@ -342,7 +342,7 @@ export default function IntegrationsPage(): React.ReactElement {
             <ol className="mt-3 space-y-2 text-sm text-stone font-body list-decimal list-inside">
               <li>Create a new scenario and add a "Custom webhook" module</li>
               <li>Copy the webhook URL provided by Make</li>
-              <li>Add it as a webhook endpoint in your SignalBox settings</li>
+              <li>Add it as a webhook endpoint in your HawkLeads settings</li>
               <li>Use the "Send Test" button to send sample data</li>
               <li>Make will automatically detect the data structure</li>
               <li>Add your desired action modules to the scenario</li>

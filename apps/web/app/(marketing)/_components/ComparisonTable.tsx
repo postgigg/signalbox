@@ -15,7 +15,7 @@ export function ComparisonTable(): React.ReactElement {
                   Regular contact forms
                 </th>
                 <th className="text-left py-3 px-5 font-body font-medium text-ink">
-                  SignalBox
+                  HawkLeads
                 </th>
               </tr>
             </thead>
@@ -23,7 +23,7 @@ export function ComparisonTable(): React.ReactElement {
               {COMPARISON_ROWS.map((row) => (
                 <tr key={row.form} className="border-b border-border last:border-b-0">
                   <td className="py-3 px-5 text-stone">{row.form}</td>
-                  <td className="py-3 px-5 text-ink font-medium">{row.signalbox}</td>
+                  <td className="py-3 px-5 text-ink font-medium">{row.hawkleads}</td>
                 </tr>
               ))}
             </tbody>

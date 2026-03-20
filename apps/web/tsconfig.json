@@ -34,7 +34,7 @@
       "@/*": [
         "./*"
       ],
-      "@signalbox/widget": [
+      "@hawkleads/widget": [
         "../../packages/widget/src"
       ]
     },

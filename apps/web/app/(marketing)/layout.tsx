@@ -26,7 +26,7 @@ const FOOTER_COMPANY = [
 const FOOTER_LEGAL = [
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
-  { href: 'mailto:support@signalbox.io', label: 'Contact' },
+  { href: 'mailto:support@hawkleads.io', label: 'Contact' },
 ] as const;
 
 interface MarketingLayoutProps {
@@ -57,7 +57,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
             href="/"
             className="font-display text-xl font-semibold tracking-tight text-ink"
           >
-            SignalBox
+            HawkLeads
           </Link>
 
           <div className="flex items-center gap-6">
@@ -91,7 +91,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
                 href="/"
                 className="font-display text-lg font-semibold tracking-tight text-ink"
               >
-                SignalBox
+                HawkLeads
               </Link>
               <p className="mt-2 text-sm text-stone">Built in Virginia.</p>
             </div>
@@ -146,15 +146,15 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
           </div>
 
           <div className="mt-10 pt-6 border-t border-border text-xs text-stone">
-            &copy; {new Date().getFullYear()} SignalBox. All rights reserved.
+            &copy; {new Date().getFullYear()} HawkLeads. All rights reserved.
           </div>
         </div>
       </footer>
 
-      {/* SignalBox demo widget — loaded after page content */}
+      {/* HawkLeads demo widget — loaded after page content */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.SignalBoxConfig={key:"f60fc7fb2a37017dbcf20a28",apiUrl:"https://signalbox.netlify.app"};`,
+          __html: `window.HawkLeadsConfig={key:"f60fc7fb2a37017dbcf20a28",apiUrl:"https://hawkleads.netlify.app"};`,
         }}
       />
       <script src="/widget/sb.js" async />

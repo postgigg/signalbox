@@ -12,7 +12,7 @@ const BATCH_SIZE = 50;
 const MAX_FAILURE_COUNT = 10;
 const FAILURE_NOTIFICATION_THRESHOLD = 3;
 const WEBHOOK_TIMEOUT_MS = 10_000;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.signalbox.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -207,7 +207,7 @@ async function sendWebhookFailureEmail(
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'SignalBox <noreply@signalbox.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
 
   // Find webhook endpoints that have failed but are still retryable
   const { data: failingEndpoints, error: endpointsError } = await supabase
@@ -279,8 +279,8 @@ export default async function handler(): Promise<void> {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-SignalBox-Signature': signature,
-            'X-SignalBox-Timestamp': timestamp,
+            'X-HawkLeads-Signature': signature,
+            'X-HawkLeads-Timestamp': timestamp,
           },
           body,
           signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),

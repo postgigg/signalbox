@@ -73,7 +73,7 @@ export async function POST(
   const testPayload = {
     event: 'test',
     data: {
-      message: 'This is a test webhook from SignalBox',
+      message: 'This is a test webhook from HawkLeads',
       submissionId: '00000000-0000-0000-0000-000000000000',
       widgetId: '00000000-0000-0000-0000-000000000000',
       widgetKey: 'test_widget',
@@ -105,8 +105,8 @@ export async function POST(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-SignalBox-Signature': signature,
-        'X-SignalBox-Event': 'test',
+        'X-HawkLeads-Signature': signature,
+        'X-HawkLeads-Event': 'test',
       },
       body,
       signal: AbortSignal.timeout(10_000),

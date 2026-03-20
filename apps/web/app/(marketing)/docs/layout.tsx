@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'API Documentation — Integrate SignalBox Into Your Stack',
-  description: 'SignalBox API docs. REST endpoints for leads, widgets, flows, analytics, and webhooks. API key authentication. Comprehensive integration guide.',
+  title: 'API Documentation — Integrate HawkLeads Into Your Stack',
+  description: 'HawkLeads API docs. REST endpoints for leads, widgets, flows, analytics, and webhooks. API key authentication. Comprehensive integration guide.',
   keywords: ['lead scoring API', 'widget API', 'lead management API', 'webhook integration', 'REST API lead scoring'],
-  alternates: { canonical: 'https://signalbox.netlify.app/docs' },
+  alternates: { canonical: 'https://hawkleads.netlify.app/docs' },
   openGraph: {
-    title: 'SignalBox API Documentation',
+    title: 'HawkLeads API Documentation',
     description: 'REST API for lead scoring, widgets, flows, analytics, and webhooks. Full integration guide.',
-    url: 'https://signalbox.netlify.app/docs',
+    url: 'https://hawkleads.netlify.app/docs',
   },
 };
 

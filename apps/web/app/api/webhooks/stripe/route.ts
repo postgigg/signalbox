@@ -15,7 +15,7 @@ function getWebhookSecret(): string {
   return secret;
 }
 
-/** Map a Stripe price ID to a SignalBox plan */
+/** Map a Stripe price ID to a HawkLeads plan */
 function planFromPriceId(priceId: string): Plan | null {
   for (const [planId, config] of Object.entries(PLANS)) {
     if (

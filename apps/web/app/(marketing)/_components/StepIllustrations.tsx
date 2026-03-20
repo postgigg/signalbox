@@ -99,7 +99,7 @@ export function EmbedSnippetIllustration(): React.ReactElement {
 
         {/* Code line 2 — types in with delay */}
         <g className="step-embed-line-2">
-          <text x="50" y="76" fontSize="8" fontFamily="var(--font-mono)" fill="#CA8A04">SignalBox</text>
+          <text x="50" y="76" fontSize="8" fontFamily="var(--font-mono)" fill="#CA8A04">HawkLeads</text>
           <text x="99" y="76" fontSize="8" fontFamily="var(--font-mono)" fill="#94A3B8">.</text>
           <text x="103" y="76" fontSize="8" fontFamily="var(--font-mono)" fill="#16A34A">init</text>
           <text x="122" y="76" fontSize="8" fontFamily="var(--font-mono)" fill="#94A3B8">(</text>

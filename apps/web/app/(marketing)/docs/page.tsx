@@ -123,7 +123,7 @@ export default function DocsPage(): React.ReactElement {
     <div className="max-w-content mx-auto px-6 py-16">
       <h1 className="font-display text-3xl font-semibold text-ink">API Documentation</h1>
       <p className="mt-2 text-sm text-stone">
-        Reference for the SignalBox REST API. API access requires a Pro or Agency plan.
+        Reference for the HawkLeads REST API. API access requires a Pro or Agency plan.
       </p>
 
       {/* Mobile section select */}
@@ -168,10 +168,10 @@ export default function DocsPage(): React.ReactElement {
             <section>
               <h2 className="font-display text-xl font-semibold text-ink">Overview</h2>
               <p className="mt-2 text-sm text-stone leading-relaxed">
-                The SignalBox API is a REST API that returns JSON responses. All requests must be made over HTTPS.
+                The HawkLeads API is a REST API that returns JSON responses. All requests must be made over HTTPS.
                 The base URL for all API endpoints is:
               </p>
-              <CodeBlock>{'https://app.signalbox.io/api/v1'}</CodeBlock>
+              <CodeBlock>{'https://app.hawkleads.io/api/v1'}</CodeBlock>
 
               <h3 className="font-body text-sm font-semibold text-ink mt-6 mb-1">Content Type</h3>
               <p className="text-sm text-stone">
@@ -229,7 +229,7 @@ export default function DocsPage(): React.ReactElement {
               </ul>
 
               <h3 className="font-body text-sm font-semibold text-ink mt-6 mb-1">Example Request</h3>
-              <CodeBlock>{`curl -X GET "https://app.signalbox.io/api/v1/leads?limit=10" \\
+              <CodeBlock>{`curl -X GET "https://app.hawkleads.io/api/v1/leads?limit=10" \\
   -H "Authorization: Bearer sb_live_abc123def456" \\
   -H "Content-Type: application/json"`}</CodeBlock>
             </section>
@@ -626,7 +626,7 @@ export default function DocsPage(): React.ReactElement {
 
               <h3 className="font-body text-sm font-semibold text-ink mt-6 mb-1">Signature Verification</h3>
               <p className="text-sm text-stone">
-                Each webhook request includes an <code className="text-xs bg-surface-alt px-1 py-0.5 rounded font-mono">X-SignalBox-Signature</code> header
+                Each webhook request includes an <code className="text-xs bg-surface-alt px-1 py-0.5 rounded font-mono">X-HawkLeads-Signature</code> header
                 containing an HMAC-SHA256 signature of the request body using your webhook secret. Always verify
                 this signature before processing the payload.
               </p>

@@ -81,7 +81,7 @@ export async function sendSlackTestMessage(webhookUrl: string): Promise<void> {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: ':white_check_mark: *SignalBox Slack integration is working.* You will receive lead notifications in this channel.',
+          text: ':white_check_mark: *HawkLeads Slack integration is working.* You will receive lead notifications in this channel.',
         },
       },
     ],

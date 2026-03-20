@@ -66,9 +66,9 @@ export default function WidgetEmbedPage(): React.ReactElement {
 
   const embedCode = `<script>
   (function(w,d,s,k){
-    w.SignalBoxConfig={key:k};
+    w.HawkLeadsConfig={key:k};
     var f=d.getElementsByTagName(s)[0],j=d.createElement(s);
-    j.async=true;j.src='https://widget.signalbox.io/v1/sb.js';
+    j.async=true;j.src='https://widget.hawkleads.io/v1/sb.js';
     f.parentNode.insertBefore(j,f);
   })(window,document,'script','${widgetKey || 'YOUR_WIDGET_KEY'}');
 </script>`;
@@ -163,7 +163,7 @@ export default function WidgetEmbedPage(): React.ReactElement {
         </h2>
         <div className="card">
           <p className="text-sm text-stone">
-            After adding the embed code, visit your website and look for the SignalBox widget button
+            After adding the embed code, visit your website and look for the HawkLeads widget button
             in the bottom corner of the page. If the widget appears and opens when clicked,
             your installation is working correctly.
           </p>

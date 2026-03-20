@@ -13,7 +13,7 @@ import { WidgetRenderer } from './renderer';
 import { validateContact, hasErrors } from './validators';
 
 // ── Constants ──────────────────────────────────────────────────────────────
-const DEFAULT_API_URL = 'https://signalbox.io';
+const DEFAULT_API_URL = 'https://hawkleads.io';
 
 // ── Challenge Token Generator ──────────────────────────────────────────────
 // Simple hash-based challenge: SHA-256 of key + timestamp + salt
@@ -84,7 +84,7 @@ function trackEvent(
 }
 
 // ── Main Widget Controller ─────────────────────────────────────────────────
-class SignalBoxWidget {
+class HawkLeadsWidget {
   private machine: WidgetStateMachine;
   private renderer!: WidgetRenderer;
   private apiUrl: string;
@@ -499,13 +499,13 @@ class SignalBoxWidget {
 (function () {
   // Wait for DOM to be ready
   function boot(): void {
-    const config = window.SignalBoxConfig;
+    const config = window.HawkLeadsConfig;
     if (!config || !config.key) {
       return;
     }
 
     const apiUrl = config.apiUrl || DEFAULT_API_URL;
-    const widget = new SignalBoxWidget(config.key, apiUrl);
+    const widget = new HawkLeadsWidget(config.key, apiUrl);
     widget.start();
   }
 

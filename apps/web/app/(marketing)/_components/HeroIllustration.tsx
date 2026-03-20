@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Animated hero illustration showing the SignalBox flow:
+ * Animated hero illustration showing the HawkLeads flow:
  * Visitor answers widget questions -> lead gets scored -> business owner sees who to call first.
  * Loops every ~6s: plays animation, holds 3s at "92 scored", fades out, restarts.
  */
@@ -85,7 +85,7 @@ export function HeroIllustration(): React.ReactElement {
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-auto"
         role="img"
-        aria-label="A visitor selects their budget in a SignalBox widget. The lead is scored 92 and appears as a hot lead to call first."
+        aria-label="A visitor selects their budget in a HawkLeads widget. The lead is scored 92 and appears as a hot lead to call first."
       >
         <defs>
           <filter id="hero-sh" x="-4%" y="-4%" width="108%" height="112%">
@@ -150,7 +150,7 @@ export function HeroIllustration(): React.ReactElement {
 
           {/* Branding */}
           <text x="114" y="298" fontSize="7" fontFamily="var(--font-body)" fill="#CBD5E1" textAnchor="middle">
-            signalbox.io
+            hawkleads.io
           </text>
         </g>
 

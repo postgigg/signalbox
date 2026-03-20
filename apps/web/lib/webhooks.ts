@@ -76,8 +76,8 @@ export async function fireWebhooks(
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-SignalBox-Signature': signature,
-            'X-SignalBox-Event': event,
+            'X-HawkLeads-Signature': signature,
+            'X-HawkLeads-Event': event,
           },
           body,
           signal: AbortSignal.timeout(10_000),

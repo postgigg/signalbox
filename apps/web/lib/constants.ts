@@ -449,11 +449,11 @@ export const API_KEY_PREFIX = 'sb_live_';
 export const PAGINATION_DEFAULT_PAGE_SIZE = 25;
 export const PAGINATION_MAX_PAGE_SIZE = 100;
 
-export const SUPPORT_EMAIL = 'support@signalbox.io';
-export const PRIORITY_SUPPORT_EMAIL = 'priority@signalbox.io';
-export const NO_REPLY_EMAIL = 'noreply@signalbox.io';
+export const SUPPORT_EMAIL = 'support@hawkleads.io';
+export const PRIORITY_SUPPORT_EMAIL = 'priority@hawkleads.io';
+export const NO_REPLY_EMAIL = 'noreply@hawkleads.io';
 
-export const APP_NAME = 'SignalBox';
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.signalbox.io';
+export const APP_NAME = 'HawkLeads';
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
 export const WIDGET_CDN_URL =
-  process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.signalbox.io';
+  process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io';

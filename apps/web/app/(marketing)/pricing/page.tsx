@@ -372,7 +372,7 @@ export default function PricingPage(): React.ReactElement {
           <div className="border border-ink/10 rounded-md overflow-hidden">
             <div className="bg-ink px-6 py-3">
               <p className="text-xs font-body font-semibold text-white/70 uppercase tracking-widest">
-                The SignalBox Guarantee
+                The HawkLeads Guarantee
               </p>
             </div>
             <div className="px-6 py-6 sm:px-8 sm:py-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">

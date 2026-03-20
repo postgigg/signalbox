@@ -42,7 +42,7 @@ const defaultTheme: WidgetTheme = {
 export function WidgetPreview({
   steps,
   theme: themeProp,
-  brandName = 'SignalBox',
+  brandName = 'HawkLeads',
 }: WidgetPreviewProps) {
   const theme = { ...defaultTheme, ...themeProp };
   const [currentStep, setCurrentStep] = useState(0);

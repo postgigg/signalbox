@@ -5,11 +5,11 @@ import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: {
-    default: 'SignalBox — Score Every Lead Before You Pick Up the Phone',
-    template: '%s | SignalBox',
+    default: 'HawkLeads — Score Every Lead Before You Pick Up the Phone',
+    template: '%s | HawkLeads',
   },
   description:
-    'SignalBox is an embeddable lead qualification widget that scores website visitors in real time. Replace your contact form with a guided qualifying flow. Know who to call first. 14-day free trial.',
+    'HawkLeads is an embeddable lead qualification widget that scores website visitors in real time. Replace your contact form with a guided qualifying flow. Know who to call first. 14-day free trial.',
   keywords: [
     'lead scoring',
     'lead qualification',
@@ -32,16 +32,16 @@ export const metadata: Metadata = {
     'embeddable widget',
     'SaaS lead generation',
   ],
-  metadataBase: new URL('https://signalbox.netlify.app'),
+  metadataBase: new URL('https://hawkleads.netlify.app'),
   alternates: {
-    canonical: 'https://signalbox.netlify.app',
+    canonical: 'https://hawkleads.netlify.app',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://signalbox.netlify.app',
-    siteName: 'SignalBox',
-    title: 'SignalBox — Score Every Lead Before You Pick Up the Phone',
+    url: 'https://hawkleads.netlify.app',
+    siteName: 'HawkLeads',
+    title: 'HawkLeads — Score Every Lead Before You Pick Up the Phone',
     description:
       'An embeddable widget that qualifies website visitors through scored questionnaires. Get a prioritized call list. Close more deals. 14-day free trial.',
     images: [
@@ -49,13 +49,13 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'SignalBox: Score every lead before you pick up the phone',
+        alt: 'HawkLeads: Score every lead before you pick up the phone',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SignalBox — Score Every Lead Before You Pick Up the Phone',
+    title: 'HawkLeads — Score Every Lead Before You Pick Up the Phone',
     description:
       'An embeddable widget that qualifies website visitors through scored questionnaires. Get a prioritized call list. Close more deals.',
     images: ['/og-image.svg'],
@@ -82,11 +82,11 @@ export default function RootLayout({ children }: RootLayoutProps): React.ReactEl
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'SignalBox',
+    name: 'HawkLeads',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web',
     description: 'Embeddable lead qualification widget that scores website visitors in real time and delivers a prioritized call list.',
-    url: 'https://signalbox.netlify.app',
+    url: 'https://hawkleads.netlify.app',
     offers: [
       {
         '@type': 'Offer',
@@ -130,12 +130,12 @@ export default function RootLayout({ children }: RootLayoutProps): React.ReactEl
   const orgJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'SignalBox',
-    url: 'https://signalbox.netlify.app',
+    name: 'HawkLeads',
+    url: 'https://hawkleads.netlify.app',
     description: 'Lead qualification and scoring platform for businesses.',
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'support@signalbox.io',
+      email: 'support@hawkleads.io',
       contactType: 'customer support',
     },
   };

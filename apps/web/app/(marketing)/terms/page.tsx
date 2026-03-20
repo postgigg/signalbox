@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - SignalBox',
+  title: 'Terms of Service - HawkLeads',
 };
 
 const EFFECTIVE_DATE = 'March 16, 2026';
@@ -20,8 +20,8 @@ export default function TermsPage(): React.ReactElement {
           <h2 className="font-display text-lg font-semibold text-ink mb-2">1. Agreement to Terms</h2>
           <p>
             These Terms of Service ("Terms") constitute a legally binding agreement between you ("Customer," "you," or "your")
-            and SignalBox ("we," "us," or "our"). By creating an account, accessing, or using the SignalBox platform
-            at app.signalbox.io or any associated services, you agree to be bound by these Terms. If you are accepting
+            and HawkLeads ("we," "us," or "our"). By creating an account, accessing, or using the HawkLeads platform
+            at app.hawkleads.io or any associated services, you agree to be bound by these Terms. If you are accepting
             these Terms on behalf of an organization, you represent and warrant that you have the authority to bind
             that organization. If you do not agree, you must not use the service.
           </p>
@@ -31,7 +31,7 @@ export default function TermsPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">2. Description of Service</h2>
           <p>
-            SignalBox is a software-as-a-service ("SaaS") platform that provides an embeddable contact widget with
+            HawkLeads is a software-as-a-service ("SaaS") platform that provides an embeddable contact widget with
             multi-step qualifying flows and automated lead scoring. The service includes:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
@@ -53,13 +53,13 @@ export default function TermsPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">3. Account Registration and Security</h2>
           <p>
-            To use SignalBox, you must create an account with a valid email address and a password of at least
+            To use HawkLeads, you must create an account with a valid email address and a password of at least
             8 characters. You agree to:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li>Provide accurate, current, and complete registration information</li>
             <li>Maintain the confidentiality of your account credentials</li>
-            <li>Immediately notify us of any unauthorized access or breach at support@signalbox.io</li>
+            <li>Immediately notify us of any unauthorized access or breach at support@hawkleads.io</li>
             <li>Accept responsibility for all activity that occurs under your account</li>
           </ul>
           <p className="mt-2">
@@ -75,7 +75,7 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">4.1 Plans</h3>
           <p>
-            SignalBox offers the following subscription plans:
+            HawkLeads offers the following subscription plans:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li><span className="font-medium text-ink">Trial:</span> 14-day free trial with access to Starter-level features and a 50-submission limit. No credit card required.</li>
@@ -120,7 +120,7 @@ export default function TermsPage(): React.ReactElement {
             through the end of the current billing period. We do not provide partial refunds for unused time within
             a billing period. In exceptional circumstances (e.g., billing errors, extended service outages exceeding
             24 hours), we may issue credits or refunds at our sole discretion. To request a review, contact
-            support@signalbox.io within 14 days of the charge in question.
+            support@hawkleads.io within 14 days of the charge in question.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">4.6 Failed Payments</h3>
@@ -142,7 +142,7 @@ export default function TermsPage(): React.ReactElement {
         {/* 5 */}
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">5. Acceptable Use</h2>
-          <p>You agree not to use SignalBox to:</p>
+          <p>You agree not to use HawkLeads to:</p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li>Collect personal information from individuals under the age of 13 (or the applicable age of consent in your jurisdiction)</li>
             <li>Send unsolicited commercial communications (spam) using data collected through the widget</li>
@@ -153,7 +153,7 @@ export default function TermsPage(): React.ReactElement {
             <li>Attempt to gain unauthorized access to any part of the service or any systems or networks connected to the service</li>
             <li>Reverse engineer, decompile, or disassemble the service or widget code</li>
             <li>Resell, sublicense, or redistribute the service without prior written consent</li>
-            <li>Use the service in any manner that could damage, disable, overburden, or impair SignalBox infrastructure</li>
+            <li>Use the service in any manner that could damage, disable, overburden, or impair HawkLeads infrastructure</li>
           </ul>
           <p className="mt-2">
             Violation of these acceptable use terms may result in immediate suspension or termination of your
@@ -168,7 +168,7 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">6.1 Your Data</h3>
           <p>
-            You retain all rights to the data you submit to or collect through SignalBox ("Customer Data"),
+            You retain all rights to the data you submit to or collect through HawkLeads ("Customer Data"),
             including all lead submissions, widget configurations, and account information. We claim no ownership
             over Customer Data. Upon account deletion, all Customer Data is permanently and irrecoverably removed.
           </p>
@@ -182,8 +182,8 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">6.3 Our Intellectual Property</h3>
           <p>
-            The SignalBox platform, including the dashboard, widget code, scoring algorithms, APIs, documentation,
-            and all related intellectual property, remains the exclusive property of SignalBox. These Terms do not
+            The HawkLeads platform, including the dashboard, widget code, scoring algorithms, APIs, documentation,
+            and all related intellectual property, remains the exclusive property of HawkLeads. These Terms do not
             grant you any right, title, or interest in our intellectual property except for the limited right to
             use the service as described herein.
           </p>
@@ -200,8 +200,8 @@ export default function TermsPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">7. Data Processing and Compliance</h2>
           <p>
-            You acknowledge that by using SignalBox, you act as a data controller for the personal data
-            collected through your widgets, and SignalBox acts as a data processor. You are responsible for:
+            You acknowledge that by using HawkLeads, you act as a data controller for the personal data
+            collected through your widgets, and HawkLeads acts as a data processor. You are responsible for:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li>Obtaining all necessary consents from end users before collecting their data</li>
@@ -215,7 +215,7 @@ export default function TermsPage(): React.ReactElement {
               Privacy Policy
             </Link>{' '}
             and applicable data protection laws. For GDPR-covered data, a Data Processing Agreement (DPA) is
-            available upon request at support@signalbox.io.
+            available upon request at support@hawkleads.io.
           </p>
         </section>
 
@@ -233,7 +233,7 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">8.2 Widget Embedding</h3>
           <p>
-            The SignalBox widget may be embedded on websites you own or have authorization to modify. You may not
+            The HawkLeads widget may be embedded on websites you own or have authorization to modify. You may not
             embed the widget on websites you do not control or have permission to modify. The widget must not be
             modified, obfuscated, or used in a manner that misrepresents its origin or purpose.
           </p>
@@ -252,14 +252,14 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">9.1 Uptime</h3>
           <p>
-            We target 99.9% uptime for the SignalBox platform, measured on a monthly basis, excluding scheduled
+            We target 99.9% uptime for the HawkLeads platform, measured on a monthly basis, excluding scheduled
             maintenance windows. Scheduled maintenance will be communicated at least 24 hours in advance.
             We do not offer formal SLAs at this time. For custom SLA arrangements, contact us about enterprise plans.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">9.2 Support</h3>
           <p>
-            Support is provided via email at support@signalbox.io. All plans receive standard support with a target
+            Support is provided via email at support@hawkleads.io. All plans receive standard support with a target
             response time of one business day. Agency plans receive priority support with a target response time
             of 4 business hours during US Eastern business hours (9:00 AM to 6:00 PM ET, Monday through Friday).
           </p>
@@ -318,7 +318,7 @@ export default function TermsPage(): React.ReactElement {
           </p>
           <p className="mt-2">
             YOU ACKNOWLEDGE THAT LEAD SCORING IS AN AUTOMATED ESTIMATE AND SHOULD NOT BE THE SOLE BASIS FOR
-            BUSINESS DECISIONS. SIGNALBOX DOES NOT GUARANTEE THE ACCURACY OF LEAD SCORES OR THE QUALITY OF
+            BUSINESS DECISIONS. HAWKLEADS DOES NOT GUARANTEE THE ACCURACY OF LEAD SCORES OR THE QUALITY OF
             LEADS SUBMITTED THROUGH WIDGETS.
           </p>
         </section>
@@ -327,7 +327,7 @@ export default function TermsPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">12. Limitation of Liability</h2>
           <p>
-            TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL SIGNALBOX, ITS DIRECTORS,
+            TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL HAWKLEADS, ITS DIRECTORS,
             EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
             SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF PROFITS, DATA,
             USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:
@@ -349,7 +349,7 @@ export default function TermsPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">13. Indemnification</h2>
           <p>
-            You agree to indemnify, defend, and hold harmless SignalBox and its officers, directors, employees,
+            You agree to indemnify, defend, and hold harmless HawkLeads and its officers, directors, employees,
             and agents from and against any claims, liabilities, damages, losses, and expenses (including reasonable
             attorneys' fees) arising out of or in any way connected with:
           </p>
@@ -375,7 +375,7 @@ export default function TermsPage(): React.ReactElement {
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">14.2 Informal Resolution</h3>
           <p>
             Before filing a formal dispute, you agree to attempt to resolve any issue informally by contacting
-            us at support@signalbox.io. We will attempt to resolve the dispute within 30 days.
+            us at support@hawkleads.io. We will attempt to resolve the dispute within 30 days.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">14.3 Arbitration</h3>
@@ -411,7 +411,7 @@ export default function TermsPage(): React.ReactElement {
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">16.1 Entire Agreement</h3>
           <p>
             These Terms, together with the Privacy Policy and any applicable DPA, constitute the entire agreement
-            between you and SignalBox regarding the service and supersede all prior agreements.
+            between you and HawkLeads regarding the service and supersede all prior agreements.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">16.2 Severability</h3>
@@ -447,9 +447,9 @@ export default function TermsPage(): React.ReactElement {
             For questions, concerns, or notices regarding these Terms, contact us at:
           </p>
           <div className="mt-2 p-4 bg-surface rounded-md border border-border text-ink">
-            <p className="font-body font-medium">SignalBox</p>
-            <p className="mt-1">Email: support@signalbox.io</p>
-            <p>Website: app.signalbox.io</p>
+            <p className="font-body font-medium">HawkLeads</p>
+            <p className="mt-1">Email: support@hawkleads.io</p>
+            <p>Website: app.hawkleads.io</p>
           </div>
         </section>
       </div>

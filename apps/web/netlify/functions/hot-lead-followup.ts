@@ -12,7 +12,7 @@ interface HotLeadRow extends SubmissionRow {
 }
 
 const BATCH_SIZE = 50;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.signalbox.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -71,7 +71,7 @@ function buildFollowupHtml(lead: HotLeadRow): string {
         Respond Now
       </a>
       <p style="color: #6B7280; font-size: 12px; margin-top: 24px;">
-        This is an automated followup from SignalBox because this hot lead has not been contacted yet.
+        This is an automated followup from HawkLeads because this hot lead has not been contacted yet.
       </p>
     </div>
   `;
@@ -80,7 +80,7 @@ function buildFollowupHtml(lead: HotLeadRow): string {
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'SignalBox <noreply@signalbox.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
 
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 

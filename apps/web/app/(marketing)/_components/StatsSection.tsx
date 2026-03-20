@@ -20,7 +20,7 @@ export function StatsSection(): React.ReactElement {
           ))}
         </div>
         <p className="mt-10 text-base text-stone text-center max-w-prose mx-auto">
-          SignalBox fixes this by scoring leads the moment they submit.
+          HawkLeads fixes this by scoring leads the moment they submit.
         </p>
       </div>
     </section>

@@ -152,10 +152,10 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
 ] as const;
 
 export const COMPARISON_ROWS = [
-  { form: 'All leads look the same', signalbox: 'Every lead scored 0 to 100' },
-  { form: 'No idea who is serious', signalbox: 'Hot, warm, cold tiers instantly' },
-  { form: 'Average 47-hour response time', signalbox: 'Instant alerts for hot leads' },
-  { form: 'No prioritization', signalbox: 'Dashboard sorted by score' },
+  { form: 'All leads look the same', hawkleads: 'Every lead scored 0 to 100' },
+  { form: 'No idea who is serious', hawkleads: 'Hot, warm, cold tiers instantly' },
+  { form: 'Average 47-hour response time', hawkleads: 'Instant alerts for hot leads' },
+  { form: 'No prioritization', hawkleads: 'Dashboard sorted by score' },
 ] as const;
 
 export const INDUSTRY_HOOKS = [

@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/dashboard/', '/admin/', '/api/', '/onboarding/'],
       },
     ],
-    sitemap: 'https://signalbox.netlify.app/sitemap.xml',
+    sitemap: 'https://hawkleads.netlify.app/sitemap.xml',
   };
 }

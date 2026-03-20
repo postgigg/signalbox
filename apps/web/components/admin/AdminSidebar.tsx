@@ -176,7 +176,7 @@ export function AdminSidebar({ activeItem, onNavigate }: AdminSidebarProps) {
         {/* Header */}
         <div className="px-5 h-16 flex items-center gap-2 border-b border-white/10 shrink-0">
           <span className="font-display text-lg font-semibold tracking-tight">
-            SignalBox
+            HawkLeads
           </span>
           <span className="inline-flex items-center rounded-pill bg-danger text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5">
             Admin

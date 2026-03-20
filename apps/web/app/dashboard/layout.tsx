@@ -173,7 +173,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
           </svg>
         </button>
         <Link href="/dashboard" className="font-display text-lg font-semibold tracking-tight text-ink">
-          SignalBox
+          HawkLeads
         </Link>
       </header>
 
@@ -199,7 +199,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
       >
         <div className="h-14 flex items-center px-5 border-b border-border">
           <Link href="/dashboard" className="font-display text-lg font-semibold tracking-tight text-ink">
-            SignalBox
+            HawkLeads
           </Link>
         </div>
 
@@ -251,7 +251,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
             ) : 'Log out'}
           </button>
           <div className="px-3 py-2 text-xs text-stone-light font-body">
-            SignalBox v1.0
+            HawkLeads v1.0
           </div>
         </div>
       </aside>

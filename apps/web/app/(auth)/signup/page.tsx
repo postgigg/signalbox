@@ -113,7 +113,7 @@ export default function SignupPage(): React.ReactElement {
   return (
     <div>
       <h1 className="font-display text-2xl font-semibold text-ink">
-        Create your SignalBox account
+        Create your HawkLeads account
       </h1>
       <p className="mt-2 text-sm text-stone">
         14-day free trial. No credit card required.

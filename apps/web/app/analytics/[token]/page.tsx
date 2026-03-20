@@ -141,7 +141,7 @@ export default function SharedAnalyticsPage({
       <meta name="robots" content="noindex, nofollow" />
       <div className="max-w-4xl mx-auto p-6 lg:p-10">
         <header className="mb-8">
-          <p className="text-xs text-stone font-body uppercase tracking-wide">SignalBox Analytics</p>
+          <p className="text-xs text-stone font-body uppercase tracking-wide">HawkLeads Analytics</p>
           <h1 className="font-display text-2xl font-semibold text-ink mt-1">{data.name}</h1>
           <p className="text-sm text-stone font-body mt-1">Last 30 days</p>
         </header>
@@ -213,7 +213,7 @@ export default function SharedAnalyticsPage({
         )}
 
         <footer className="mt-12 text-center text-xs text-stone-light font-body">
-          Powered by SignalBox
+          Powered by HawkLeads
         </footer>
       </div>
     </div>

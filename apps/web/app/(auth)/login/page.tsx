@@ -67,7 +67,7 @@ function LoginForm(): React.ReactElement {
     setDemoLoading(true);
 
     try {
-      const result = await serverLogin('demo@signalbox.io', 'demodemo123');
+      const result = await serverLogin('demo@hawkleads.io', 'demodemo123');
 
       if (result.error) {
         setError(result.error);
@@ -112,7 +112,7 @@ function LoginForm(): React.ReactElement {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold text-ink">Log in to SignalBox</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink">Log in to HawkLeads</h1>
       <p className="mt-2 text-sm text-stone">
         Welcome back. Enter your credentials to continue.
       </p>

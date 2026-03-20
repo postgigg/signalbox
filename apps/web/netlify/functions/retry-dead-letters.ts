@@ -15,7 +15,7 @@ const BATCH_SIZE = 50;
 const MAX_RETRY_COUNT = 3;
 const RETRY_WINDOW_HOURS = 24;
 const MIN_AGE_MINUTES = 5;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.signalbox.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -74,7 +74,7 @@ function buildNotificationHtml(lead: FailedNotificationRow): string {
         View Lead
       </a>
       <p style="color: #6B7280; font-size: 12px; margin-top: 24px;">
-        You received this email because a new lead was submitted via your SignalBox widget.
+        You received this email because a new lead was submitted via your HawkLeads widget.
       </p>
     </div>
   `;
@@ -83,7 +83,7 @@ function buildNotificationHtml(lead: FailedNotificationRow): string {
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'SignalBox <noreply@signalbox.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
 
   const fiveMinutesAgo = new Date(Date.now() - MIN_AGE_MINUTES * 60 * 1000).toISOString();
   const twentyFourHoursAgo = new Date(Date.now() - RETRY_WINDOW_HOURS * 60 * 60 * 1000).toISOString();

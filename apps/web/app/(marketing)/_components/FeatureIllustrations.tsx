@@ -462,10 +462,10 @@ export function IntegrationsIllustration(): React.ReactElement {
         <rect x="16" y="8" width="248" height="124" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
         <text x="28" y="26" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Webhook delivery</text>
 
-        {/* SignalBox source on left */}
+        {/* HawkLeads source on left */}
         <g className="feat-int-source">
           <rect x="28" y="40" width="56" height="28" rx="6" fill="#0F172A" />
-          <text x="37" y="57" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">SignalBox</text>
+          <text x="37" y="57" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">HawkLeads</text>
         </g>
 
         {/* Animated connection line — dashes flow right */}

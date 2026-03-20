@@ -722,7 +722,7 @@ export default function WidgetDesignPage(): React.ReactElement {
                   {/* Footer */}
                   {theme.showBranding && (
                     <div className="p-3 text-center opacity-30 text-xs">
-                      Powered by SignalBox
+                      Powered by HawkLeads
                     </div>
                   )}
                 </div>

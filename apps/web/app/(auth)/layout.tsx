@@ -14,7 +14,7 @@ export default function AuthLayout({ children }: AuthLayoutProps): React.ReactEl
           href="/"
           className="font-display text-xl font-semibold tracking-tight text-ink"
         >
-          SignalBox
+          HawkLeads
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-6 pb-16">

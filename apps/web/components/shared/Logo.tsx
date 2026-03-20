@@ -25,9 +25,9 @@ export function Logo({ size = 'md', dark = false, className = '' }: LogoProps) {
       ]
         .filter(Boolean)
         .join(' ')}
-      aria-label="SignalBox"
+      aria-label="HawkLeads"
     >
-      SignalBox
+      HawkLeads
     </span>
   );
 }

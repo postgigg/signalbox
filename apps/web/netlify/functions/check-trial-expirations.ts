@@ -5,7 +5,7 @@ import type { Database } from '../../lib/supabase/types';
 type AccountRow = Database['public']['Tables']['accounts']['Row'];
 
 const BATCH_SIZE = 100;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.signalbox.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -31,7 +31,7 @@ function createResendClient(): Resend {
 function buildTrialEndingSoonHtml(account: AccountRow, daysLeft: number): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Your SignalBox trial ends in ${daysLeft} days</h2>
+      <h2>Your HawkLeads trial ends in ${daysLeft} days</h2>
       <p>Hi there,</p>
       <p>Your free trial for <strong>${account.name}</strong> is ending soon. After your trial expires, you'll lose access to:</p>
       <ul>
@@ -46,7 +46,7 @@ function buildTrialEndingSoonHtml(account: AccountRow, daysLeft: number): string
         Upgrade Now
       </a>
       <p style="color: #6B7280; font-size: 12px; margin-top: 24px;">
-        If you have any questions, reply to this email or contact us at support@signalbox.io.
+        If you have any questions, reply to this email or contact us at support@hawkleads.io.
       </p>
     </div>
   `;
@@ -55,7 +55,7 @@ function buildTrialEndingSoonHtml(account: AccountRow, daysLeft: number): string
 function buildTrialExpiredHtml(account: AccountRow): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Your SignalBox trial has expired</h2>
+      <h2>Your HawkLeads trial has expired</h2>
       <p>Hi there,</p>
       <p>The free trial for <strong>${account.name}</strong> has ended. Your account has been moved to a canceled state, and your widgets are no longer active.</p>
       <p>Don't worry — your data is safe. Upgrade to a paid plan to reactivate your account and pick up right where you left off.</p>
@@ -65,7 +65,7 @@ function buildTrialExpiredHtml(account: AccountRow): string {
       </a>
       <p style="margin-top: 16px;">Our plans start at just $99/month. <a href="${APP_URL}/pricing">View pricing</a></p>
       <p style="color: #6B7280; font-size: 12px; margin-top: 24px;">
-        If you have any questions, reply to this email or contact us at support@signalbox.io.
+        If you have any questions, reply to this email or contact us at support@hawkleads.io.
       </p>
     </div>
   `;
@@ -123,9 +123,9 @@ async function processTrialEndingSoon(
         await resend.emails.send({
           from: fromAddress,
           to: account.notification_email,
-          subject: `Your SignalBox trial ends in ${daysLeft} days`,
+          subject: `Your HawkLeads trial ends in ${daysLeft} days`,
           html: buildTrialEndingSoonHtml(account, daysLeft),
-          text: `Your SignalBox trial for ${account.name} ends in ${daysLeft} days. Upgrade now to keep your lead generation running: ${APP_URL}/settings/billing`,
+          text: `Your HawkLeads trial for ${account.name} ends in ${daysLeft} days. Upgrade now to keep your lead generation running: ${APP_URL}/settings/billing`,
         });
 
         sent++;
@@ -208,9 +208,9 @@ async function processExpiredTrials(
             await resend.emails.send({
               from: fromAddress,
               to: account.notification_email,
-              subject: 'Your SignalBox trial has expired',
+              subject: 'Your HawkLeads trial has expired',
               html: buildTrialExpiredHtml(account),
-              text: `Your SignalBox trial for ${account.name} has expired. Your account has been deactivated. Upgrade to reactivate: ${APP_URL}/settings/billing`,
+              text: `Your HawkLeads trial for ${account.name} has expired. Your account has been deactivated. Upgrade to reactivate: ${APP_URL}/settings/billing`,
             });
           } catch (emailErr) {
             console.error(`[check-trial-expirations] Failed to send expired email for account ${account.id}:`, emailErr instanceof Error ? emailErr.message : String(emailErr));
@@ -237,7 +237,7 @@ async function processExpiredTrials(
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'SignalBox <noreply@signalbox.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
 
   console.log('[check-trial-expirations] Starting trial expiration check');
 

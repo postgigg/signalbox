@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): React.React
           </svg>
         </button>
         <span className="font-display text-lg font-semibold tracking-tight text-white">
-          SignalBox
+          HawkLeads
         </span>
         <span className="ml-2 text-xs font-body font-medium px-1.5 py-0.5 bg-danger text-white rounded-sm">
           ADMIN
@@ -90,7 +90,7 @@ export default function AdminLayout({ children }: AdminLayoutProps): React.React
 
         <div className="h-14 flex items-center px-5 border-b border-white/10">
           <Link href="/admin" className="font-display text-lg font-semibold tracking-tight text-white">
-            SignalBox
+            HawkLeads
           </Link>
           <span className="ml-2 text-xs font-body font-medium px-1.5 py-0.5 bg-danger text-white rounded-sm">
             ADMIN

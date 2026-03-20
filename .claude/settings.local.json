@@ -22,7 +22,8 @@
       "Bash(kill %1:*)",
       "Bash(npx next:*)",
       "Bash(npx vitest:*)",
-      "Bash(clip:*)"
+      "Bash(clip:*)",
+      "Bash(npx esbuild:*)"
     ]
   }
 }

@@ -14,7 +14,7 @@ export function BeforeAfter(): React.ReactElement {
               <BeforeIllustration />
             </div>
             <h3 className="font-body text-base font-semibold text-stone">
-              Before SignalBox
+              Before HawkLeads
             </h3>
             <ul className="mt-4 space-y-3">
               {BEFORE_ITEMS.map((item) => (
@@ -38,7 +38,7 @@ export function BeforeAfter(): React.ReactElement {
               <AfterIllustration />
             </div>
             <h3 className="font-body text-base font-semibold text-ink">
-              After SignalBox
+              After HawkLeads
             </h3>
             <ul className="mt-4 space-y-3">
               {AFTER_ITEMS.map((item) => (

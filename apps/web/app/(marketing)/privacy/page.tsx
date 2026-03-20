@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - SignalBox',
+  title: 'Privacy Policy - HawkLeads',
 };
 
 const EFFECTIVE_DATE = 'March 16, 2026';
@@ -18,12 +18,12 @@ export default function PrivacyPage(): React.ReactElement {
         {/* Intro */}
         <section>
           <p>
-            This Privacy Policy describes how SignalBox (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, stores, shares,
-            and protects information when you use our platform at app.signalbox.io, our embeddable widget, our
+            This Privacy Policy describes how HawkLeads (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, stores, shares,
+            and protects information when you use our platform at app.hawkleads.io, our embeddable widget, our
             APIs, and related services (collectively, the &ldquo;Service&rdquo;). This policy applies to two categories of
             individuals: <span className="font-medium text-ink">Customers</span> (account holders who use
-            SignalBox to collect and manage leads) and <span className="font-medium text-ink">End Users</span>
-            (visitors who interact with SignalBox widgets embedded on Customer websites).
+            HawkLeads to collect and manage leads) and <span className="font-medium text-ink">End Users</span>
+            (visitors who interact with HawkLeads widgets embedded on Customer websites).
           </p>
         </section>
 
@@ -32,7 +32,7 @@ export default function PrivacyPage(): React.ReactElement {
           <h2 className="font-display text-lg font-semibold text-ink mb-2">1. Information We Collect</h2>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">1.1 Customer Information</h3>
-          <p>When you create an account and use SignalBox, we collect:</p>
+          <p>When you create an account and use HawkLeads, we collect:</p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li><span className="font-medium text-ink">Account information:</span> email address, password (stored as a bcrypt hash, never plaintext), company name, and timezone</li>
             <li><span className="font-medium text-ink">Billing information:</span> payment details are processed and stored by Stripe. We store only your Stripe customer ID and subscription status. We never have access to full credit card numbers.</li>
@@ -41,7 +41,7 @@ export default function PrivacyPage(): React.ReactElement {
           </ul>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">1.2 End User Information</h3>
-          <p>When end users interact with SignalBox widgets embedded on Customer websites, we collect:</p>
+          <p>When end users interact with HawkLeads widgets embedded on Customer websites, we collect:</p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li><span className="font-medium text-ink">Submitted information:</span> name, email address, phone number (optional), free-text message (optional), and qualifying flow answers</li>
             <li><span className="font-medium text-ink">Technical information:</span> IP address (hashed after 30 days), browser user agent, referring page URL, device type, and country (derived from IP)</li>
@@ -108,7 +108,7 @@ export default function PrivacyPage(): React.ReactElement {
           <p>We do not sell personal data. We share information only in the following circumstances:</p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">3.1 Service Providers</h3>
-          <p>We use the following third-party services to operate SignalBox:</p>
+          <p>We use the following third-party services to operate HawkLeads:</p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li><span className="font-medium text-ink">Supabase:</span> database hosting, authentication, and real-time subscriptions (data stored in US-based infrastructure)</li>
             <li><span className="font-medium text-ink">Stripe:</span> payment processing (subject to{' '}
@@ -129,7 +129,7 @@ export default function PrivacyPage(): React.ReactElement {
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">3.2 Customer Access to End User Data</h3>
           <p>
             End User submissions are accessible to the Customer whose widget collected the data. Customers
-            can view, export, and delete submissions through their dashboard or API. SignalBox acts as a data
+            can view, export, and delete submissions through their dashboard or API. HawkLeads acts as a data
             processor on behalf of the Customer (data controller) for End User data.
           </p>
 
@@ -186,9 +186,9 @@ export default function PrivacyPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">5. Cookies and Tracking</h2>
 
-          <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.1 Dashboard (app.signalbox.io)</h3>
+          <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.1 Dashboard (app.hawkleads.io)</h3>
           <p>
-            The SignalBox dashboard uses only essential, first-party cookies for authentication and session
+            The HawkLeads dashboard uses only essential, first-party cookies for authentication and session
             management. These cookies are:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
@@ -199,7 +199,7 @@ export default function PrivacyPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.2 Widget</h3>
           <p>
-            The SignalBox widget does not set any cookies, use local storage, or employ any persistent tracking
+            The HawkLeads widget does not set any cookies, use local storage, or employ any persistent tracking
             mechanisms. The widget does not load any third-party scripts. End User interactions are recorded
             only as server-side events (widget opens, step completions, submissions).
           </p>
@@ -220,7 +220,7 @@ export default function PrivacyPage(): React.ReactElement {
           </ul>
           <p className="mt-2">
             Customers can exercise most of these rights directly through their account settings. For data
-            export requests or other inquiries, contact support@signalbox.io.
+            export requests or other inquiries, contact support@hawkleads.io.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">6.2 European Economic Area (GDPR)</h3>
@@ -249,8 +249,8 @@ export default function PrivacyPage(): React.ReactElement {
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">6.4 End User Rights</h3>
           <p>
             End Users who wish to access, correct, or delete their submitted data should contact the Customer
-            (website operator) who collected their data. Customers can manage End User data through the SignalBox
-            dashboard. If an End User cannot reach the Customer, they may contact us at support@signalbox.io
+            (website operator) who collected their data. Customers can manage End User data through the HawkLeads
+            dashboard. If an End User cannot reach the Customer, they may contact us at support@hawkleads.io
             and we will assist in locating and processing the request.
           </p>
         </section>
@@ -259,7 +259,7 @@ export default function PrivacyPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">7. International Data Transfers</h2>
           <p>
-            SignalBox is based in the United States. If you access the service from outside the US, your data
+            HawkLeads is based in the United States. If you access the service from outside the US, your data
             will be transferred to and processed in the United States. We rely on Standard Contractual Clauses
             (SCCs) and our service providers' data transfer mechanisms to ensure appropriate safeguards for
             international data transfers. By using the service, you consent to the transfer of your data to
@@ -271,12 +271,12 @@ export default function PrivacyPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">8. Children's Privacy</h2>
           <p>
-            SignalBox is not directed to individuals under the age of 13 (or the applicable age of consent in
+            HawkLeads is not directed to individuals under the age of 13 (or the applicable age of consent in
             your jurisdiction). We do not knowingly collect personal information from children. Customers are
-            prohibited from using SignalBox to collect data from minors. If we learn that we have collected
+            prohibited from using HawkLeads to collect data from minors. If we learn that we have collected
             personal information from a child, we will take immediate steps to delete that information.
-            If you believe a child has provided personal information through a SignalBox widget, contact us
-            at support@signalbox.io.
+            If you believe a child has provided personal information through a HawkLeads widget, contact us
+            at support@hawkleads.io.
           </p>
         </section>
 
@@ -298,9 +298,9 @@ export default function PrivacyPage(): React.ReactElement {
             For any questions or concerns about this Privacy Policy, your data, or to exercise your rights, contact us at:
           </p>
           <div className="mt-2 p-4 bg-surface rounded-md border border-border text-ink">
-            <p className="font-body font-medium">SignalBox, Data Protection</p>
-            <p className="mt-1">Email: support@signalbox.io</p>
-            <p>Website: app.signalbox.io</p>
+            <p className="font-body font-medium">HawkLeads, Data Protection</p>
+            <p className="mt-1">Email: support@hawkleads.io</p>
+            <p>Website: app.hawkleads.io</p>
           </div>
           <p className="mt-3">
             For GDPR-related inquiries, you may also contact your local data protection authority. A list of
