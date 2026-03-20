@@ -1,11 +1,11 @@
-# CLAUDE.md — SignalBox Development Rules
+# CLAUDE.md — HawkLeads Development Rules
 # Enforced on every interaction. No exceptions.
 
 ---
 
 ## PROJECT IDENTITY
 
-SignalBox: Embeddable smart contact widget with lead scoring.
+HawkLeads (hawkleads.io): Embeddable smart contact widget with lead scoring.
 Stack: Next.js 14+ App Router, TypeScript strict, Tailwind CSS, Supabase (Postgres + Auth + Realtime + RLS), Stripe, Resend, Upstash Redis, Cloudflare R2, Netlify.
 Monorepo: `apps/web` (Next.js dashboard + API + marketing), `packages/widget` (vanilla TS IIFE bundle), `supabase/` (migrations + seed).
 
@@ -104,7 +104,6 @@ After completing any feature, run this gap audit checklist:
 ### Design System Gap Audit
 - [ ] Zero purple anywhere — colors, gradients, borders, shadows
 - [ ] Zero gradients on buttons or backgrounds
-- [ ] Headings use serif font (--font-display) — NEVER sans
 - [ ] Body text uses sans font (--font-body) — NEVER serif
 - [ ] Cards use 1px borders — NOT shadows at rest
 - [ ] Buttons: 6-8px radius max — NEVER rounded-full (pills for badges only)
@@ -268,8 +267,8 @@ import type { Database } from '@/lib/supabase/types';
 3. **Auth on Every Request**: Server components use `createClient()` from `@/lib/supabase/server`. API routes verify `getUser()`. No trusting client-sent user IDs.
 4. **RLS Always On**: Every table with user data has RLS enabled + policies. Service role key used ONLY in server-side scheduled functions.
 5. **Secrets Management**: `.env.local` never committed. `.env.example` has empty values only. Server keys never in client bundles.
-6. **CORS**: Widget API endpoints allow widget domain + signalbox.io. All other routes same-origin only.
-7. **Rate Limiting**: Every public endpoint rate-limited via Upstash Redis sliding window. See spec Section 18 for exact limits.
+6. **CORS**: Widget API endpoints allow widget domain + hawkleads.io. All other routes same-origin only.
+7. **Rate Limiting**: Every public endpoint rate-limited via Upstash Redis sliding window.
 8. **Bot Protection**: Honeypot field + timing check (reject < 2s) + JS challenge token on widget submissions.
 9. **Webhook Security**: HMAC-SHA256 signing. HTTPS only. No redirects followed. Internal IPs blocked.
 10. **Data Privacy**: IPs hashed after 30 days. Cascade delete on account deletion. No third-party analytics in widget.
@@ -294,10 +293,12 @@ import type { Database } from '@/lib/supabase/types';
 
 ## BRAND RULES — ENFORCED IN ALL UI CODE
 
-- Product name: "SignalBox" — capital S, capital B, one word. Never "Signal Box" or "Signalbox"
+- Product name: "HawkLeads" — capital H, capital L, one word. Never "Hawk Leads" or "hawkleads"
+- Domain: hawkleads.io
+- Logo: Three-stroke SVG mark + "HawkLeads" wordmark. Use the `Logo` component (`components/shared/Logo.tsx`) everywhere.
+- Favicon: `app/icon.svg` (dark rounded square with white three-stroke mark)
 - Zero purple. Check hex values — nothing in #7x, #8x, #9x with blue/red mix
 - Zero gradients on buttons or backgrounds
-- Headings: serif (`--font-display`). Body: sans (`--font-body`). Never reversed.
 - No component libraries. All UI built from scratch.
 - No decorative illustrations, blobs, waves, or SVG dividers
 - No AI-slop copy words: "delve", "tapestry", "leverage", "synergy", "empower", "seamless", "supercharge", "unleash", "game-changing", "cutting-edge", "robust", "powerful", "innovative"
