@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 import { PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
+import { Logo } from '@/components/shared/Logo';
 
 import type { ReactNode } from 'react';
 
@@ -172,8 +173,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>
         </button>
-        <Link href="/dashboard" className="font-display text-lg font-semibold tracking-tight text-ink">
-          HawkLeads
+        <Link href="/dashboard" className="no-underline">
+          <Logo size="sm" />
         </Link>
       </header>
 
@@ -198,8 +199,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
         }`}
       >
         <div className="h-14 flex items-center px-5 border-b border-border">
-          <Link href="/dashboard" className="font-display text-lg font-semibold tracking-tight text-ink">
-            HawkLeads
+          <Link href="/dashboard" className="no-underline">
+            <Logo size="sm" />
           </Link>
         </div>
 

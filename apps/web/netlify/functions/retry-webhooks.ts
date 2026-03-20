@@ -160,6 +160,7 @@ async function sendWebhookFailureEmail(
   const subject = `Webhook delivery failures for ${endpoint.url}`;
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" style="vertical-align:middle;margin-right:8px"><path d="M12 8L22 56" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/><path d="M26 4L40 60" stroke="#0F172A" stroke-width="7" stroke-linecap="round"/><path d="M44 12L50 52" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/></svg><span style="font-weight:700;font-size:18px;vertical-align:middle;letter-spacing:-0.03em">HawkLeads</span></div>
       <h2 style="color: #EF4444;">Webhook Delivery Failures</h2>
       <p>Your webhook endpoint has experienced ${failureCount} consecutive delivery failures.</p>
       <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">

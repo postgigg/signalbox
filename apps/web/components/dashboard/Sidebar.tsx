@@ -2,6 +2,8 @@
 
 import React, { useState, useCallback } from 'react';
 
+import { Logo } from '@/components/shared/Logo';
+
 export interface SidebarNavItem {
   label: string;
   href: string;
@@ -118,9 +120,7 @@ export function Sidebar({ activeItem, onNavigate }: SidebarProps) {
       >
         {/* Logo */}
         <div className="px-5 h-16 flex items-center border-b border-border shrink-0">
-          <span className="font-display text-xl font-semibold text-ink tracking-tight">
-            HawkLeads
-          </span>
+          <Logo size="md" />
         </div>
 
         {/* Navigation */}

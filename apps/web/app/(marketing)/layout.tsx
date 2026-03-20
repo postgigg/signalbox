@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { Logo } from '@/components/shared/Logo';
+
 import type { ReactNode } from 'react';
 
 const NAV_LINKS = [
@@ -53,11 +55,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
         }`}
       >
         <nav className="w-full max-w-content mx-auto px-6 flex items-center justify-between">
-          <Link
-            href="/"
-            className="font-display text-xl font-semibold tracking-tight text-ink"
-          >
-            HawkLeads
+          <Link href="/" className="no-underline">
+            <Logo size="md" />
           </Link>
 
           <div className="flex items-center gap-6">
@@ -87,11 +86,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
         <div className="max-w-content mx-auto px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
             <div>
-              <Link
-                href="/"
-                className="font-display text-lg font-semibold tracking-tight text-ink"
-              >
-                HawkLeads
+              <Link href="/" className="no-underline">
+                <Logo size="sm" />
               </Link>
               <p className="mt-2 text-sm text-stone">Built in Virginia.</p>
             </div>

@@ -31,6 +31,14 @@ function createResendClient(): Resend {
 function buildTrialEndingSoonHtml(account: AccountRow, daysLeft: number): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" style="vertical-align: middle; margin-right: 8px;">
+          <path d="M12 8L22 56" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+          <path d="M26 4L40 60" stroke="#0F172A" stroke-width="7" stroke-linecap="round"/>
+          <path d="M44 12L50 52" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <span style="font-weight: 700; font-size: 18px; vertical-align: middle; letter-spacing: -0.03em;">HawkLeads</span>
+      </div>
       <h2>Your HawkLeads trial ends in ${daysLeft} days</h2>
       <p>Hi there,</p>
       <p>Your free trial for <strong>${account.name}</strong> is ending soon. After your trial expires, you'll lose access to:</p>
@@ -55,6 +63,14 @@ function buildTrialEndingSoonHtml(account: AccountRow, daysLeft: number): string
 function buildTrialExpiredHtml(account: AccountRow): string {
   return `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28" style="vertical-align: middle; margin-right: 8px;">
+          <path d="M12 8L22 56" stroke="#0F172A" stroke-width="6" stroke-linecap="round"/>
+          <path d="M26 4L40 60" stroke="#0F172A" stroke-width="7" stroke-linecap="round"/>
+          <path d="M44 12L50 52" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <span style="font-weight: 700; font-size: 18px; vertical-align: middle; letter-spacing: -0.03em;">HawkLeads</span>
+      </div>
       <h2>Your HawkLeads trial has expired</h2>
       <p>Hi there,</p>
       <p>The free trial for <strong>${account.name}</strong> has ended. Your account has been moved to a canceled state, and your widgets are no longer active.</p>

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { Logo } from '@/components/shared/Logo';
+
 import type { ReactNode } from 'react';
 
 interface AuthLayoutProps {
@@ -10,11 +12,8 @@ export default function AuthLayout({ children }: AuthLayoutProps): React.ReactEl
   return (
     <div className="min-h-screen bg-paper flex flex-col">
       <header className="h-16 flex items-center px-6">
-        <Link
-          href="/"
-          className="font-display text-xl font-semibold tracking-tight text-ink"
-        >
-          HawkLeads
+        <Link href="/" className="no-underline">
+          <Logo size="md" />
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-6 pb-16">

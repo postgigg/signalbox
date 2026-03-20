@@ -221,7 +221,7 @@ export default function LandingPage(): React.ReactElement {
       <TrustSignals />
 
       {/* ── Final CTA ── */}
-      <section className="bg-ink py-24 px-6">
+      <section className="bg-black py-24 px-6">
         <div className="max-w-content mx-auto animate-on-enter">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -349,7 +349,7 @@ export default function LandingPage(): React.ReactElement {
       </section>
 
       {/* ── Built by ── */}
-      <div className="bg-ink border-t border-white/5 py-6 px-6 text-center">
+      <div className="bg-black border-t border-white/5 py-6 px-6 text-center">
         <p className="text-sm text-stone-light font-body">
           Built by a human, with a little help from AI.
         </p>
