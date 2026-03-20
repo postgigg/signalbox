@@ -9,6 +9,7 @@ import { Logo } from '@/components/shared/Logo';
 import type { ReactNode } from 'react';
 
 const NAV_LINKS = [
+  { href: '/agency', label: 'For Agencies' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/docs', label: 'Docs' },
   { href: '/templates', label: 'Templates' },

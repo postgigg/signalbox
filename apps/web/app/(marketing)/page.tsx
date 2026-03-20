@@ -27,11 +27,11 @@ export default function LandingPage(): React.ReactElement {
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="animate-on-enter">
             <h1 className="font-display text-5xl font-semibold text-ink leading-tight">
-              Stop losing deals to slower follow-up.
+              Your competitor is calling your best leads first.
             </h1>
             <p className="mt-6 text-lg text-stone leading-relaxed max-w-[520px]">
-              Automatically score every lead and know exactly who to call first.
-              Set up in 5 minutes.
+              Know the budget, timeline, and intent of every lead before you pick up the phone.
+              The ones worth $10k get a call in minutes. The rest can wait.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
               <Link href="/signup" className="btn-primary-lg">
@@ -60,14 +60,14 @@ export default function LandingPage(): React.ReactElement {
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-on-enter">
             <h2 className="font-display text-3xl font-semibold text-ink">
-              What your visitors see.
+              Visitors qualify themselves.
             </h2>
             <p className="mt-4 text-base text-stone leading-relaxed max-w-[460px]">
-              A short, tappable flow. Not a form. Visitors tell you their budget,
-              timeline, and service needs without thinking twice.
+              A 30-second tappable flow on your site. Not a form. Visitors tell you their
+              budget, timeline, and service needs. You get a score and a call list.
             </p>
             <p className="mt-3 text-sm text-stone-light">
-              Every answer feeds into a lead score you see instantly in your dashboard.
+              Your receptionist stops guessing. Your sales team stops wasting hours on $200 jobs.
             </p>
           </div>
           <div className="animate-slide-right">
@@ -157,7 +157,7 @@ export default function LandingPage(): React.ReactElement {
             ))}
           </div>
           <p className="mt-6 text-center text-sm text-stone">
-            Close just one extra deal per month and HawkLeads pays for itself.
+            One extra closed deal per month pays for a full year of HawkLeads.
           </p>
           <p className="mt-2 text-center text-sm text-stone-light">
             <Link href="/pricing" className="underline hover:text-ink transition-colors duration-fast">
@@ -226,11 +226,11 @@ export default function LandingPage(): React.ReactElement {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <h2 className="font-display text-4xl font-semibold text-white">
-                Stop guessing. Start closing.
+                Every hour you wait, someone else closes the deal.
               </h2>
               <p className="mt-4 text-base text-stone-light leading-relaxed max-w-[440px]">
-                Your next hot lead is already on your site.
-                The only question is whether you call them first.
+                Your next $10,000 client is on your website right now.
+                The only question is whether you call them before your competitor does.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
                 <Link

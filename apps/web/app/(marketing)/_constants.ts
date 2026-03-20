@@ -1,7 +1,7 @@
 export const STATS = [
-  { number: '78%', body: 'of deals go to whoever responds first.' },
-  { number: '47hrs', body: 'average response time to a form submission.' },
-  { number: '27%', body: 'of inbound leads are ever contacted.' },
+  { number: '78%', body: 'of deals go to whoever responds first. Your competitor already knows this.' },
+  { number: '47hrs', body: 'is the average response time to a web form. Every hour costs you revenue.' },
+  { number: '$1.2M', body: 'in pipeline lost per year by mid-size service companies from slow follow-up.' },
 ] as const;
 
 export const STEPS = [
@@ -73,7 +73,7 @@ export const PLANS: readonly PricingPlan[] = [
     monthlyPrice: 99,
     annualPrice: 82,
     description: 'One widget. 500 submissions/month.',
-    bestFor: 'Best for solo operators with one site.',
+    bestFor: 'Best for single-location businesses.',
     features: [
       'Lead scoring',
       'Email alerts',
@@ -87,7 +87,7 @@ export const PLANS: readonly PricingPlan[] = [
     monthlyPrice: 149,
     annualPrice: 124,
     description: 'Five widgets. 2,000 submissions/month.',
-    bestFor: 'Best for growing teams with multiple sites.',
+    bestFor: 'Best for teams doing $1M+ with multiple locations.',
     features: [
       'Everything in Starter',
       'Lead routing rules',
@@ -142,7 +142,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   {
     question: 'Does it integrate with my CRM?',
     answer:
-      'Pro and Agency plans include webhooks. When a lead comes in, a webhook fires to any URL you configure. Use it with your CRM, Zapier, or any tool that accepts HTTP.',
+      'All plans include webhooks. When a lead comes in, a webhook fires to any URL you configure. Connect to your CRM, Zapier, Make, or any tool that accepts HTTP. Pro plans add lead routing to auto-assign leads to the right rep.',
   },
   {
     question: 'Is there a contract?',
@@ -153,34 +153,34 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
 
 export const COMPARISON_ROWS = [
   { form: 'All leads look the same', hawkleads: 'Every lead scored 0 to 100' },
-  { form: 'No idea who is serious', hawkleads: 'Hot, warm, cold tiers instantly' },
-  { form: 'Average 47-hour response time', hawkleads: 'Instant alerts for hot leads' },
-  { form: 'No prioritization', hawkleads: 'Dashboard sorted by score' },
+  { form: 'No idea who is serious', hawkleads: 'Budget, timeline, and intent before you dial' },
+  { form: 'Your competitor calls first', hawkleads: 'Instant alerts. You call first.' },
+  { form: '$0 insight into lead quality', hawkleads: 'Know the dollar value before you pick up' },
 ] as const;
 
 export const INDUSTRY_HOOKS = [
   {
     title: 'Home Services',
-    body: 'Know instantly if it is a $200 repair or a $10,000 job.',
+    body: 'A $200 repair and a $15,000 remodel look identical in your inbox. Not anymore.',
   },
   {
     title: 'Legal',
-    body: 'Prioritize urgent, high-value cases first.',
+    body: 'Your intake team spends 40% of their day on cases you will never take. Score them first.',
   },
   {
     title: 'Real Estate',
-    body: 'Focus on buyers ready this month, not just browsing.',
+    body: 'The buyer with pre-approval and a 30-day timeline gets your call before the browser.',
   },
 ] as const;
 
 export const BEFORE_ITEMS = [
-  'Inbox full of random leads',
-  'No idea who is serious',
-  'Slow responses, lost deals',
+  'Every lead looks the same in your inbox',
+  'Your team wastes hours calling tire-kickers',
+  'Your competitor responds first and wins the deal',
 ] as const;
 
 export const AFTER_ITEMS = [
-  'Every lead scored 0 to 100',
-  'Hot leads highlighted and alerted',
-  'Call list ready the moment they submit',
+  'Budget, timeline, and intent scored before you dial',
+  'Your team calls the $10k jobs first, every time',
+  'Hot leads get a call in minutes, not days',
 ] as const;
