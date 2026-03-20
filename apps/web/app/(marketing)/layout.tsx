@@ -142,7 +142,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
           </div>
 
           <div className="mt-10 pt-6 border-t border-border text-xs text-stone">
-            &copy; {new Date().getFullYear()} HawkLeads. All rights reserved.
+            &copy; {new Date().getFullYear()} HawkLeads. All rights reserved. A Workbird LLC Company.
           </div>
         </div>
       </footer>
@@ -150,7 +150,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
       {/* HawkLeads demo widget — loaded after page content */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.HawkLeadsConfig={key:"f60fc7fb2a37017dbcf20a28",apiUrl:"https://hawkleads.netlify.app"};`,
+          __html: `window.HawkLeadsConfig={key:"f60fc7fb2a37017dbcf20a28",apiUrl:"https://hawkleads.io"};`,
         }}
       />
       <script src="/widget/sb.js" async />

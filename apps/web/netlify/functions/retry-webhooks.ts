@@ -12,7 +12,7 @@ const BATCH_SIZE = 50;
 const MAX_FAILURE_COUNT = 10;
 const FAILURE_NOTIFICATION_THRESHOLD = 3;
 const WEBHOOK_TIMEOUT_MS = 10_000;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

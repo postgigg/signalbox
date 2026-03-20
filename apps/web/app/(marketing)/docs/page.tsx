@@ -171,7 +171,7 @@ export default function DocsPage(): React.ReactElement {
                 The HawkLeads API is a REST API that returns JSON responses. All requests must be made over HTTPS.
                 The base URL for all API endpoints is:
               </p>
-              <CodeBlock>{'https://app.hawkleads.io/api/v1'}</CodeBlock>
+              <CodeBlock>{'https://hawkleads.io/api/v1'}</CodeBlock>
 
               <h3 className="font-body text-sm font-semibold text-ink mt-6 mb-1">Content Type</h3>
               <p className="text-sm text-stone">
@@ -229,7 +229,7 @@ export default function DocsPage(): React.ReactElement {
               </ul>
 
               <h3 className="font-body text-sm font-semibold text-ink mt-6 mb-1">Example Request</h3>
-              <CodeBlock>{`curl -X GET "https://app.hawkleads.io/api/v1/leads?limit=10" \\
+              <CodeBlock>{`curl -X GET "https://hawkleads.io/api/v1/leads?limit=10" \\
   -H "Authorization: Bearer sb_live_abc123def456" \\
   -H "Content-Type: application/json"`}</CodeBlock>
             </section>

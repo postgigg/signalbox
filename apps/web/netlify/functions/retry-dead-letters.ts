@@ -15,7 +15,7 @@ const BATCH_SIZE = 50;
 const MAX_RETRY_COUNT = 3;
 const RETRY_WINDOW_HOURS = 24;
 const MIN_AGE_MINUTES = 5;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

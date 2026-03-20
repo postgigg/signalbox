@@ -5,7 +5,7 @@ import type { Database } from '../../lib/supabase/types';
 type AccountRow = Database['public']['Tables']['accounts']['Row'];
 
 const BATCH_SIZE = 100;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';
 
 function createAdminClient(): SupabaseClient<Database> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

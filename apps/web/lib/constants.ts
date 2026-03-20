@@ -454,6 +454,6 @@ export const PRIORITY_SUPPORT_EMAIL = 'priority@hawkleads.io';
 export const NO_REPLY_EMAIL = 'noreply@hawkleads.io';
 
 export const APP_NAME = 'HawkLeads';
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.hawkleads.io';
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';
 export const WIDGET_CDN_URL =
   process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io';
