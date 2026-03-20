@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy - HawkLeads',
 };
 
-const EFFECTIVE_DATE = 'March 16, 2026';
+const EFFECTIVE_DATE = 'March 20, 2026';
 
 export default function PrivacyPage(): React.ReactElement {
   return (
@@ -18,8 +18,8 @@ export default function PrivacyPage(): React.ReactElement {
         {/* Intro */}
         <section>
           <p>
-            This Privacy Policy describes how HawkLeads (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, stores, shares,
-            and protects information when you use our platform at app.hawkleads.io, our embeddable widget, our
+            This Privacy Policy describes how HawkLeads, a product of Workbird LLC (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), collects, uses, stores, shares,
+            and protects information when you use our platform at hawkleads.io, our embeddable widget, our
             APIs, and related services (collectively, the &ldquo;Service&rdquo;). This policy applies to two categories of
             individuals: <span className="font-medium text-ink">Customers</span> (account holders who use
             HawkLeads to collect and manage leads) and <span className="font-medium text-ink">End Users</span>
@@ -186,7 +186,7 @@ export default function PrivacyPage(): React.ReactElement {
         <section>
           <h2 className="font-display text-lg font-semibold text-ink mb-2">5. Cookies and Tracking</h2>
 
-          <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.1 Dashboard (app.hawkleads.io)</h3>
+          <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.1 Dashboard (hawkleads.io)</h3>
           <p>
             The HawkLeads dashboard uses only essential, first-party cookies for authentication and session
             management. These cookies are:
@@ -298,9 +298,9 @@ export default function PrivacyPage(): React.ReactElement {
             For any questions or concerns about this Privacy Policy, your data, or to exercise your rights, contact us at:
           </p>
           <div className="mt-2 p-4 bg-surface rounded-md border border-border text-ink">
-            <p className="font-body font-medium">HawkLeads, Data Protection</p>
+            <p className="font-body font-medium">HawkLeads (Workbird LLC)</p>
             <p className="mt-1">Email: support@hawkleads.io</p>
-            <p>Website: app.hawkleads.io</p>
+            <p>Website: hawkleads.io</p>
           </div>
           <p className="mt-3">
             For GDPR-related inquiries, you may also contact your local data protection authority. A list of

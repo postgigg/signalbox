@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Terms of Service - HawkLeads',
 };
 
-const EFFECTIVE_DATE = 'March 16, 2026';
+const EFFECTIVE_DATE = 'March 20, 2026';
 
 export default function TermsPage(): React.ReactElement {
   return (
@@ -20,8 +20,8 @@ export default function TermsPage(): React.ReactElement {
           <h2 className="font-display text-lg font-semibold text-ink mb-2">1. Agreement to Terms</h2>
           <p>
             These Terms of Service ("Terms") constitute a legally binding agreement between you ("Customer," "you," or "your")
-            and HawkLeads ("we," "us," or "our"). By creating an account, accessing, or using the HawkLeads platform
-            at app.hawkleads.io or any associated services, you agree to be bound by these Terms. If you are accepting
+            and Workbird LLC, doing business as HawkLeads ("we," "us," or "our"). By creating an account, accessing, or using the HawkLeads platform
+            at hawkleads.io or any associated services, you agree to be bound by these Terms. If you are accepting
             these Terms on behalf of an organization, you represent and warrant that you have the authority to bind
             that organization. If you do not agree, you must not use the service.
           </p>
@@ -79,9 +79,9 @@ export default function TermsPage(): React.ReactElement {
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li><span className="font-medium text-ink">Trial:</span> 14-day free trial with access to Starter-level features and a 50-submission limit. No credit card required.</li>
-            <li><span className="font-medium text-ink">Starter ($99/month):</span> 1 widget, 500 submissions/month, 3 team members, webhook access.</li>
-            <li><span className="font-medium text-ink">Pro ($149/month):</span> 5 widgets, 2,000 submissions/month, 10 team members, API access, webhooks, custom branding.</li>
-            <li><span className="font-medium text-ink">Agency ($249/month):</span> 25 widgets, unlimited submissions, 25 team members, full API and webhook access, priority support, white-label options.</li>
+            <li><span className="font-medium text-ink">Starter ($99/month):</span> 1 widget, 500 submissions/month, 3 team members, webhook integrations.</li>
+            <li><span className="font-medium text-ink">Pro ($149/month):</span> 5 widgets, 2,000 submissions/month, 10 team members, API access, webhooks, custom branding, lead routing rules, A/B testing.</li>
+            <li><span className="font-medium text-ink">Agency ($249/month):</span> 25 widgets, unlimited submissions, 25 team members, full API and webhook access, shared analytics links, priority support, white-label options.</li>
           </ul>
           <p className="mt-2">
             Annual billing is available at a 17% discount. All prices are in US Dollars. We reserve the right
@@ -447,9 +447,9 @@ export default function TermsPage(): React.ReactElement {
             For questions, concerns, or notices regarding these Terms, contact us at:
           </p>
           <div className="mt-2 p-4 bg-surface rounded-md border border-border text-ink">
-            <p className="font-body font-medium">HawkLeads</p>
+            <p className="font-body font-medium">HawkLeads (Workbird LLC)</p>
             <p className="mt-1">Email: support@hawkleads.io</p>
-            <p>Website: app.hawkleads.io</p>
+            <p>Website: hawkleads.io</p>
           </div>
         </section>
       </div>
