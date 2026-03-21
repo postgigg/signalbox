@@ -47,6 +47,17 @@ export interface FlowOption {
   scoreWeight: number;
 }
 
+// ── Attention Grabber Configuration ───────────────────────────────────────
+export interface AttentionGrabberConfig {
+  enabled: boolean;
+  teaserText: string;
+  teaserDelayMs: number;
+  pulseDelayMs: number;
+  scrollNudgeText: string;
+  scrollThreshold: number;
+  exitIntentText: string;
+}
+
 // ── A/B Test Configuration ────────────────────────────────────────────────
 export interface AbTestConfig {
   testId: string;
@@ -79,6 +90,7 @@ export interface WidgetConfig {
   socialProofMin: number;
   submissionCount: number;
   abTest?: AbTestConfig;
+  attentionGrabber?: AttentionGrabberConfig;
 }
 
 export interface ConfirmationConfig {

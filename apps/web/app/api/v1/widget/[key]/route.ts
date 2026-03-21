@@ -44,7 +44,7 @@ export async function GET(
   // Check account status
   const { data: account, error: accountError } = await admin
     .from('accounts')
-    .select('is_suspended, subscription_status, trial_ends_at')
+    .select('is_suspended, subscription_status, trial_ends_at, plan')
     .eq('id', widget.account_id)
     .single();
 
@@ -148,6 +148,26 @@ export async function GET(
         options: abTest.variant_b_options,
       },
     };
+  }
+
+  // Include attention grabber config for Pro+ accounts
+  const isPro = account.plan === 'pro' || account.plan === 'agency';
+  if (isPro) {
+    const themeObj = (widget.theme ?? {}) as Record<string, unknown>;
+    const grabberEnabled = themeObj['attentionGrabberEnabled'] as boolean | undefined;
+
+    // Only include if explicitly enabled in widget settings
+    if (grabberEnabled === true) {
+      configPayload.attentionGrabber = {
+        enabled: true,
+        teaserText: (themeObj['attentionTeaserText'] as string) ?? 'See how you qualify in 30 seconds',
+        teaserDelayMs: (themeObj['attentionTeaserDelayMs'] as number) ?? 3000,
+        pulseDelayMs: (themeObj['attentionPulseDelayMs'] as number) ?? 8000,
+        scrollNudgeText: (themeObj['attentionScrollNudgeText'] as string) ?? 'Quick question before you go?',
+        scrollThreshold: (themeObj['attentionScrollThreshold'] as number) ?? 40,
+        exitIntentText: (themeObj['attentionExitIntentText'] as string) ?? 'Wait! Get a personalized recommendation',
+      };
+    }
   }
 
   const response = corsJson(configPayload);

@@ -195,43 +195,59 @@ class HawkLeadsWidget {
     const ctx = this.machine.getContext();
     if (!ctx.config) return;
 
-    // 1. Teaser bubble after 3 seconds
-    setTimeout(() => {
-      if (this.machine.getState() !== 'ready') return;
-      this.renderer.showTeaser('See how you qualify in 30 seconds');
-    }, 3000);
+    const grabber = ctx.config.attentionGrabber;
 
-    // 2. Pulse the trigger button after 8 seconds
-    setTimeout(() => {
-      if (this.machine.getState() !== 'ready') return;
-      this.renderer.pulseTrigger();
-    }, 8000);
+    // If no grabber config or disabled, skip all attention grabbers
+    if (!grabber || !grabber.enabled) return;
 
-    // 3. On scroll past 40% of page, show a nudge
-    let scrollTriggered = false;
-    const handleScroll = (): void => {
-      if (scrollTriggered || this.machine.getState() !== 'ready') return;
-      const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (scrollPct > 0.4) {
-        scrollTriggered = true;
-        this.renderer.showTeaser('Quick question before you go?');
-        window.removeEventListener('scroll', handleScroll);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // 1. Teaser bubble after configured delay
+    if (grabber.teaserText) {
+      setTimeout(() => {
+        if (this.machine.getState() !== 'ready') return;
+        this.renderer.showTeaser(grabber.teaserText);
+      }, grabber.teaserDelayMs);
+    }
+
+    // 2. Pulse the trigger button after configured delay
+    if (grabber.pulseDelayMs > 0) {
+      setTimeout(() => {
+        if (this.machine.getState() !== 'ready') return;
+        this.renderer.pulseTrigger();
+      }, grabber.pulseDelayMs);
+    }
+
+    // 3. On scroll past threshold, show a nudge
+    if (grabber.scrollNudgeText && grabber.scrollThreshold > 0) {
+      let scrollTriggered = false;
+      const threshold = grabber.scrollThreshold / 100;
+      const nudgeText = grabber.scrollNudgeText;
+      const handleScroll = (): void => {
+        if (scrollTriggered || this.machine.getState() !== 'ready') return;
+        const scrollPct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        if (scrollPct > threshold) {
+          scrollTriggered = true;
+          this.renderer.showTeaser(nudgeText);
+          window.removeEventListener('scroll', handleScroll);
+        }
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
 
     // 4. Exit intent on desktop (mouse leaves viewport top)
-    let exitTriggered = false;
-    const handleMouseLeave = (e: MouseEvent): void => {
-      if (exitTriggered || this.machine.getState() !== 'ready') return;
-      if (e.clientY <= 0) {
-        exitTriggered = true;
-        this.renderer.showTeaser('Wait! Get a personalized recommendation');
-        this.renderer.pulseTrigger();
-        document.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-    document.addEventListener('mouseleave', handleMouseLeave);
+    if (grabber.exitIntentText) {
+      let exitTriggered = false;
+      const exitText = grabber.exitIntentText;
+      const handleMouseLeave = (e: MouseEvent): void => {
+        if (exitTriggered || this.machine.getState() !== 'ready') return;
+        if (e.clientY <= 0) {
+          exitTriggered = true;
+          this.renderer.showTeaser(exitText);
+          this.renderer.pulseTrigger();
+          document.removeEventListener('mouseleave', handleMouseLeave);
+        }
+      };
+      document.addEventListener('mouseleave', handleMouseLeave);
+    }
   }
 
   // ── Event Handlers ────────────────────────────────────────────────────

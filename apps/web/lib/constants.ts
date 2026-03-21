@@ -444,6 +444,19 @@ export const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export const HONEYPOT_MIN_TIME_MS = 2000; // 2 seconds minimum form fill time
 
+// ---------------------------------------------------------------------------
+// Attention grabber defaults (Pro+)
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_ATTENTION_GRABBER = {
+  teaserText: 'See how you qualify in 30 seconds',
+  teaserDelayMs: 3000,
+  pulseDelayMs: 8000,
+  scrollNudgeText: 'Quick question before you go?',
+  scrollThreshold: 40,
+  exitIntentText: 'Wait! Get a personalized recommendation',
+} as const;
+
 export const API_KEY_PREFIX = 'sb_live_';
 
 export const PAGINATION_DEFAULT_PAGE_SIZE = 25;
