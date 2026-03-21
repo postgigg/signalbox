@@ -348,12 +348,6 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Built by ── */}
-      <div className="bg-black border-t border-white/5 py-6 px-6 text-center">
-        <p className="text-sm text-stone-light font-body">
-          Built by a human, with a little help from AI.
-        </p>
-      </div>
     </div>
   );
 }
