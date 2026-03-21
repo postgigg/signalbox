@@ -25,7 +25,7 @@ export default function SharedAnalyticsPage({
 }: {
   readonly params: Promise<{ token: string }>;
 }): React.ReactElement {
-  const { token } = use(params);
+  const { token } = use(params instanceof Promise ? params : Promise.resolve(params));
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

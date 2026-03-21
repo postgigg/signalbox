@@ -29,6 +29,9 @@
 [functions.cleanup-deleted-accounts]
   schedule = "0 4 * * 0"
 
+[functions.process-drip-emails]
+  schedule = "*/5 * * * *"
+
 [[headers]]
   for = "/api/v1/widget/*"
   [headers.values]

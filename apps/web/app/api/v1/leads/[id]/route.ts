@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { authenticateRequest, requireRole } from '@/lib/auth';
 import { stripHtml } from '@/lib/sanitize';
+import { pauseDripEnrollments } from '@/lib/drip';
+import { DRIP_PAUSE_STATUSES } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 
@@ -155,6 +157,16 @@ export async function PATCH(
       { error: 'Failed to update lead' },
       { status: 500 },
     );
+  }
+
+  // Pause drip enrollments when status changes to a terminal state
+  if (
+    parsed.data.status !== undefined &&
+    (DRIP_PAUSE_STATUSES as readonly string[]).includes(parsed.data.status)
+  ) {
+    pauseDripEnrollments(admin, id, parsed.data.status).catch(() => {
+      // Drip pause failure — non-blocking
+    });
   }
 
   return NextResponse.json({ data: updated });

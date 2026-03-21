@@ -30,7 +30,8 @@ export default function WidgetAbTestsPage({
 }: {
   readonly params: Promise<{ id: string }>;
 }): React.ReactElement {
-  const { id: widgetId } = use(params);
+  const resolvedParams = use(params instanceof Promise ? params : Promise.resolve(params));
+  const { id: widgetId } = resolvedParams;
   const [tests, setTests] = useState<AbTest[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

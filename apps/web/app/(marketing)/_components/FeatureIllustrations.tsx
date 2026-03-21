@@ -448,7 +448,100 @@ export function AbTestingIllustration(): React.ReactElement {
   );
 }
 
-/* ── Feature 7: Integrations ── */
+/* ── Feature 7: Drip Sequences ── */
+export function DripSequencesIllustration(): React.ReactElement {
+  return (
+    <div className="step-illustration" aria-hidden="true">
+      <svg
+        viewBox="0 0 280 140"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-auto"
+      >
+        {/* Card frame */}
+        <rect x="16" y="8" width="248" height="124" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+        <text x="28" y="26" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Drip sequence</text>
+
+        {/* Lead card on the left */}
+        <g className="feat-drip-lead">
+          <rect x="28" y="36" width="56" height="36" rx="6" fill="#FFFBEB" stroke="#FDE68A" strokeWidth="1" />
+          <circle cx="56" cy="48" r="7" fill="#CA8A04" opacity="0.15" />
+          <text x="53" y="51" fontSize="7" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="700">M</text>
+          <text x="38" y="64" fontSize="6.5" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="500">Mark T.</text>
+          <rect x="36" y="56" width="26" height="5" rx="2.5" fill="#CA8A04" opacity="0.2" />
+          <text x="39" y="60" fontSize="4.5" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">WARM</text>
+        </g>
+
+        {/* Arrow from lead to sequence */}
+        <g className="feat-drip-arrow">
+          <path d="M84 54 L104 54" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4 3" className="feat-drip-dash" />
+          <polygon points="104,50 112,54 104,58" fill="#2563EB" />
+        </g>
+
+        {/* Step 1 — email envelope with "24h" */}
+        <g className="feat-drip-step-1">
+          <rect x="116" y="32" width="60" height="20" rx="4" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1" />
+          {/* Envelope icon */}
+          <rect x="122" y="38" width="10" height="8" rx="1.5" fill="none" stroke="#2563EB" strokeWidth="1" />
+          <path d="M122 38 L127 42 L132 38" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+          <text x="136" y="45" fontSize="7" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="600">24h</text>
+          <text x="156" y="45" fontSize="6" fontFamily="var(--font-body)" fill="#64748B">Step 1</text>
+        </g>
+
+        {/* Connector line step 1 to 2 */}
+        <g className="feat-drip-conn-1">
+          <line x1="146" y1="52" x2="146" y2="60" stroke="#E2E8F0" strokeWidth="1.5" />
+        </g>
+
+        {/* Step 2 — email with "72h" */}
+        <g className="feat-drip-step-2">
+          <rect x="116" y="60" width="60" height="20" rx="4" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1" />
+          <rect x="122" y="66" width="10" height="8" rx="1.5" fill="none" stroke="#2563EB" strokeWidth="1" />
+          <path d="M122 66 L127 70 L132 66" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+          <text x="136" y="73" fontSize="7" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="600">72h</text>
+          <text x="156" y="73" fontSize="6" fontFamily="var(--font-body)" fill="#64748B">Step 2</text>
+        </g>
+
+        {/* Connector line step 2 to 3 */}
+        <g className="feat-drip-conn-2">
+          <line x1="146" y1="80" x2="146" y2="88" stroke="#E2E8F0" strokeWidth="1.5" />
+        </g>
+
+        {/* Step 3 — email with "7d" */}
+        <g className="feat-drip-step-3">
+          <rect x="116" y="88" width="60" height="20" rx="4" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1" />
+          <rect x="122" y="94" width="10" height="8" rx="1.5" fill="none" stroke="#2563EB" strokeWidth="1" />
+          <path d="M122 94 L127 98 L132 94" fill="none" stroke="#2563EB" strokeWidth="0.8" />
+          <text x="136" y="101" fontSize="7" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="600">7d</text>
+          <text x="152" y="101" fontSize="6" fontFamily="var(--font-body)" fill="#64748B">Step 3</text>
+        </g>
+
+        {/* Status panel on right */}
+        <g className="feat-drip-status">
+          <rect x="192" y="32" width="60" height="22" rx="4" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="1" />
+          <circle cx="204" cy="43" r="3" fill="#16A34A" />
+          <text x="210" y="46" fontSize="6.5" fontFamily="var(--font-body)" fill="#16A34A" fontWeight="600">Sent</text>
+
+          <rect x="192" y="60" width="60" height="22" rx="4" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="1" />
+          <circle cx="204" cy="71" r="3" fill="#16A34A" />
+          <text x="210" y="74" fontSize="6.5" fontFamily="var(--font-body)" fill="#16A34A" fontWeight="600">Sent</text>
+
+          <rect x="192" y="88" width="60" height="22" rx="4" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
+          <circle cx="204" cy="99" r="3" fill="#94A3B8" />
+          <text x="210" y="102" fontSize="6.5" fontFamily="var(--font-body)" fill="#94A3B8" fontWeight="500">Pending</text>
+        </g>
+
+        {/* Auto-pause badge — pops in */}
+        <g className="feat-drip-pause">
+          <rect x="72" y="112" width="108" height="16" rx="4" fill="#FFFBEB" stroke="#FDE68A" strokeWidth="1" />
+          <text x="82" y="123" fontSize="6.5" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">Auto-pauses on contact</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ── Feature 8: Integrations ── */
 export function IntegrationsIllustration(): React.ReactElement {
   return (
     <div className="step-illustration" aria-hidden="true">

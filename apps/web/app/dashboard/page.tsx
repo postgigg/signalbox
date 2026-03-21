@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { ConversionFunnel } from '@/components/dashboard/ConversionFunnel';
 import { createClient } from '@/lib/supabase/server';
 
 interface StatCard {
@@ -216,42 +217,29 @@ export default async function DashboardOverviewPage(): Promise<React.ReactElemen
 
       {/* Conversion Funnel */}
       <div className="mt-8">
-        <h2 className="font-display text-lg font-semibold text-ink mb-4">Conversion Funnel</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-display text-lg font-semibold text-ink">Conversion Funnel</h2>
+          <Link href="/dashboard/analytics" className="text-sm text-signal hover:text-signal-hover transition-colors duration-fast">
+            Full analytics
+          </Link>
+        </div>
         <div className="card">
           {funnelData.opens === 0 ? (
             <p className="text-sm text-stone text-center py-4">
               No funnel data yet. Data will appear once visitors interact with your widgets.
             </p>
           ) : (
-            <div className="space-y-3">
-              {[
-                { label: 'Widget Opens', value: funnelData.opens },
-                { label: 'Step 1 Completed', value: funnelData.step1 },
-                { label: 'Step 2 Completed', value: funnelData.step2 },
-                { label: 'Step 3 Completed', value: funnelData.step3 },
-                { label: 'Submitted', value: funnelData.submitted },
-              ].map((step) => {
-                const pct = funnelData.opens > 0
-                  ? Math.round((step.value / funnelData.opens) * 100)
-                  : 0;
-                return (
-                  <div key={step.label} className="flex items-center gap-3">
-                    <span className="text-xs text-stone font-body w-32 flex-shrink-0 text-right">
-                      {step.label}
-                    </span>
-                    <div className="flex-1 h-6 bg-surface-alt rounded-sm overflow-hidden">
-                      <div
-                        className="h-full bg-signal rounded-sm transition-all duration-normal"
-                        style={{ width: `${String(pct)}%` }}
-                      />
-                    </div>
-                    <span className="text-xs font-mono text-stone w-12 text-right">
-                      {step.value} ({pct}%)
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            <ConversionFunnel
+              compact
+              avgScore={null}
+              steps={[
+                { label: 'Widget Opens', value: funnelData.opens, previousValue: 0 },
+                { label: 'Step 1 Done', value: funnelData.step1, previousValue: 0 },
+                { label: 'Step 2 Done', value: funnelData.step2, previousValue: 0 },
+                { label: 'Step 3 Done', value: funnelData.step3, previousValue: 0 },
+                { label: 'Submitted', value: funnelData.submitted, previousValue: 0 },
+              ]}
+            />
           )}
         </div>
       </div>

@@ -93,13 +93,21 @@ export default function ClientsPage(): React.ReactElement {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="page-heading">Clients</h1>
-        <button
-          type="button"
-          onClick={() => setShowForm(!showForm)}
-          className="btn-primary"
-        >
-          {showForm ? 'Cancel' : 'Add Client'}
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/clients/shared-analytics"
+            className="btn-secondary text-sm"
+          >
+            Shared Analytics
+          </Link>
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="btn-primary"
+          >
+            {showForm ? 'Cancel' : 'Add Client'}
+          </button>
+        </div>
       </div>
 
       {error !== null && (

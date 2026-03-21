@@ -27,6 +27,8 @@ export interface PlanConfig {
     maxAbTests: number;
     sharedAnalytics: boolean;
     maxSharedLinks: number;
+    dripSequences: boolean;
+    maxDripSequences: number;
   };
 }
 
@@ -56,6 +58,8 @@ export const PLANS: Record<string, PlanConfig> = {
       maxAbTests: 0,
       sharedAnalytics: false,
       maxSharedLinks: 0,
+      dripSequences: false,
+      maxDripSequences: 0,
     },
   },
   starter: {
@@ -83,6 +87,8 @@ export const PLANS: Record<string, PlanConfig> = {
       maxAbTests: 0,
       sharedAnalytics: false,
       maxSharedLinks: 0,
+      dripSequences: false,
+      maxDripSequences: 0,
     },
   },
   pro: {
@@ -110,6 +116,8 @@ export const PLANS: Record<string, PlanConfig> = {
       maxAbTests: 5,
       sharedAnalytics: false,
       maxSharedLinks: 0,
+      dripSequences: true,
+      maxDripSequences: 3,
     },
   },
   agency: {
@@ -137,6 +145,8 @@ export const PLANS: Record<string, PlanConfig> = {
       maxAbTests: 10,
       sharedAnalytics: true,
       maxSharedLinks: 25,
+      dripSequences: true,
+      maxDripSequences: 10,
     },
   },
 } as const;
@@ -456,6 +466,51 @@ export const DEFAULT_ATTENTION_GRABBER = {
   scrollThreshold: 40,
   exitIntentText: 'Wait! Get a personalized recommendation',
 } as const;
+
+// ---------------------------------------------------------------------------
+// Drip sequence constants
+// ---------------------------------------------------------------------------
+
+export const DRIP_PAUSE_STATUSES = [
+  'contacted',
+  'qualified',
+  'converted',
+  'disqualified',
+  'archived',
+] as const;
+
+export const DRIP_TEMPLATE_VARIABLES = [
+  '{{visitor_name}}',
+  '{{visitor_email}}',
+  '{{lead_score}}',
+  '{{lead_tier}}',
+  '{{widget_name}}',
+  '{{account_name}}',
+] as const;
+
+export const DRIP_DEFAULT_STEPS = [
+  {
+    stepOrder: 1,
+    delayHours: 24,
+    subject: 'Thanks for reaching out, {{visitor_name}}',
+    bodyHtml: '<p>Hi {{visitor_name}},</p><p>Thank you for reaching out to {{account_name}}. We received your inquiry and wanted to let you know that our team will be in touch soon.</p><p>In the meantime, if you have any questions, feel free to reply to this email.</p><p>Best regards,<br/>The {{account_name}} Team</p>',
+    bodyText: 'Hi {{visitor_name}},\n\nThank you for reaching out to {{account_name}}. We received your inquiry and wanted to let you know that our team will be in touch soon.\n\nIn the meantime, if you have any questions, feel free to reply to this email.\n\nBest regards,\nThe {{account_name}} Team',
+  },
+  {
+    stepOrder: 2,
+    delayHours: 72,
+    subject: '{{visitor_name}}, still looking for help?',
+    bodyHtml: '<p>Hi {{visitor_name}},</p><p>We wanted to check in and see if you still need help with your inquiry. At {{account_name}}, we are committed to finding the right solution for you.</p><p>If you would like to discuss your needs, simply reply to this email and we will get back to you promptly.</p><p>Best regards,<br/>The {{account_name}} Team</p>',
+    bodyText: 'Hi {{visitor_name}},\n\nWe wanted to check in and see if you still need help with your inquiry. At {{account_name}}, we are committed to finding the right solution for you.\n\nIf you would like to discuss your needs, simply reply to this email and we will get back to you promptly.\n\nBest regards,\nThe {{account_name}} Team',
+  },
+  {
+    stepOrder: 3,
+    delayHours: 168,
+    subject: 'One last thing, {{visitor_name}}',
+    bodyHtml: '<p>Hi {{visitor_name}},</p><p>This is our last follow-up regarding your recent inquiry with {{account_name}}. We do not want you to miss out on the help you were looking for.</p><p>If your situation has changed or you have found what you need, no worries at all. But if you still need assistance, we are here for you. Just reply to this email or give us a call.</p><p>Best regards,<br/>The {{account_name}} Team</p>',
+    bodyText: 'Hi {{visitor_name}},\n\nThis is our last follow-up regarding your recent inquiry with {{account_name}}. We do not want you to miss out on the help you were looking for.\n\nIf your situation has changed or you have found what you need, no worries at all. But if you still need assistance, we are here for you. Just reply to this email or give us a call.\n\nBest regards,\nThe {{account_name}} Team',
+  },
+] as const;
 
 export const API_KEY_PREFIX = 'sb_live_';
 

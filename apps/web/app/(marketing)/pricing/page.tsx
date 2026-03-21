@@ -18,6 +18,7 @@ const PLAN_FEATURES = [
   { feature: 'Slack notifications', starter: false, pro: true, agency: true },
   { feature: 'Lead routing rules', starter: false, pro: true, agency: true },
   { feature: 'A/B testing', starter: false, pro: true, agency: true },
+  { feature: 'Drip email sequences', starter: false, pro: true, agency: true },
   { feature: 'API access', starter: false, pro: true, agency: true },
   { feature: 'Remove branding', starter: false, pro: true, agency: true },
   { feature: 'Shared analytics links', starter: false, pro: false, agency: true },
@@ -301,6 +302,7 @@ export default function PricingPage(): React.ReactElement {
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Everything in Starter</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Lead routing rules</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> A/B testing</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Drip email sequences</li>
               <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Advanced analytics</li>
             </ul>
             <button

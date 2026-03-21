@@ -6,6 +6,7 @@ import {
   CustomBrandingIllustration,
   LeadRoutingIllustration,
   AbTestingIllustration,
+  DripSequencesIllustration,
   IntegrationsIllustration,
   SharedAnalyticsIllustration,
 } from './FeatureIllustrations';
@@ -19,6 +20,7 @@ const ILLUSTRATIONS: ReadonlyArray<(() => ReactElement) | undefined> = [
   CustomBrandingIllustration,
   LeadRoutingIllustration,
   AbTestingIllustration,
+  DripSequencesIllustration,
   IntegrationsIllustration,
   SharedAnalyticsIllustration,
 ];

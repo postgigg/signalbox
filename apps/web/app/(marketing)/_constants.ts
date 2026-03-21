@@ -48,6 +48,10 @@ export const FEATURES = [
     body: 'Split test different questions and options. See which wording gets more conversions with built-in statistical significance.',
   },
   {
+    title: 'Drip sequences',
+    body: 'Auto-enroll warm and cold leads into timed email nurture. Three steps, spaced over days. Leads that get contacted or convert are paused automatically.',
+  },
+  {
     title: 'Integrations',
     body: 'Connect to any tool with webhooks. Works with Zapier, Make, and custom endpoints. Full delivery log for debugging.',
   },
@@ -92,6 +96,7 @@ export const PLANS: readonly PricingPlan[] = [
       'Everything in Starter',
       'Lead routing rules',
       'A/B testing',
+      'Drip email sequences',
       'Advanced analytics',
     ],
     highlighted: true,
@@ -104,6 +109,7 @@ export const PLANS: readonly PricingPlan[] = [
     bestFor: 'Best for agencies managing client accounts.',
     features: [
       'Everything in Pro',
+      'Drip email sequences (10)',
       'Shared analytics links',
       'White-label branding',
       'Priority support',

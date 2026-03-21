@@ -39,7 +39,7 @@ export default function AbTestResultsPage({
 }: {
   readonly params: Promise<{ id: string; testId: string }>;
 }): React.ReactElement {
-  const { id: widgetId, testId } = use(params);
+  const { id: widgetId, testId } = use(params instanceof Promise ? params : Promise.resolve(params));
   const [data, setData] = useState<ResultsData | null>(null);
   const [loading, setLoading] = useState(true);
 

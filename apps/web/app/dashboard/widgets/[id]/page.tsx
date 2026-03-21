@@ -37,6 +37,7 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
     { href: `/dashboard/widgets/${id}/flow`, label: 'Flow Builder' },
     { href: `/dashboard/widgets/${id}/design`, label: 'Design' },
     { href: `/dashboard/widgets/${id}/embed`, label: 'Embed Code' },
+    { href: `/dashboard/widgets/${id}/ab-tests`, label: 'A/B Tests' },
   ] as const;
 
   return (

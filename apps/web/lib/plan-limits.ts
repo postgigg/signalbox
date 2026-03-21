@@ -18,6 +18,8 @@ interface PlanLimits {
   maxAbTests: number;
   sharedAnalytics: boolean;
   maxSharedLinks: number;
+  dripSequences: boolean;
+  maxDripSequences: number;
 }
 
 export function getPlanLimits(plan: Plan): PlanLimits {

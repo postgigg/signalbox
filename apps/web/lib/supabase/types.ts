@@ -1077,6 +1077,117 @@ export type Database = {
         };
         Relationships: [];
       };
+      drip_sequences: {
+        Row: {
+          id: string;
+          account_id: string;
+          name: string;
+          target_tier: 'warm' | 'cold';
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          name: string;
+          target_tier: 'warm' | 'cold';
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          name?: string;
+          target_tier?: 'warm' | 'cold';
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      drip_steps: {
+        Row: {
+          id: string;
+          sequence_id: string;
+          step_order: number;
+          delay_hours: number;
+          subject: string;
+          body_html: string;
+          body_text: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          sequence_id: string;
+          step_order: number;
+          delay_hours: number;
+          subject: string;
+          body_html: string;
+          body_text: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          sequence_id?: string;
+          step_order?: number;
+          delay_hours?: number;
+          subject?: string;
+          body_html?: string;
+          body_text?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      drip_enrollments: {
+        Row: {
+          id: string;
+          sequence_id: string;
+          submission_id: string;
+          account_id: string;
+          current_step: number;
+          status: 'active' | 'completed' | 'paused' | 'cancelled';
+          enrolled_at: string;
+          last_sent_at: string | null;
+          next_send_at: string | null;
+          paused_reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          sequence_id: string;
+          submission_id: string;
+          account_id: string;
+          current_step?: number;
+          status?: 'active' | 'completed' | 'paused' | 'cancelled';
+          enrolled_at?: string;
+          last_sent_at?: string | null;
+          next_send_at?: string | null;
+          paused_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          sequence_id?: string;
+          submission_id?: string;
+          account_id?: string;
+          current_step?: number;
+          status?: 'active' | 'completed' | 'paused' | 'cancelled';
+          enrolled_at?: string;
+          last_sent_at?: string | null;
+          next_send_at?: string | null;
+          paused_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       stripe_events: {
         Row: {
           event_id: string;
@@ -1177,6 +1288,12 @@ export type ClientAccount = Tables<'client_accounts'>;
 export type SupportTicket = Tables<'support_tickets'>;
 export type TicketMessage = Tables<'ticket_messages'>;
 export type StripeEvent = Tables<'stripe_events'>;
+
+// Drip sequence types
+export type DripSequence = Tables<'drip_sequences'>;
+export type DripStep = Tables<'drip_steps'>;
+export type DripEnrollment = Tables<'drip_enrollments'>;
+export type DripEnrollmentStatus = DripEnrollment['status'];
 
 // Plan type
 export type Plan = Account['plan'];

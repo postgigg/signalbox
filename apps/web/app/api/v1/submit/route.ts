@@ -16,6 +16,7 @@ import { sendSlackNotification } from '@/lib/slack';
 import { stripHtml } from '@/lib/sanitize';
 import { evaluateRoutingRules } from '@/lib/lead-routing';
 import { getPlanLimits } from '@/lib/plan-limits';
+import { enrollInDripSequence } from '@/lib/drip';
 
 import type { Plan } from '@/lib/supabase/types';
 
@@ -458,6 +459,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .catch(() => {
         // Slack delivery failure — non-blocking
       });
+  }
+
+  // 19b. Enroll in drip sequence for warm/cold leads (Pro+ only)
+  if ((leadTier === 'warm' || leadTier === 'cold') && planLimits.dripSequences) {
+    enrollInDripSequence(admin, account.id, submission.id, leadTier).catch(() => {
+      // Drip enrollment failure — non-blocking
+    });
   }
 
   fireWebhooks(account.id, 'submission.created', {
