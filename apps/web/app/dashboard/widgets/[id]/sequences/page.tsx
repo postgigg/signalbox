@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { PageGuide } from '@/components/shared/PageGuide';
 import { DRIP_TEMPLATE_VARIABLES, DRIP_DEFAULT_STEPS } from '@/lib/constants';
+import { HELP_TIPS } from '@/lib/help-content';
 
 import type { FormEvent } from 'react';
 
@@ -38,16 +41,6 @@ interface ApiResponse<T> {
   details?: Record<string, string[]>;
 }
 
-const SETTINGS_NAV = [
-  { href: '/dashboard/settings', label: 'Account' },
-  { href: '/dashboard/settings/team', label: 'Team' },
-  { href: '/dashboard/settings/billing', label: 'Billing' },
-  { href: '/dashboard/settings/notifications', label: 'Notifications' },
-  { href: '/dashboard/settings/api', label: 'API' },
-  { href: '/dashboard/settings/routing', label: 'Routing' },
-  { href: '/dashboard/settings/sequences', label: 'Sequences' },
-] as const;
-
 const EMPTY_STEP: DripStepData = {
   stepOrder: 1,
   delayHours: 24,
@@ -66,7 +59,14 @@ function getDefaultSteps(): DripStepData[] {
   }));
 }
 
-export default function SequencesSettingsPage(): React.ReactElement {
+export default function WidgetSequencesPage({
+  params,
+}: {
+  readonly params: Promise<{ id: string }>;
+}): React.ReactElement {
+  const resolvedParams = use(params instanceof Promise ? params : Promise.resolve(params));
+  const { id: widgetId } = resolvedParams;
+
   const [sequences, setSequences] = useState<SequenceData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,7 +83,7 @@ export default function SequencesSettingsPage(): React.ReactElement {
 
   const loadSequences = useCallback(async (): Promise<void> => {
     try {
-      const res = await fetch('/api/v1/sequences');
+      const res = await fetch(`/api/v1/widgets/${widgetId}/sequences`);
       const json: ApiResponse<SequenceData[]> = await res.json() as ApiResponse<SequenceData[]>;
       if (json.data) {
         setSequences(json.data);
@@ -93,7 +93,7 @@ export default function SequencesSettingsPage(): React.ReactElement {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [widgetId]);
 
   useEffect(() => {
     async function init(): Promise<void> {
@@ -197,7 +197,9 @@ export default function SequencesSettingsPage(): React.ReactElement {
         steps: formSteps,
       };
 
-      const url = editingId ? `/api/v1/sequences/${editingId}` : '/api/v1/sequences';
+      const url = editingId
+        ? `/api/v1/widgets/${widgetId}/sequences/${editingId}`
+        : `/api/v1/widgets/${widgetId}/sequences`;
       const method = editingId ? 'PATCH' : 'POST';
 
       const res = await fetch(url, {
@@ -225,7 +227,7 @@ export default function SequencesSettingsPage(): React.ReactElement {
   async function handleToggle(seq: SequenceData): Promise<void> {
     setTogglingId(seq.id);
     try {
-      const res = await fetch(`/api/v1/sequences/${seq.id}`, {
+      const res = await fetch(`/api/v1/widgets/${widgetId}/sequences/${seq.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !seq.is_active }),
@@ -248,7 +250,7 @@ export default function SequencesSettingsPage(): React.ReactElement {
   async function handleDelete(id: string): Promise<void> {
     if (!confirm('Delete this sequence? Active enrollments will be cancelled.')) return;
     try {
-      const res = await fetch(`/api/v1/sequences/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/v1/widgets/${widgetId}/sequences/${id}`, { method: 'DELETE' });
       if (!res.ok) {
         const json: ApiResponse<never> = await res.json() as ApiResponse<never>;
         setError(json.error ?? 'Failed to delete sequence.');
@@ -264,28 +266,26 @@ export default function SequencesSettingsPage(): React.ReactElement {
 
   return (
     <div>
-      <h1 className="page-heading">Settings</h1>
+      <div className="flex items-center gap-2 text-sm text-stone font-body mb-4">
+        <Link href="/dashboard/widgets" className="hover:text-ink transition-colors duration-fast">Widgets</Link>
+        <span>/</span>
+        <Link href={`/dashboard/widgets/${widgetId}`} className="hover:text-ink transition-colors duration-fast">Widget</Link>
+        <span>/</span>
+        <span className="text-ink">Sequences</span>
+      </div>
 
-      <nav className="mt-4 flex gap-1 border-b border-border mb-6">
-        {SETTINGS_NAV.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`px-4 py-2.5 text-sm font-body transition-colors duration-fast -mb-px ${
-              item.href === '/dashboard/settings/sequences'
-                ? 'text-ink font-medium border-b-2 border-ink'
-                : 'text-stone hover:text-ink border-b-2 border-transparent'
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+      <h1 className="page-heading">Drip Sequences</h1>
+      <p className="mt-1 text-sm text-stone font-body">
+        Auto-nurture warm and cold leads with timed email sequences for this widget.
+      </p>
 
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold text-ink">Drip Sequences</h2>
+      <PageGuide storageKey="sequences" title="How drip sequences work">
+        {HELP_TIPS.sequences.pageGuide}
+      </PageGuide>
+
+      <div className="mt-4 flex items-center justify-between">
         {!isPlanGated && !showForm && (
-          <button type="button" onClick={startCreate} className="btn-primary h-9 text-sm">
+          <button type="button" onClick={startCreate} className="btn-primary h-9 text-sm ml-auto">
             New Sequence
           </button>
         )}
@@ -332,7 +332,10 @@ export default function SequencesSettingsPage(): React.ReactElement {
               />
             </div>
             <div>
-              <label htmlFor="seq-tier" className="label-text">Target Tier</label>
+              <label htmlFor="seq-tier" className="label-text">
+                Target Tier
+                <HelpTip text={HELP_TIPS.sequences.targetTier} />
+              </label>
               <select
                 id="seq-tier"
                 value={formTier}
@@ -361,7 +364,10 @@ export default function SequencesSettingsPage(): React.ReactElement {
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-ink">Step {step.stepOrder}</span>
                   <div className="flex items-center gap-3">
-                    <label htmlFor={`delay-${index}`} className="text-xs text-stone">Delay (hours)</label>
+                    <label htmlFor={`delay-${index}`} className="text-xs text-stone">
+                      Delay (hours)
+                      <HelpTip text={HELP_TIPS.sequences.delay} position="left" />
+                    </label>
                     <input
                       id={`delay-${index}`}
                       type="number"
@@ -427,7 +433,10 @@ export default function SequencesSettingsPage(): React.ReactElement {
 
           {/* Variable Reference */}
           <div className="p-3 bg-surface-alt rounded-md">
-            <p className="text-xs font-medium text-ink mb-1">Available variables</p>
+            <p className="text-xs font-medium text-ink mb-1">
+              Available variables
+              <HelpTip text={HELP_TIPS.sequences.variables} />
+            </p>
             <div className="flex flex-wrap gap-2">
               {DRIP_TEMPLATE_VARIABLES.map((v) => (
                 <code key={v} className="text-xs bg-white px-2 py-0.5 rounded border border-border text-stone">

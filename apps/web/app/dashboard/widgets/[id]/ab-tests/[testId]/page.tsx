@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
+
 interface VariantData {
   readonly impressions: number;
   readonly submissions: number;
@@ -130,15 +133,18 @@ export default function AbTestResultsPage({
         {!significance.enoughData ? (
           <p className="text-sm text-stone">
             Not enough data yet. Need at least 100 impressions per variant for statistical significance.
+            <HelpTip text={HELP_TIPS.abTestResults.significance} />
           </p>
         ) : significance.significant ? (
           <p className="text-sm text-success font-medium">
             Statistically significant result (p={significance.pValue}).
             Variant {significance.winner?.toUpperCase()} is the winner.
+            <HelpTip text={HELP_TIPS.abTestResults.significance} />
           </p>
         ) : (
           <p className="text-sm text-stone">
             No significant difference detected yet (p={significance.pValue}). Keep collecting data.
+            <HelpTip text={HELP_TIPS.abTestResults.significance} />
           </p>
         )}
       </div>

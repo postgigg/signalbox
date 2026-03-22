@@ -13,14 +13,15 @@ type AdminClient = SupabaseClient<Database>;
 export async function enrollInDripSequence(
   admin: AdminClient,
   accountId: string,
+  widgetId: string,
   submissionId: string,
   leadTier: 'warm' | 'cold',
 ): Promise<void> {
-  // Find active sequence for this tier
+  // Find active sequence for this widget + tier
   const { data: sequence } = await admin
     .from('drip_sequences')
     .select('id')
-    .eq('account_id', accountId)
+    .eq('widget_id', widgetId)
     .eq('target_tier', leadTier)
     .eq('is_active', true)
     .limit(1)

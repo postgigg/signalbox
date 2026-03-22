@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
+
 const PLATFORM_GUIDES = [
   {
     name: 'WordPress',
@@ -119,7 +122,10 @@ export default function WidgetEmbedPage(): React.ReactElement {
       <div className="mt-4 card">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs font-medium text-stone uppercase tracking-wide">Widget Key</span>
+            <span className="text-xs font-medium text-stone uppercase tracking-wide">
+              Widget Key
+              <HelpTip text={HELP_TIPS.embed.widgetKey} />
+            </span>
             <p className="mt-1 font-mono text-sm text-ink">{widgetKey || 'Loading...'}</p>
           </div>
         </div>

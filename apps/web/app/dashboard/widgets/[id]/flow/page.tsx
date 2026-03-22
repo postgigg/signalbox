@@ -4,6 +4,10 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { PageGuide } from '@/components/shared/PageGuide';
+import { HELP_TIPS } from '@/lib/help-content';
+
 interface FlowOption {
   id: string;
   label: string;
@@ -44,7 +48,7 @@ export default function FlowBuilderPage(): React.ReactElement {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
 
   // Load existing flow on mount + detect demo account
@@ -196,6 +200,7 @@ export default function FlowBuilderPage(): React.ReactElement {
       const apiSteps = steps.map((s) => ({
         id: s.id,
         question: s.question,
+        description: s.description,
         options: s.options.map((o) => ({
           id: o.id,
           label: o.label,
@@ -237,6 +242,10 @@ export default function FlowBuilderPage(): React.ReactElement {
         <span className="text-sm text-ink font-medium">Flow Builder</span>
       </div>
 
+      <PageGuide storageKey="flow-builder" title="How the Flow Builder works">
+        {HELP_TIPS.flowBuilder.pageGuide}
+      </PageGuide>
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="page-heading">Flow Builder</h1>
         <div className="flex items-center gap-2">
@@ -249,6 +258,11 @@ export default function FlowBuilderPage(): React.ReactElement {
         </div>
       </div>
 
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <p className="text-sm text-stone font-body">Loading flow...</p>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Step Editor (Left Panel) */}
         <div className="space-y-4">
@@ -311,7 +325,10 @@ export default function FlowBuilderPage(): React.ReactElement {
               </div>
 
               <div>
-                <label htmlFor="stepDescription" className="input-label">Description (optional)</label>
+                <label htmlFor="stepDescription" className="input-label">
+                  Description (optional)
+                  <HelpTip text={HELP_TIPS.flowBuilder.description} />
+                </label>
                 <input
                   id="stepDescription"
                   type="text"
@@ -325,7 +342,10 @@ export default function FlowBuilderPage(): React.ReactElement {
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="input-label mb-0">Options</span>
+                  <span className="input-label mb-0">
+                    Options
+                    <HelpTip text={HELP_TIPS.flowBuilder.options} />
+                  </span>
                   {activeStep.options.length < MAX_OPTIONS && (
                     <button
                       type="button"
@@ -360,7 +380,7 @@ export default function FlowBuilderPage(): React.ReactElement {
                         min={-50}
                         max={50}
                         className="input-field h-10 w-20 text-center font-mono text-sm"
-                        title="Score weight"
+                        title={HELP_TIPS.flowBuilder.scoreWeight}
                       />
                       {activeStep.options.length > 2 && (
                         <button
@@ -431,6 +451,7 @@ export default function FlowBuilderPage(): React.ReactElement {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

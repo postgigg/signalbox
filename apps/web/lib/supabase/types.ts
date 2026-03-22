@@ -1081,6 +1081,7 @@ export type Database = {
         Row: {
           id: string;
           account_id: string;
+          widget_id: string;
           name: string;
           target_tier: 'warm' | 'cold';
           is_active: boolean;
@@ -1090,6 +1091,7 @@ export type Database = {
         Insert: {
           id?: string;
           account_id: string;
+          widget_id: string;
           name: string;
           target_tier: 'warm' | 'cold';
           is_active?: boolean;
@@ -1099,6 +1101,7 @@ export type Database = {
         Update: {
           id?: string;
           account_id?: string;
+          widget_id?: string;
           name?: string;
           target_tier?: 'warm' | 'cold';
           is_active?: boolean;

@@ -11,6 +11,7 @@ const createWidgetSchema = z.object({
   name: z.string().min(1).max(100),
   domain: z.string().max(253).optional(),
   templateId: z.string().uuid().optional(),
+  industry: z.string().max(50).optional(),
 }).strict();
 
 const DEFAULT_THEME: Json = {
@@ -136,6 +137,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .select('steps')
       .eq('id', parsed.data.templateId)
       .single();
+
+    if (template) {
+      flowSteps = template.steps;
+    }
+  } else if (parsed.data.industry && parsed.data.industry !== 'blank') {
+    const { data: template } = await admin
+      .from('flow_templates')
+      .select('steps')
+      .eq('industry', parsed.data.industry)
+      .limit(1)
+      .maybeSingle();
 
     if (template) {
       flowSteps = template.steps;

@@ -3,6 +3,9 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
+
 import type { Submission } from '@/lib/supabase/types';
 
 type LeadRow = Pick<
@@ -247,13 +250,20 @@ export default function LeadsPage(): React.ReactElement {
                       className="inline-flex items-center gap-1 hover:text-ink transition-colors duration-fast"
                     >
                       Score
+                      <HelpTip text={HELP_TIPS.leads.score} position="bottom" />
                       {sortField === 'lead_score' && (
                         <span>{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
                       )}
                     </button>
                   </th>
-                  <th className="text-center py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">Tier</th>
-                  <th className="text-center py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">Status</th>
+                  <th className="text-center py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">
+                    Tier
+                    <HelpTip text={HELP_TIPS.leads.tier} position="bottom" />
+                  </th>
+                  <th className="text-center py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">
+                    Status
+                    <HelpTip text={HELP_TIPS.leads.status} position="bottom" />
+                  </th>
                   <th className="text-right py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">
                     <button
                       type="button"

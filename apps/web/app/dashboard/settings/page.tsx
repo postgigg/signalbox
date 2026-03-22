@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
 import { SUPPORT_EMAIL, PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
+import { HELP_TIPS } from '@/lib/help-content';
 
 import type { FormEvent } from 'react';
 
@@ -14,7 +16,6 @@ const SETTINGS_NAV = [
   { href: '/dashboard/settings/notifications', label: 'Notifications' },
   { href: '/dashboard/settings/api', label: 'API' },
   { href: '/dashboard/settings/routing', label: 'Routing' },
-  { href: '/dashboard/settings/sequences', label: 'Sequences' },
 ] as const;
 
 const TIMEZONES = [
@@ -207,7 +208,10 @@ export default function AccountSettingsPage(): React.ReactElement {
           </div>
 
           <div>
-            <label htmlFor="accountSlug" className="input-label">Slug</label>
+            <label htmlFor="accountSlug" className="input-label">
+              Slug
+              <HelpTip text={HELP_TIPS.settings.slug} />
+            </label>
             <input
               id="accountSlug"
               type="text"
@@ -253,7 +257,10 @@ export default function AccountSettingsPage(): React.ReactElement {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="hotThreshold" className="input-label">Hot Lead Threshold</label>
+              <label htmlFor="hotThreshold" className="input-label">
+                Hot Lead Threshold
+                <HelpTip text={HELP_TIPS.settings.hotThreshold} />
+              </label>
               <input
                 id="hotThreshold"
                 type="number"
@@ -265,7 +272,10 @@ export default function AccountSettingsPage(): React.ReactElement {
               />
             </div>
             <div>
-              <label htmlFor="warmThreshold" className="input-label">Warm Lead Threshold</label>
+              <label htmlFor="warmThreshold" className="input-label">
+                Warm Lead Threshold
+                <HelpTip text={HELP_TIPS.settings.warmThreshold} />
+              </label>
               <input
                 id="warmThreshold"
                 type="number"

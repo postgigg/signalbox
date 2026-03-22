@@ -184,6 +184,44 @@
   .page-heading {
     @apply font-display text-2xl font-semibold text-ink;
   }
+
+  /* Help tooltip arrows */
+  .help-tooltip-arrow-top::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--sb-ink);
+  }
+  .help-tooltip-arrow-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: var(--sb-ink);
+  }
+  .help-tooltip-arrow-left::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-left-color: var(--sb-ink);
+  }
+  .help-tooltip-arrow-right::after {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: var(--sb-ink);
+  }
 }
 
 /* ── Entrance animations (CSS only, no libraries) ── */

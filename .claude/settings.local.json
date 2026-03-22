@@ -23,7 +23,27 @@
       "Bash(npx next:*)",
       "Bash(npx vitest:*)",
       "Bash(clip:*)",
-      "Bash(npx esbuild:*)"
+      "Bash(npx esbuild:*)",
+      "Bash(npx stripe:*)",
+      "Bash(scoop install:*)",
+      "Bash(winget install:*)",
+      "Read(//c/Users/exont/AppData/Local/Programs/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/exont/AppData/Local/**)",
+      "Bash(powershell:*)",
+      "Bash(\"$STRIPE\" version:*)",
+      "Bash(\"$STRIPE\" config:*)",
+      "Bash(\"/c/Users/exont/AppData/Local/Microsoft/WinGet/Packages/Stripe.StripeCli_Microsoft.Winget.Source_8wekyb3d8bbwe/stripe.exe\" products:*)",
+      "Bash(\"$S\" products:*)",
+      "Bash(echo:*)",
+      "Bash(stripe webhook_endpoints:*)",
+      "Bash(where.exe stripe)",
+      "Read(//c/Users/exont/scoop/**)",
+      "Bash(cmd.exe /c \"where stripe\")",
+      "WebFetch(domain:hawkleads.io)",
+      "Bash(stripe prices:*)",
+      "Bash(stripe products:*)",
+      "Bash(stripe config:*)"
     ]
   }
 }

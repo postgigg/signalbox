@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
+
 interface ThemeConfig {
   primaryColor: string;
   accentColor: string;
@@ -412,7 +415,10 @@ export default function WidgetDesignPage(): React.ReactElement {
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Trigger Button</h3>
             <div className="space-y-4">
               <div>
-                <label htmlFor="triggerType" className="input-label">Trigger Type</label>
+                <label htmlFor="triggerType" className="input-label">
+                  Trigger Type
+                  <HelpTip text={HELP_TIPS.design.triggerType} />
+                </label>
                 <select id="triggerType" value={theme.triggerType} onChange={(e) => updateTheme('triggerType', e.target.value)} className="input-field h-10">
                   {TRIGGER_TYPE_OPTIONS.map((tt) => (<option key={tt.value} value={tt.value}>{tt.label}</option>))}
                 </select>
@@ -428,11 +434,17 @@ export default function WidgetDesignPage(): React.ReactElement {
                 </select>
               </div>
               <div>
-                <label htmlFor="triggerOffsetX" className="input-label">Trigger Offset X: {theme.triggerOffsetX}px</label>
+                <label htmlFor="triggerOffsetX" className="input-label">
+                  Trigger Offset X: {theme.triggerOffsetX}px
+                  <HelpTip text={HELP_TIPS.design.triggerOffsetX} />
+                </label>
                 <input type="range" id="triggerOffsetX" min={0} max={100} value={theme.triggerOffsetX} onChange={(e) => updateTheme('triggerOffsetX', parseInt(e.target.value, 10))} className="w-full" />
               </div>
               <div>
-                <label htmlFor="triggerOffsetY" className="input-label">Trigger Offset Y: {theme.triggerOffsetY}px</label>
+                <label htmlFor="triggerOffsetY" className="input-label">
+                  Trigger Offset Y: {theme.triggerOffsetY}px
+                  <HelpTip text={HELP_TIPS.design.triggerOffsetY} />
+                </label>
                 <input type="range" id="triggerOffsetY" min={0} max={100} value={theme.triggerOffsetY} onChange={(e) => updateTheme('triggerOffsetY', parseInt(e.target.value, 10))} className="w-full" />
               </div>
             </div>
@@ -474,12 +486,18 @@ export default function WidgetDesignPage(): React.ReactElement {
             <h3 className="font-body text-sm font-semibold text-ink mb-4">Social Proof</h3>
             <div className="space-y-4">
               <div>
-                <label htmlFor="socialProofText" className="input-label">Social Proof Text</label>
+                <label htmlFor="socialProofText" className="input-label">
+                  Social Proof Text
+                  <HelpTip text={HELP_TIPS.design.socialProofText} />
+                </label>
                 <input id="socialProofText" type="text" value={theme.socialProofText} onChange={(e) => updateTheme('socialProofText', e.target.value)} className="input-field h-10" />
                 <p className="text-xs text-stone mt-1">Use {'{count}'} as a placeholder for the number.</p>
               </div>
               <div>
-                <label htmlFor="socialProofMinThreshold" className="input-label">Minimum Threshold: {theme.socialProofMinThreshold}</label>
+                <label htmlFor="socialProofMinThreshold" className="input-label">
+                  Minimum Threshold: {theme.socialProofMinThreshold}
+                  <HelpTip text={HELP_TIPS.design.socialProofMin} />
+                </label>
                 <input type="range" id="socialProofMinThreshold" min={0} max={100} value={theme.socialProofMinThreshold} onChange={(e) => updateTheme('socialProofMinThreshold', parseInt(e.target.value, 10))} className="w-full" />
                 <p className="text-xs text-stone mt-1">Social proof is hidden until this many submissions are reached.</p>
               </div>
@@ -492,7 +510,10 @@ export default function WidgetDesignPage(): React.ReactElement {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm text-ink font-body">Show branding</span>
+                  <span className="text-sm text-ink font-body">
+                    Show branding
+                    <HelpTip text={HELP_TIPS.design.showBranding} />
+                  </span>
                   {!canRemoveBranding && (
                     <p className="text-xs text-stone mt-0.5">
                       <Link href="/dashboard/settings/billing" className="text-signal hover:underline">Upgrade to Pro</Link> to remove branding.
@@ -511,7 +532,10 @@ export default function WidgetDesignPage(): React.ReactElement {
                 />
               </div>
               <label className="flex items-center justify-between cursor-pointer">
-                <span className="text-sm text-ink font-body">Show social proof</span>
+                <span className="text-sm text-ink font-body">
+                  Show social proof
+                  <HelpTip text={HELP_TIPS.design.socialProof} />
+                </span>
                 <input type="checkbox" checked={theme.showSocialProof} onChange={(e) => updateTheme('showSocialProof', e.target.checked)} className="rounded-sm border-border text-signal focus:ring-signal" />
               </label>
             </div>
@@ -519,7 +543,10 @@ export default function WidgetDesignPage(): React.ReactElement {
 
           {/* Confirmation Messages */}
           <div className="card" ref={confirmationSectionRef}>
-            <h3 className="font-body text-sm font-semibold text-ink mb-4">Confirmation Messages</h3>
+            <h3 className="font-body text-sm font-semibold text-ink mb-4">
+              Confirmation Messages
+              <HelpTip text={HELP_TIPS.design.confirmationMessages} />
+            </h3>
             {(['hot', 'warm', 'cold'] as const).map((tierKey) => (
               <div key={tierKey} className="mb-4 last:mb-0">
                 <p className="text-xs font-medium text-stone uppercase tracking-wide mb-2">

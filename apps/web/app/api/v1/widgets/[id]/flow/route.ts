@@ -16,6 +16,7 @@ const flowOptionSchema = z.object({
 const flowStepSchema = z.object({
   id: z.string().min(1).max(50),
   question: z.string().min(1).max(500),
+  description: z.string().max(500).optional().default(''),
   options: z.array(flowOptionSchema).min(2).max(6),
 }).strict();
 

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
 import { createClient } from '@/lib/supabase/server';
 
 interface WidgetDetailPageProps {
@@ -38,6 +40,7 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
     { href: `/dashboard/widgets/${id}/design`, label: 'Design' },
     { href: `/dashboard/widgets/${id}/embed`, label: 'Embed Code' },
     { href: `/dashboard/widgets/${id}/ab-tests`, label: 'A/B Tests' },
+    { href: `/dashboard/widgets/${id}/sequences`, label: 'Sequences' },
   ] as const;
 
   return (
@@ -90,7 +93,10 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
           <p className="mt-1 font-mono text-2xl font-semibold text-ink">{hotCount ?? 0}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-stone">Usage</p>
+          <p className="text-sm text-stone">
+            Usage
+            <HelpTip text={HELP_TIPS.widgetOverview.usage} />
+          </p>
           <p className="mt-1 font-mono text-2xl font-semibold text-ink">
             {widget.submission_count}/{widget.submission_limit}
           </p>

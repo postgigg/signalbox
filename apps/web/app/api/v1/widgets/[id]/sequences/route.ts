@@ -25,17 +25,32 @@ const createSchema = z.object({
 
 export async function GET(
   request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
+  const { id: widgetId } = await params;
+
   const authResult = await authenticateRequest(request);
   if ('error' in authResult) return authResult.error;
   const { account } = authResult.ctx;
 
   const admin = createAdminClient();
 
+  // Verify widget belongs to this account
+  const { data: widget, error: widgetError } = await admin
+    .from('widgets')
+    .select('id')
+    .eq('id', widgetId)
+    .eq('account_id', account.id)
+    .single();
+
+  if (widgetError || !widget) {
+    return NextResponse.json({ error: 'Widget not found' }, { status: 404 });
+  }
+
   const { data: sequences, error } = await admin
     .from('drip_sequences')
     .select('*')
-    .eq('account_id', account.id)
+    .eq('widget_id', widgetId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -85,7 +100,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
+  const { id: widgetId } = await params;
+
   const authResult = await authenticateRequest(request);
   if ('error' in authResult) return authResult.error;
   const { member, account } = authResult.ctx;
@@ -99,6 +117,20 @@ export async function POST(
       { error: 'Drip sequences require a Pro or Agency plan' },
       { status: 403 },
     );
+  }
+
+  const admin = createAdminClient();
+
+  // Verify widget belongs to this account
+  const { data: widget, error: widgetError } = await admin
+    .from('widgets')
+    .select('id')
+    .eq('id', widgetId)
+    .eq('account_id', account.id)
+    .single();
+
+  if (widgetError || !widget) {
+    return NextResponse.json({ error: 'Widget not found' }, { status: 404 });
   }
 
   let body: unknown;
@@ -116,9 +148,7 @@ export async function POST(
     );
   }
 
-  const admin = createAdminClient();
-
-  // Check count limit
+  // Check count limit scoped to account (not widget)
   const { count, error: countError } = await admin
     .from('drip_sequences')
     .select('id', { count: 'exact', head: true })
@@ -151,6 +181,7 @@ export async function POST(
     .from('drip_sequences')
     .insert({
       account_id: account.id,
+      widget_id: widgetId,
       name: parsed.data.name,
       target_tier: parsed.data.targetTier,
       is_active: false,

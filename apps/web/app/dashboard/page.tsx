@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
 import { ConversionFunnel } from '@/components/dashboard/ConversionFunnel';
+import { HelpTip } from '@/components/shared/HelpTip';
+import { HELP_TIPS } from '@/lib/help-content';
 import { createClient } from '@/lib/supabase/server';
 
 interface StatCard {
@@ -24,9 +26,14 @@ function TierBadge({ tier }: { readonly tier: string }): React.ReactElement {
 }
 
 function StatCardComponent({ stat }: { readonly stat: StatCard }): React.ReactElement {
+  const helpText = stat.label === 'Avg Response Time' ? HELP_TIPS.dashboard.avgResponseTime : undefined;
+
   return (
     <div className="card">
-      <p className="text-sm text-stone font-body">{stat.label}</p>
+      <p className="text-sm text-stone font-body">
+        {stat.label}
+        {helpText !== undefined && <HelpTip text={helpText} />}
+      </p>
       <p className="mt-1 font-mono text-3xl font-semibold text-ink">{stat.value}</p>
       <p
         className={`mt-1 text-xs font-body ${
@@ -218,7 +225,10 @@ export default async function DashboardOverviewPage(): Promise<React.ReactElemen
       {/* Conversion Funnel */}
       <div className="mt-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-semibold text-ink">Conversion Funnel</h2>
+          <h2 className="font-display text-lg font-semibold text-ink">
+            Conversion Funnel
+            <HelpTip text={HELP_TIPS.dashboard.conversionFunnel} />
+          </h2>
           <Link href="/dashboard/analytics" className="text-sm text-signal hover:text-signal-hover transition-colors duration-fast">
             Full analytics
           </Link>

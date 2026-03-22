@@ -463,7 +463,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 19b. Enroll in drip sequence for warm/cold leads (Pro+ only)
   if ((leadTier === 'warm' || leadTier === 'cold') && planLimits.dripSequences) {
-    enrollInDripSequence(admin, account.id, submission.id, leadTier).catch(() => {
+    enrollInDripSequence(admin, account.id, widget.id, submission.id, leadTier).catch(() => {
       // Drip enrollment failure — non-blocking
     });
   }

@@ -21,7 +21,6 @@ const SETTINGS_NAV = [
   { href: '/dashboard/settings/notifications', label: 'Notifications' },
   { href: '/dashboard/settings/api', label: 'API' },
   { href: '/dashboard/settings/routing', label: 'Routing' },
-  { href: '/dashboard/settings/sequences', label: 'Sequences' },
 ] as const;
 
 const ROLES = ['admin', 'viewer'] as const;

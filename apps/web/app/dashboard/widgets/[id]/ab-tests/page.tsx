@@ -3,7 +3,25 @@
 import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { PageGuide } from '@/components/shared/PageGuide';
+import { HELP_TIPS } from '@/lib/help-content';
+
 import type { FormEvent } from 'react';
+
+interface FlowOption {
+  readonly id: string;
+  readonly label: string;
+  readonly scoreWeight: number;
+}
+
+interface FlowStep {
+  readonly id: string;
+  readonly order: number;
+  readonly question: string;
+  readonly description: string;
+  readonly options: FlowOption[];
+}
 
 interface AbTest {
   readonly id: string;
@@ -33,6 +51,8 @@ export default function WidgetAbTestsPage({
   const resolvedParams = use(params instanceof Promise ? params : Promise.resolve(params));
   const { id: widgetId } = resolvedParams;
   const [tests, setTests] = useState<AbTest[]>([]);
+  const [flowSteps, setFlowSteps] = useState<FlowStep[]>([]);
+  const [flowLoading, setFlowLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -48,15 +68,24 @@ export default function WidgetAbTestsPage({
   useEffect(() => {
     async function load(): Promise<void> {
       try {
-        const response = await fetch(`/api/v1/ab-tests?widgetId=${widgetId}`);
-        if (response.ok) {
-          const result = await response.json() as { data: AbTest[] };
-          setTests(result.data);
+        const [testsRes, flowRes] = await Promise.all([
+          fetch(`/api/v1/ab-tests?widgetId=${widgetId}`),
+          fetch(`/api/v1/widgets/${widgetId}/flow`),
+        ]);
+        if (testsRes.ok) {
+          const testsResult = await testsRes.json() as { data: AbTest[] };
+          setTests(testsResult.data);
+        }
+        if (flowRes.ok) {
+          const flowResult = await flowRes.json() as { data: { steps: FlowStep[] } };
+          const steps = Array.isArray(flowResult.data?.steps) ? flowResult.data.steps : [];
+          setFlowSteps(steps.map((s: FlowStep, idx: number) => ({ ...s, order: idx + 1 })));
         }
       } catch {
         // Failed to load
       } finally {
         setLoading(false);
+        setFlowLoading(false);
       }
     }
     void load();
@@ -136,6 +165,8 @@ export default function WidgetAbTestsPage({
     }
   }
 
+  const selectedStep = flowSteps.find((s) => s.id === formStepId);
+
   return (
     <div>
       <div className="flex items-center gap-2 text-sm text-stone font-body mb-4">
@@ -151,19 +182,39 @@ export default function WidgetAbTestsPage({
         Split test different flow questions and options to optimize conversion.
       </p>
 
+      <PageGuide storageKey="ab-tests" title="How A/B testing works">
+        {HELP_TIPS.abTests.pageGuide}
+      </PageGuide>
+
       {error !== null && (
         <div className="mt-4 p-3 rounded-sm bg-danger-light text-danger text-sm border border-danger/20">
           {error}
         </div>
       )}
 
-      <div className="mt-4 flex justify-end">
-        <button type="button" onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
-          {showForm ? 'Cancel' : 'New Test'}
-        </button>
-      </div>
+      {!flowLoading && flowSteps.length === 0 && (
+        <div className="mt-4 card p-5 text-center">
+          <p className="text-sm text-stone">
+            Set up your widget&apos;s flow first before creating A/B tests.
+          </p>
+          <Link
+            href={`/dashboard/widgets/${widgetId}/flow`}
+            className="btn-primary text-sm mt-3 inline-block"
+          >
+            Go to Flow Builder
+          </Link>
+        </div>
+      )}
 
-      {showForm && (
+      {flowSteps.length > 0 && (
+        <div className="mt-4 flex justify-end">
+          <button type="button" onClick={() => setShowForm(!showForm)} className="btn-primary text-sm">
+            {showForm ? 'Cancel' : 'New Test'}
+          </button>
+        </div>
+      )}
+
+      {showForm && flowSteps.length > 0 && (
         <form onSubmit={handleCreate} className="mt-4 card p-5 space-y-4">
           <div>
             <label htmlFor="test-name" className="block text-sm font-medium text-ink mb-1">Test Name</label>
@@ -179,19 +230,48 @@ export default function WidgetAbTestsPage({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="step-id" className="block text-sm font-medium text-ink mb-1">Target Step ID</label>
-              <input
+              <label htmlFor="step-id" className="block text-sm font-medium text-ink mb-1">
+                Target Step
+                <HelpTip text={HELP_TIPS.abTests.targetStepId} />
+              </label>
+              <select
                 id="step-id"
-                type="text"
                 value={formStepId}
-                onChange={(e) => setFormStepId(e.target.value)}
+                onChange={(e) => {
+                  setFormStepId(e.target.value);
+                  setFormQuestion('');
+                  setFormOptions('');
+                }}
                 required
                 className="input-field w-full"
-                placeholder="e.g. step-2"
-              />
+              >
+                <option value="">Select a step</option>
+                {flowSteps.map((step) => (
+                  <option key={step.id} value={step.id}>
+                    Step {String(step.order)}: {step.question || '(untitled)'}
+                  </option>
+                ))}
+              </select>
+              {selectedStep && (
+                <div className="card bg-surface-alt p-4 mt-3">
+                  <p className="text-xs text-stone uppercase tracking-wide mb-2">Variant A (Control)</p>
+                  <p className="text-sm font-medium text-ink">{selectedStep.question}</p>
+                  <div className="mt-2 space-y-1">
+                    {selectedStep.options.map((o) => (
+                      <div key={o.id} className="text-xs text-stone flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-stone-light/60 flex-shrink-0" />
+                        {o.label} (weight: {String(o.scoreWeight)})
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div>
-              <label htmlFor="split" className="block text-sm font-medium text-ink mb-1">Traffic Split (% to variant A)</label>
+              <label htmlFor="split" className="block text-sm font-medium text-ink mb-1">
+                Traffic Split (% to variant A)
+                <HelpTip text={HELP_TIPS.abTests.trafficSplit} />
+              </label>
               <input
                 id="split"
                 type="number"
@@ -204,7 +284,10 @@ export default function WidgetAbTestsPage({
             </div>
           </div>
           <div>
-            <label htmlFor="vb-question" className="block text-sm font-medium text-ink mb-1">Variant B Question</label>
+            <label htmlFor="vb-question" className="block text-sm font-medium text-ink mb-1">
+              Variant B Question
+              <HelpTip text={HELP_TIPS.abTests.variantBQuestion} />
+            </label>
             <input
               id="vb-question"
               type="text"
@@ -216,14 +299,19 @@ export default function WidgetAbTestsPage({
             />
           </div>
           <div>
-            <label htmlFor="vb-options" className="block text-sm font-medium text-ink mb-1">Variant B Options (one per line)</label>
+            <label htmlFor="vb-options" className="block text-sm font-medium text-ink mb-1">
+              Variant B Options (one per line)
+              <HelpTip text={HELP_TIPS.abTests.variantBOptions} />
+            </label>
             <textarea
               id="vb-options"
               value={formOptions}
               onChange={(e) => setFormOptions(e.target.value)}
               required
               className="input-field w-full h-24 resize-none"
-              placeholder={"Option 1\nOption 2\nOption 3"}
+              placeholder={selectedStep
+                ? selectedStep.options.map((_, i) => `Option ${String(i + 1)}`).join('\n')
+                : "Option 1\nOption 2\nOption 3"}
             />
           </div>
           <button type="submit" disabled={creating} className="btn-primary text-sm">
@@ -269,7 +357,12 @@ export default function WidgetAbTestsPage({
                       )}
                     </div>
                     <div className="mt-1 text-xs text-stone">
-                      Step: {test.target_step_id} | Split: {test.traffic_split}% / {100 - test.traffic_split}%
+                      {(() => {
+                        const step = flowSteps.find((s) => s.id === test.target_step_id);
+                        return step
+                          ? `Step ${String(step.order)}: ${step.question}`
+                          : `Step: ${test.target_step_id}`;
+                      })()} | Split: {test.traffic_split}% / {100 - test.traffic_split}%
                     </div>
                   </div>
                   <div className="flex gap-2 shrink-0">

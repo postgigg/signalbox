@@ -21,11 +21,38 @@ const patchSchema = z.object({
   steps: z.array(stepSchema).min(2).max(5).optional(),
 }).strict();
 
+async function verifySequenceOwnership(
+  admin: ReturnType<typeof createAdminClient>,
+  widgetId: string,
+  seqId: string,
+  accountId: string,
+): Promise<{ widget: { id: string } | null; sequence: { id: string; is_active: boolean; target_tier: 'warm' | 'cold' } | null }> {
+  const { data: widget } = await admin
+    .from('widgets')
+    .select('id')
+    .eq('id', widgetId)
+    .eq('account_id', accountId)
+    .single();
+
+  if (!widget) {
+    return { widget: null, sequence: null };
+  }
+
+  const { data: sequence } = await admin
+    .from('drip_sequences')
+    .select('id, is_active, target_tier')
+    .eq('id', seqId)
+    .eq('widget_id', widgetId)
+    .single();
+
+  return { widget, sequence };
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string; seqId: string }> },
 ): Promise<NextResponse> {
-  const { id } = await params;
+  const { id: widgetId, seqId } = await params;
 
   const authResult = await authenticateRequest(request);
   if ('error' in authResult) return authResult.error;
@@ -33,32 +60,32 @@ export async function GET(
 
   const admin = createAdminClient();
 
-  const { data: sequence, error } = await admin
-    .from('drip_sequences')
-    .select('*')
-    .eq('id', id)
-    .eq('account_id', account.id)
-    .single();
-
-  if (error || !sequence) {
+  const { widget, sequence } = await verifySequenceOwnership(admin, widgetId, seqId, account.id);
+  if (!widget || !sequence) {
     return NextResponse.json({ error: 'Sequence not found' }, { status: 404 });
   }
+
+  const { data: fullSequence } = await admin
+    .from('drip_sequences')
+    .select('*')
+    .eq('id', seqId)
+    .single();
 
   const { data: steps } = await admin
     .from('drip_steps')
     .select('*')
-    .eq('sequence_id', id)
+    .eq('sequence_id', seqId)
     .order('step_order', { ascending: true });
 
   const { count: activeEnrollments } = await admin
     .from('drip_enrollments')
     .select('id', { count: 'exact', head: true })
-    .eq('sequence_id', id)
+    .eq('sequence_id', seqId)
     .eq('status', 'active');
 
   return NextResponse.json({
     data: {
-      ...sequence,
+      ...fullSequence,
       steps: steps ?? [],
       activeEnrollments: activeEnrollments ?? 0,
     },
@@ -67,9 +94,9 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string; seqId: string }> },
 ): Promise<NextResponse> {
-  const { id } = await params;
+  const { id: widgetId, seqId } = await params;
 
   const authResult = await authenticateRequest(request);
   if ('error' in authResult) return authResult.error;
@@ -95,15 +122,8 @@ export async function PATCH(
 
   const admin = createAdminClient();
 
-  // Verify sequence belongs to this account
-  const { data: existing, error: fetchError } = await admin
-    .from('drip_sequences')
-    .select('id, is_active')
-    .eq('id', id)
-    .eq('account_id', account.id)
-    .single();
-
-  if (fetchError || !existing) {
+  const { widget, sequence: existing } = await verifySequenceOwnership(admin, widgetId, seqId, account.id);
+  if (!widget || !existing) {
     return NextResponse.json({ error: 'Sequence not found' }, { status: 404 });
   }
 
@@ -127,28 +147,18 @@ export async function PATCH(
       shouldCancelEnrollments = true;
     }
 
-    // Activating: deactivate other sequences for same tier
+    // Activating: deactivate other sequences for same widget + tier
     if (parsed.data.isActive) {
-      const tier = parsed.data.targetTier;
-      // We need the current tier if not being changed
-      let targetTier = tier;
-      if (!targetTier) {
-        const { data: seqData } = await admin
-          .from('drip_sequences')
-          .select('target_tier')
-          .eq('id', id)
-          .single();
-        targetTier = seqData?.target_tier as 'warm' | 'cold' | undefined;
-      }
+      const targetTier = parsed.data.targetTier ?? existing.target_tier;
 
       if (targetTier) {
         await admin
           .from('drip_sequences')
           .update({ is_active: false })
-          .eq('account_id', account.id)
+          .eq('widget_id', widgetId)
           .eq('target_tier', targetTier)
           .eq('is_active', true)
-          .neq('id', id);
+          .neq('id', seqId);
       }
     }
   }
@@ -166,10 +176,10 @@ export async function PATCH(
     }
 
     // Delete old steps and insert new ones
-    await admin.from('drip_steps').delete().eq('sequence_id', id);
+    await admin.from('drip_steps').delete().eq('sequence_id', seqId);
 
     const stepsToInsert = parsed.data.steps.map((step) => ({
-      sequence_id: id,
+      sequence_id: seqId,
       step_order: step.stepOrder,
       delay_hours: step.delayHours,
       subject: step.subject,
@@ -196,7 +206,7 @@ export async function PATCH(
         status: 'cancelled',
         next_send_at: null,
       })
-      .eq('sequence_id', id)
+      .eq('sequence_id', seqId)
       .eq('status', 'active');
   }
 
@@ -205,7 +215,7 @@ export async function PATCH(
     const { data: updated, error: updateError } = await admin
       .from('drip_sequences')
       .update(updates)
-      .eq('id', id)
+      .eq('id', seqId)
       .select('*')
       .single();
 
@@ -216,7 +226,7 @@ export async function PATCH(
     const { data: updatedSteps } = await admin
       .from('drip_steps')
       .select('*')
-      .eq('sequence_id', id)
+      .eq('sequence_id', seqId)
       .order('step_order', { ascending: true });
 
     return NextResponse.json({ data: { ...updated, steps: updatedSteps ?? [] } });
@@ -226,13 +236,13 @@ export async function PATCH(
   const { data: refreshed } = await admin
     .from('drip_sequences')
     .select('*')
-    .eq('id', id)
+    .eq('id', seqId)
     .single();
 
   const { data: refreshedSteps } = await admin
     .from('drip_steps')
     .select('*')
-    .eq('sequence_id', id)
+    .eq('sequence_id', seqId)
     .order('step_order', { ascending: true });
 
   return NextResponse.json({ data: { ...refreshed, steps: refreshedSteps ?? [] } });
@@ -240,9 +250,9 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ id: string; seqId: string }> },
 ): Promise<NextResponse> {
-  const { id } = await params;
+  const { id: widgetId, seqId } = await params;
 
   const authResult = await authenticateRequest(request);
   if ('error' in authResult) return authResult.error;
@@ -253,15 +263,8 @@ export async function DELETE(
 
   const admin = createAdminClient();
 
-  // Verify sequence belongs to this account
-  const { data: existing, error: fetchError } = await admin
-    .from('drip_sequences')
-    .select('id')
-    .eq('id', id)
-    .eq('account_id', account.id)
-    .single();
-
-  if (fetchError || !existing) {
+  const { widget, sequence } = await verifySequenceOwnership(admin, widgetId, seqId, account.id);
+  if (!widget || !sequence) {
     return NextResponse.json({ error: 'Sequence not found' }, { status: 404 });
   }
 
@@ -272,14 +275,14 @@ export async function DELETE(
       status: 'cancelled',
       next_send_at: null,
     })
-    .eq('sequence_id', id)
+    .eq('sequence_id', seqId)
     .eq('status', 'active');
 
   // Delete sequence (cascades to steps, enrollments via FK)
   const { error: deleteError } = await admin
     .from('drip_sequences')
     .delete()
-    .eq('id', id);
+    .eq('id', seqId);
 
   if (deleteError) {
     return NextResponse.json({ error: 'Failed to delete sequence' }, { status: 500 });

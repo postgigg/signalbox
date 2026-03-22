@@ -121,49 +121,25 @@ export default function NewWidgetPage(): React.ReactElement {
     setLoading(true);
 
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError('You must be logged in.');
-        setLoading(false);
-        return;
-      }
-
-      const { data: memberData } = await supabase
-        .from('members')
-        .select('account_id')
-        .eq('user_id', user.id)
-        .limit(1)
-        .single();
-
-      if (!memberData) {
-        setError('No account found.');
-        setLoading(false);
-        return;
-      }
-
-      const { data: widget, error: createError } = await supabase
-        .from('widgets')
-        .insert({
-          account_id: memberData.account_id,
+      const res = await fetch('/api/v1/widgets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           name: name.trim() || 'My Widget',
-          domain: domain.trim() || null,
-        })
-        .select('id')
-        .single();
+          domain: domain.trim() || undefined,
+          industry: selectedTemplate,
+        }),
+      });
 
-      if (createError || !widget) {
-        setError(createError?.message ?? 'Failed to create widget.');
+      const result = await res.json() as { data?: { id: string }; error?: string };
+
+      if (!res.ok || !result.data) {
+        setError(result.error ?? 'Failed to create widget.');
         setLoading(false);
         return;
       }
 
-      router.push(`/dashboard/widgets/${widget.id}/flow`);
+      router.push(`/dashboard/widgets/${result.data.id}/flow`);
     } catch {
       setError('Something went wrong. Please try again.');
       setLoading(false);
