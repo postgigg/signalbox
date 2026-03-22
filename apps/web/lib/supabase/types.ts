@@ -40,6 +40,7 @@ export type Database = {
           is_featured: boolean | null;
           referral_source: string | null;
           lifetime_revenue: number | null;
+          onboarding_completed_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -73,6 +74,7 @@ export type Database = {
           is_featured?: boolean | null;
           referral_source?: string | null;
           lifetime_revenue?: number | null;
+          onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -106,6 +108,7 @@ export type Database = {
           is_featured?: boolean | null;
           referral_source?: string | null;
           lifetime_revenue?: number | null;
+          onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };

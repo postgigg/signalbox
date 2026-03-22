@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
 import { Logo } from '@/components/shared/Logo';
+import { OnboardingOverlay } from '@/components/dashboard/OnboardingOverlay';
 
 import type { ReactNode } from 'react';
 
@@ -94,9 +95,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    async function loadPlan(): Promise<void> {
+    async function loadAccountData(): Promise<void> {
       try {
         const { createBrowserClient } = await import('@supabase/ssr');
         const supabase = createBrowserClient(
@@ -118,18 +120,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
 
         const { data: accountData } = await supabase
           .from('accounts')
-          .select('plan')
+          .select('plan, onboarding_completed_at')
           .eq('id', memberData.account_id)
           .single();
 
         if (accountData) {
           setAccountPlan(accountData.plan);
+          if (accountData.onboarding_completed_at === null) {
+            setShowOnboarding(true);
+          }
         }
       } catch {
-        // Failed to load plan
+        // Failed to load account data
       }
     }
-    void loadPlan();
+    void loadAccountData();
+  }, []);
+
+  const handleOnboardingComplete = useCallback((): void => {
+    setShowOnboarding(false);
   }, []);
 
   async function handleLogout(): Promise<void> {
@@ -160,6 +169,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   return (
     <div className="min-h-screen bg-paper">
       <meta name="robots" content="noindex, nofollow" />
+
+      {/* Onboarding overlay */}
+      {showOnboarding && (
+        <OnboardingOverlay onComplete={handleOnboardingComplete} />
+      )}
 
       {/* Mobile header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-surface border-b border-border flex items-center px-4 gap-3">
