@@ -43,7 +43,9 @@
       "WebFetch(domain:hawkleads.io)",
       "Bash(stripe prices:*)",
       "Bash(stripe products:*)",
-      "Bash(stripe config:*)"
+      "Bash(stripe config:*)",
+      "Bash(node:*)",
+      "Bash(tasklist:*.)"
     ]
   }
 }

@@ -34,14 +34,42 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
     .eq('widget_id', id)
     .eq('lead_tier', 'hot');
 
-  const subNavItems = [
+  // Load account plan to conditionally show Agency-only tabs
+  const { data: { user } } = await supabase.auth.getUser();
+  let accountPlan = 'trial';
+  if (user) {
+    const { data: memberData } = await supabase
+      .from('members')
+      .select('account_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .single();
+    if (memberData) {
+      const { data: accountData } = await supabase
+        .from('accounts')
+        .select('plan')
+        .eq('id', memberData.account_id)
+        .single();
+      if (accountData) {
+        accountPlan = accountData.plan;
+      }
+    }
+  }
+
+  const baseNavItems = [
     { href: `/dashboard/widgets/${id}`, label: 'Overview' },
     { href: `/dashboard/widgets/${id}/flow`, label: 'Flow Builder' },
     { href: `/dashboard/widgets/${id}/design`, label: 'Design' },
     { href: `/dashboard/widgets/${id}/embed`, label: 'Embed Code' },
     { href: `/dashboard/widgets/${id}/ab-tests`, label: 'A/B Tests' },
     { href: `/dashboard/widgets/${id}/sequences`, label: 'Sequences' },
-  ] as const;
+  ];
+
+  if (accountPlan === 'agency') {
+    baseNavItems.push({ href: `/dashboard/widgets/${id}/routing`, label: 'Routing' });
+  }
+
+  const subNavItems = baseNavItems;
 
   return (
     <div>

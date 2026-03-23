@@ -8,7 +8,7 @@ import { Logo } from '@/components/shared/Logo';
 // Step definitions
 // ---------------------------------------------------------------------------
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 9;
 
 interface OnboardingStep {
   readonly title: string;
@@ -64,13 +64,46 @@ const STEPS: readonly OnboardingStep[] = [
     navHint: 'Leads',
   },
   {
-    title: 'Analytics',
-    subtitle: 'Track every step of the funnel.',
-    body: 'See how visitors move through your widget, where they drop off, and which questions convert best. The Overview page gives you a quick snapshot, while the full Analytics page digs deeper.',
+    title: 'Team Management',
+    subtitle: 'Invite your team and assign roles.',
+    body: 'Add team members with Owner, Admin, or Viewer roles. Owners manage billing, Admins manage widgets and leads, and Viewers have read-only access. Everyone gets notified when new leads come in.',
     tips: [
-      'The Overview page shows your key stats at a glance.',
-      'Full Analytics includes tier breakdowns and trends.',
-      'Connect webhooks to push data to your CRM or Slack.',
+      'Invite members by email from Settings > Team.',
+      'Three roles: Owner (full access), Admin (manage), Viewer (read-only).',
+      'Each member can set their own notification preferences.',
+    ],
+    navHint: 'Settings',
+  },
+  {
+    title: 'Lead Routing',
+    subtitle: 'Send the right leads to the right people.',
+    body: 'Create rules to automatically assign incoming leads to specific team members based on tier, widget, or answer. Hot leads can go straight to your top closer while warm leads go to nurture.',
+    tips: [
+      'Set up routing rules in Settings > Routing.',
+      'Route by lead tier (hot, warm, cold) or by specific widget.',
+      'Rules run in priority order. First match wins.',
+    ],
+    navHint: 'Settings',
+  },
+  {
+    title: 'A/B Testing',
+    subtitle: 'Test different questions to find what converts.',
+    body: 'Run A/B tests on any question step in your widget. Split traffic between two variants and let the data tell you which wording, options, or order drives more conversions and higher lead scores.',
+    tips: [
+      'Create A/B tests from any widget detail page.',
+      'Split traffic 50/50 or customize the ratio.',
+      'Results track impressions, completions, and score impact.',
+    ],
+    navHint: 'Widgets',
+  },
+  {
+    title: 'Analytics and Integrations',
+    subtitle: 'Track performance and connect your tools.',
+    body: 'The Analytics page shows conversion funnels, tier breakdowns, and trends over time. Connect webhooks to push lead data to your CRM, Slack, or any tool that accepts HTTPS callbacks.',
+    tips: [
+      'Overview page shows key stats at a glance.',
+      'Full Analytics includes drop-off analysis and tier trends.',
+      'Add webhooks in Integrations to push data to external tools.',
     ],
     navHint: 'Analytics',
   },

@@ -1,4 +1,8 @@
+'use client';
+
 import Link from 'next/link';
+
+import { useInViewAnimations } from '@/lib/use-in-view';
 
 const AGENCY_PROBLEMS = [
   {
@@ -31,12 +35,14 @@ const AGENCY_FEATURES = [
 ] as const;
 
 export default function AgencyPage(): React.ReactElement {
+  useInViewAnimations();
+
   return (
     <div>
       {/* Hero */}
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-content mx-auto">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl animate-on-enter">
             <p className="text-sm font-body font-medium text-signal uppercase tracking-wide">For agencies</p>
             <h1 className="mt-3 font-display text-5xl font-semibold text-ink leading-tight">
               Your clients hired you to get results. Now you can prove it.
@@ -64,12 +70,12 @@ export default function AgencyPage(): React.ReactElement {
       {/* The Agency Problem */}
       <section className="py-20 px-6 bg-surface-alt border-y border-border">
         <div className="max-w-content mx-auto">
-          <h2 className="font-display text-3xl font-semibold text-ink">
+          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
             The problems you already have.
           </h2>
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {AGENCY_PROBLEMS.map((item) => (
-              <div key={item.problem} className="card">
+            {AGENCY_PROBLEMS.map((item, index) => (
+              <div key={item.problem} className={`card animate-on-enter stagger-${String(index + 1)}`}>
                 <p className="font-body text-sm font-semibold text-danger">{item.problem}</p>
                 <p className="mt-3 text-sm text-stone leading-relaxed">{item.solution}</p>
               </div>
@@ -81,7 +87,7 @@ export default function AgencyPage(): React.ReactElement {
       {/* ROI Section */}
       <section className="py-20 px-6">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="animate-on-enter">
             <h2 className="font-display text-3xl font-semibold text-ink">
               The math is simple.
             </h2>
@@ -95,7 +101,7 @@ export default function AgencyPage(): React.ReactElement {
               the tool has paid for itself for the year.
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-4 text-center animate-slide-right">
             <div className="card py-6">
               <span className="font-display text-3xl font-bold text-ink">$249</span>
               <p className="mt-1 text-xs text-stone uppercase tracking-wide">Per month</p>
@@ -115,12 +121,12 @@ export default function AgencyPage(): React.ReactElement {
       {/* Features Grid */}
       <section className="py-20 px-6 bg-surface-alt border-y border-border">
         <div className="max-w-content mx-auto">
-          <h2 className="font-display text-3xl font-semibold text-ink">
+          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
             Everything on the Agency plan.
           </h2>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {AGENCY_FEATURES.map((feature) => (
-              <div key={feature.title} className="card p-4">
+            {AGENCY_FEATURES.map((feature, index) => (
+              <div key={feature.title} className={`card p-4 animate-on-enter stagger-${String((index % 4) + 1)}`}>
                 <h3 className="font-body text-sm font-semibold text-ink">{feature.title}</h3>
                 <p className="mt-1 text-xs text-stone leading-relaxed">{feature.body}</p>
               </div>
@@ -132,11 +138,11 @@ export default function AgencyPage(): React.ReactElement {
       {/* How it works for agencies */}
       <section className="py-20 px-6">
         <div className="max-w-content mx-auto">
-          <h2 className="font-display text-3xl font-semibold text-ink">
+          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
             How agencies use HawkLeads.
           </h2>
           <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+            <div className="animate-on-enter stagger-1">
               <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
                 <span className="font-mono text-sm font-bold text-white">1</span>
               </div>
@@ -146,7 +152,7 @@ export default function AgencyPage(): React.ReactElement {
                 Webflow, Squarespace, and plain HTML.
               </p>
             </div>
-            <div>
+            <div className="animate-on-enter stagger-2">
               <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
                 <span className="font-mono text-sm font-bold text-white">2</span>
               </div>
@@ -156,7 +162,7 @@ export default function AgencyPage(): React.ReactElement {
                 client. Their team knows exactly who to call first.
               </p>
             </div>
-            <div>
+            <div className="animate-on-enter stagger-3">
               <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
                 <span className="font-mono text-sm font-bold text-white">3</span>
               </div>
@@ -172,7 +178,7 @@ export default function AgencyPage(): React.ReactElement {
 
       {/* CTA */}
       <section className="bg-black py-24 px-6">
-        <div className="max-w-content mx-auto text-center">
+        <div className="max-w-content mx-auto text-center animate-on-enter">
           <h2 className="font-display text-4xl font-semibold text-white">
             Stop building reports. Start showing results.
           </h2>
