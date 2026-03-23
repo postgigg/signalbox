@@ -136,11 +136,6 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps): React
   const [currentStep, setCurrentStep] = useState(0);
   const [closing, setClosing] = useState(false);
 
-  const step = STEPS[currentStep];
-  if (!step) {
-    return <></>;
-  }
-
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === TOTAL_STEPS - 1;
 
@@ -165,6 +160,11 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps): React
       setCurrentStep((prev) => prev - 1);
     }
   }, [isFirstStep]);
+
+  const step = STEPS[currentStep];
+  if (!step) {
+    return <></>;
+  }
 
   return (
     <div
