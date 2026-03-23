@@ -4,53 +4,83 @@ import Link from 'next/link';
 
 import { useInViewAnimations } from '@/lib/use-in-view';
 
-const AGENCY_PROBLEMS = [
+import { ClientDashboard } from './_components/ClientDashboard';
+
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
+
+const STATS = [
+  { value: '25', label: 'Widgets', detail: 'One per client. Or five per client.' },
+  { value: '\u221E', label: 'Submissions', detail: 'No caps. No overage fees. Ever.' },
+  { value: '$249', label: 'Per month', detail: 'All features included. Flat price.' },
+] as const;
+
+const COMPARISONS = [
   {
-    problem: 'Clients ask "what am I paying you for?"',
-    solution: 'Send them a live analytics link. Submissions, conversion rates, tier breakdowns. Updated in real time. No login required.',
+    without: 'Clients ask "what am I paying you for?"',
+    with: 'Live analytics link. Real-time data. No login required.',
   },
   {
-    problem: 'You manage 10 clients with 10 different tools',
-    solution: 'One dashboard. Every client in one place. Switch between accounts in two clicks. See who needs attention.',
+    without: '10 clients managed across 10 different tools.',
+    with: 'One dashboard. Every client. Switch in two clicks.',
   },
   {
-    problem: 'Your team wastes hours building lead reports',
-    solution: 'Shared analytics links generate themselves. Password-protect them or leave them open. Send the URL and move on.',
+    without: 'Hours wasted building manual lead reports.',
+    with: 'Shared links generate themselves. Send the URL. Done.',
   },
   {
-    problem: 'Clients want to know you are driving quality, not just volume',
-    solution: 'Every lead is scored 0 to 100. Show clients the score breakdown. Prove that your campaigns attract $10k+ buyers, not tire-kickers.',
+    without: 'No way to prove lead quality to clients.',
+    with: 'Every lead scored 0 to 100. Tier breakdowns included.',
   },
 ] as const;
 
-const AGENCY_FEATURES = [
+const FEATURES = [
   { title: '25 widgets', body: 'One per client site. Or five per client. You decide.' },
-  { title: 'Unlimited submissions', body: 'No caps. No overage fees. Scale without worrying about limits.' },
-  { title: 'White-label branding', body: 'Remove HawkLeads branding. Your clients see your brand, not ours.' },
-  { title: 'Shared analytics links', body: 'Generate read-only dashboards for each client. Password-optional. Expiry dates supported.' },
-  { title: 'Lead routing', body: 'Auto-assign leads to the right person on your client\'s team based on score or answers.' },
-  { title: 'Multi-client dashboard', body: 'Organize widgets by client account. Switch contexts instantly.' },
-  { title: 'A/B testing', body: 'Test different qualifying questions across client sites. Show them which wording converts better.' },
-  { title: 'Priority support', body: '4-hour response time during business hours. Your clients are never waiting on us.' },
+  { title: 'Unlimited submissions', body: 'No caps. No overage fees. Scale without limits.' },
+  { title: 'White-label branding', body: 'Remove HawkLeads branding. Clients see your brand.' },
+  { title: 'Shared analytics', body: 'Read-only dashboards per client. Password-optional. Expiry dates.' },
+  { title: 'Lead routing', body: 'Auto-assign leads based on score, tier, or answers.' },
+  { title: 'Multi-client dashboard', body: 'Organize widgets by client. Switch contexts instantly.' },
+  { title: 'A/B testing', body: 'Test questions across client sites. Data picks the winner.' },
+  { title: 'Priority support', body: '4-hour response during business hours.' },
 ] as const;
+
+const STEPS = [
+  {
+    title: 'Install on client sites',
+    body: 'Two lines of JavaScript per site. 5 minutes. Works on WordPress, Shopify, Webflow, Squarespace, and plain HTML.',
+  },
+  {
+    title: 'Leads get scored automatically',
+    body: 'Every submission scored 0 to 100. Hot leads trigger instant alerts. Their team knows who to call first.',
+  },
+  {
+    title: 'Share results, keep clients',
+    body: 'Generate a shared analytics link per client. Submissions, conversion rates, tier breakdowns. Real time. No login.',
+  },
+] as const;
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 
 export default function AgencyPage(): React.ReactElement {
   useInViewAnimations();
 
   return (
     <div>
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-content mx-auto">
-          <div className="max-w-2xl animate-on-enter">
+      {/* ── Hero ── */}
+      <section className="pt-32 pb-24 px-6">
+        <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="animate-on-enter">
             <p className="text-sm font-body font-medium text-signal uppercase tracking-wide">For agencies</p>
             <h1 className="mt-3 font-display text-5xl font-semibold text-ink leading-tight">
               Your clients hired you to get results. Now you can prove it.
             </h1>
-            <p className="mt-6 text-lg text-stone leading-relaxed">
-              Install HawkLeads on every client site. Score their leads automatically.
-              Send them a live analytics link instead of a PDF report.
-              Justify your retainer with data they can see in real time.
+            <p className="mt-6 text-lg text-stone leading-relaxed max-w-[520px]">
+              Install HawkLeads on every client site. Score leads automatically.
+              Share live analytics instead of a PDF report.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
               <Link href="/signup?plan=agency" className="btn-primary-lg">
@@ -64,28 +94,92 @@ export default function AgencyPage(): React.ReactElement {
               14 days free. 25 widgets. Unlimited submissions. No credit card.
             </p>
           </div>
+          <div className="hidden lg:block animate-slide-right">
+            <ClientDashboard />
+          </div>
         </div>
       </section>
 
-      {/* The Agency Problem */}
+      {/* ── Stats ── */}
+      <section className="py-16 px-6 bg-surface-alt border-y border-border">
+        <div className="max-w-content mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+          {STATS.map((stat, index) => (
+            <div key={stat.label} className={`animate-on-enter stagger-${String(index + 1)}`}>
+              <span className="font-display text-5xl font-bold text-ink">{stat.value}</span>
+              <p className="mt-1 text-sm font-body font-semibold text-ink uppercase tracking-wide">{stat.label}</p>
+              <p className="mt-1 text-sm text-stone">{stat.detail}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Comparison ── */}
+      <section className="py-20 px-6">
+        <div className="max-w-content mx-auto">
+          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
+            The agency problem, solved.
+          </h2>
+          <div className="mt-8 overflow-x-auto animate-on-enter stagger-2">
+            <table className="w-full text-sm border border-border rounded-md">
+              <thead>
+                <tr className="bg-surface-alt border-b border-border">
+                  <th className="text-left py-3 px-5 font-body font-medium text-stone w-1/2">Without HawkLeads</th>
+                  <th className="text-left py-3 px-5 font-body font-medium text-ink w-1/2">With Agency Plan</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISONS.map((row) => (
+                  <tr key={row.without} className="border-b border-border last:border-b-0">
+                    <td className="py-3 px-5 text-stone">{row.without}</td>
+                    <td className="py-3 px-5 text-ink font-medium">{row.with}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features ── */}
       <section className="py-20 px-6 bg-surface-alt border-y border-border">
         <div className="max-w-content mx-auto">
           <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
-            The problems you already have.
+            Everything on the Agency plan.
           </h2>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {AGENCY_PROBLEMS.map((item, index) => (
-              <div key={item.problem} className={`card animate-on-enter stagger-${String(index + 1)}`}>
-                <p className="font-body text-sm font-semibold text-danger">{item.problem}</p>
-                <p className="mt-3 text-sm text-stone leading-relaxed">{item.solution}</p>
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {FEATURES.map((feature, index) => (
+              <div key={feature.title} className={`card p-5 animate-on-enter stagger-${String((index % 4) + 1)}`}>
+                <span className="inline-block w-2 h-2 rounded-full bg-signal mb-3" />
+                <h3 className="font-body text-sm font-semibold text-ink">{feature.title}</h3>
+                <p className="mt-1 text-xs text-stone leading-relaxed">{feature.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ROI Section */}
+      {/* ── How It Works ── */}
       <section className="py-20 px-6">
+        <div className="max-w-content mx-auto">
+          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
+            How agencies use HawkLeads.
+          </h2>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {STEPS.map((step, index) => (
+              <div key={step.title} className={`animate-on-enter stagger-${String(index + 1)}`}>
+                <div className="w-10 h-10 rounded-md bg-ink flex items-center justify-center">
+                  <span className="font-mono text-sm font-bold text-white">{String(index + 1)}</span>
+                </div>
+                <h3 className="mt-4 font-body text-base font-semibold text-ink">{step.title}</h3>
+                <p className="mt-2 text-sm text-stone leading-relaxed">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ROI ── */}
+      <section className="py-20 px-6 bg-surface-alt border-y border-border">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-on-enter">
             <h2 className="font-display text-3xl font-semibold text-ink">
@@ -101,82 +195,26 @@ export default function AgencyPage(): React.ReactElement {
               the tool has paid for itself for the year.
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center animate-slide-right">
-            <div className="card py-6">
-              <span className="font-display text-3xl font-bold text-ink">$249</span>
-              <p className="mt-1 text-xs text-stone uppercase tracking-wide">Per month</p>
-            </div>
-            <div className="card py-6">
-              <span className="font-display text-3xl font-bold text-signal">25</span>
-              <p className="mt-1 text-xs text-stone uppercase tracking-wide">Widgets</p>
-            </div>
-            <div className="card py-6">
-              <span className="font-display text-3xl font-bold text-ink">$0</span>
-              <p className="mt-1 text-xs text-stone uppercase tracking-wide">Per submission</p>
+          <div className="animate-slide-right">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="card py-6">
+                <span className="font-display text-3xl font-bold text-ink">$249</span>
+                <p className="mt-1 text-xs text-stone uppercase tracking-wide">Per month</p>
+              </div>
+              <div className="card py-6">
+                <span className="font-display text-3xl font-bold text-signal">25</span>
+                <p className="mt-1 text-xs text-stone uppercase tracking-wide">Widgets</p>
+              </div>
+              <div className="card py-6">
+                <span className="font-display text-3xl font-bold text-ink">$0</span>
+                <p className="mt-1 text-xs text-stone uppercase tracking-wide">Per lead</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section className="py-20 px-6 bg-surface-alt border-y border-border">
-        <div className="max-w-content mx-auto">
-          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
-            Everything on the Agency plan.
-          </h2>
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {AGENCY_FEATURES.map((feature, index) => (
-              <div key={feature.title} className={`card p-4 animate-on-enter stagger-${String((index % 4) + 1)}`}>
-                <h3 className="font-body text-sm font-semibold text-ink">{feature.title}</h3>
-                <p className="mt-1 text-xs text-stone leading-relaxed">{feature.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works for agencies */}
-      <section className="py-20 px-6">
-        <div className="max-w-content mx-auto">
-          <h2 className="font-display text-3xl font-semibold text-ink animate-on-enter">
-            How agencies use HawkLeads.
-          </h2>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="animate-on-enter stagger-1">
-              <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
-                <span className="font-mono text-sm font-bold text-white">1</span>
-              </div>
-              <h3 className="mt-3 font-body text-base font-semibold text-ink">Install on client sites</h3>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                Two lines of JavaScript per site. Takes 5 minutes. Works on WordPress, Shopify,
-                Webflow, Squarespace, and plain HTML.
-              </p>
-            </div>
-            <div className="animate-on-enter stagger-2">
-              <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
-                <span className="font-mono text-sm font-bold text-white">2</span>
-              </div>
-              <h3 className="mt-3 font-body text-base font-semibold text-ink">Leads get scored automatically</h3>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                Every submission is scored 0 to 100. Hot leads trigger instant alerts to your
-                client. Their team knows exactly who to call first.
-              </p>
-            </div>
-            <div className="animate-on-enter stagger-3">
-              <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center">
-                <span className="font-mono text-sm font-bold text-white">3</span>
-              </div>
-              <h3 className="mt-3 font-body text-base font-semibold text-ink">Share results, keep clients</h3>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                Generate a shared analytics link for each client. They see submissions,
-                conversion rates, and tier breakdowns in real time. No login needed.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
+      {/* ── CTA ── */}
       <section className="bg-black py-24 px-6">
         <div className="max-w-content mx-auto text-center animate-on-enter">
           <h2 className="font-display text-4xl font-semibold text-white">
@@ -186,17 +224,40 @@ export default function AgencyPage(): React.ReactElement {
             Your clients want proof that your marketing works.
             Give them a live dashboard instead of a monthly PDF.
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/signup?plan=agency"
-              className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper"
+              className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
             >
               Start Agency Trial
             </Link>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center justify-center rounded-md border border-white/20 text-white/80 font-body font-medium text-sm h-12 px-5 transition-all duration-fast hover:border-white/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
+            >
+              Compare all plans
+            </Link>
           </div>
-          <p className="mt-4 text-sm text-stone-light">
-            14 days free. No credit card. Cancel anytime.
-          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-stone-light">
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              14-day free trial
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              No credit card
+            </span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Cancel anytime
+            </span>
+          </div>
         </div>
       </section>
     </div>
