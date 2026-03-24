@@ -106,6 +106,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   startDate.setDate(startDate.getDate() - days);
   const startDateStr = startDate.toISOString().split('T')[0]!;
 
+  // If link is scoped to a client, get that client's widget IDs
+  let clientWidgetIds: string[] | null = null;
+  if (link.client_account_id !== null) {
+    const { data: clientWidgets } = await admin
+      .from('widgets')
+      .select('id')
+      .eq('account_id', link.account_id)
+      .eq('client_account_id', link.client_account_id);
+
+    clientWidgetIds = (clientWidgets ?? []).map((w: { id: string }) => w.id);
+  }
+
   // Fetch analytics data based on allowed metrics
   let analyticsQuery = admin
     .from('widget_analytics')
@@ -116,6 +128,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   if (link.widget_id !== null) {
     analyticsQuery = analyticsQuery.eq('widget_id', link.widget_id);
+  } else if (clientWidgetIds !== null) {
+    analyticsQuery = analyticsQuery.in('widget_id', clientWidgetIds);
   }
 
   const { data: analytics } = await analyticsQuery;
