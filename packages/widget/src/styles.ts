@@ -888,8 +888,23 @@ export function getStyles(theme: WidgetTheme): string {
   border-width: 0;
 }
 
+/* ── Overlay (mobile only) ──────────────────────────────────────────────── */
+.sb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: auto;
+}
+
 /* ── Mobile Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 640px) {
+  .sb-overlay {
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
+    animation: sb-fadeIn 200ms ease-out;
+  }
+
   .sb-panel {
     width: 100% !important;
     max-width: 100%;

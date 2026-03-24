@@ -207,6 +207,7 @@ export class WidgetRenderer {
   private contentEl: HTMLDivElement | null = null;
   private backBtn: HTMLButtonElement | null = null;
   private ariaLiveRegion: HTMLDivElement | null = null;
+  private overlayEl: HTMLDivElement | null = null;
 
   // Focus trap
   private previousActiveElement: Element | null = null;
@@ -284,6 +285,7 @@ export class WidgetRenderer {
     if (!this.config) return;
 
     this.hideTrigger();
+    this.showOverlay();
 
     if (!this.panelEl) {
       this.buildPanel();
@@ -301,6 +303,7 @@ export class WidgetRenderer {
     if (this.panelEl) {
       animatePanelClose(this.panelEl, () => {
         this.showTrigger();
+        this.hideOverlay();
       });
       this.disableFocusTrap();
     }
@@ -1187,6 +1190,24 @@ export class WidgetRenderer {
       'button:not([disabled]), [href], input:not([disabled]):not([type="hidden"]):not([tabindex="-1"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
     const elements = this.panelEl.querySelectorAll(selectors);
     return Array.from(elements) as HTMLElement[];
+  }
+
+  // ── Mobile Overlay ─────────────────────────────────────────────────
+  private showOverlay(): void {
+    if (this.overlayEl) return;
+    const overlay = el('div', 'sb-overlay');
+    overlay.addEventListener('click', () => {
+      this.callbacks.onClose();
+    });
+    this.shadow.appendChild(overlay);
+    this.overlayEl = overlay;
+  }
+
+  private hideOverlay(): void {
+    if (this.overlayEl) {
+      this.overlayEl.remove();
+      this.overlayEl = null;
+    }
   }
 
   // ── Attention Grabbers ──────────────────────────────────────────────
