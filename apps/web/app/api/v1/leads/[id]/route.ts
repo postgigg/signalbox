@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { authenticateRequest, requireRole } from '@/lib/auth';
 import { stripHtml } from '@/lib/sanitize';
 import { pauseDripEnrollments } from '@/lib/drip';
+import { shouldResetDecay } from '@/lib/decay';
 import { DRIP_PAUSE_STATUSES } from '@/lib/constants';
 
 export const runtime = 'nodejs';
@@ -134,6 +135,12 @@ export async function PATCH(
       existing.viewed_at === null
     ) {
       updates['viewed_at'] = new Date().toISOString();
+    }
+
+    // Reset decay timer on re-engagement (contacted, qualified, converted)
+    if (shouldResetDecay(parsed.data.status)) {
+      updates['last_engagement_at'] = new Date().toISOString();
+      updates['decay_penalty'] = 0;
     }
   }
 

@@ -80,8 +80,9 @@ export async function GET(
 
   // Map flow steps to widget format (score -> scoreWeight)
   const rawSteps = Array.isArray(flow?.steps) ? flow.steps : [];
-  const mappedSteps = (rawSteps as Array<Record<string, unknown>>).map((step) => ({
+  const mappedSteps = (rawSteps as Array<Record<string, unknown>>).map((step, index) => ({
     id: step['id'] as string,
+    order: index,
     question: step['question'] as string,
     description: step['description'] as string | undefined,
     type: 'single_select' as const,

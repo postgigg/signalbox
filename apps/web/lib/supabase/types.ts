@@ -40,6 +40,7 @@ export type Database = {
           is_featured: boolean | null;
           referral_source: string | null;
           lifetime_revenue: number | null;
+          scoring_config: Json;
           onboarding_completed_at: string | null;
           created_at: string;
           updated_at: string;
@@ -74,6 +75,7 @@ export type Database = {
           is_featured?: boolean | null;
           referral_source?: string | null;
           lifetime_revenue?: number | null;
+          scoring_config?: Json;
           onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -108,6 +110,7 @@ export type Database = {
           is_featured?: boolean | null;
           referral_source?: string | null;
           lifetime_revenue?: number | null;
+          scoring_config?: Json;
           onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -263,6 +266,14 @@ export type Database = {
           raw_score: number;
           lead_score: number;
           lead_tier: 'hot' | 'warm' | 'cold';
+          form_score: number;
+          behavioral_score: number;
+          intent_score: number;
+          decay_penalty: number;
+          score_dimensions: Json;
+          last_engagement_at: string;
+          visitor_fingerprint: string | null;
+          routing_strategy: string | null;
           source_url: string | null;
           ip_address: string | null;
           user_agent: string | null;
@@ -307,6 +318,14 @@ export type Database = {
           raw_score: number;
           lead_score: number;
           lead_tier: 'hot' | 'warm' | 'cold';
+          form_score: number;
+          behavioral_score?: number;
+          intent_score?: number;
+          decay_penalty?: number;
+          score_dimensions?: Json;
+          last_engagement_at?: string;
+          visitor_fingerprint?: string | null;
+          routing_strategy?: string | null;
           source_url?: string | null;
           ip_address?: string | null;
           user_agent?: string | null;
@@ -351,6 +370,14 @@ export type Database = {
           raw_score?: number;
           lead_score?: number;
           lead_tier?: 'hot' | 'warm' | 'cold';
+          form_score?: number;
+          behavioral_score?: number;
+          intent_score?: number;
+          decay_penalty?: number;
+          score_dimensions?: Json;
+          last_engagement_at?: string;
+          visitor_fingerprint?: string | null;
+          routing_strategy?: string | null;
           source_url?: string | null;
           ip_address?: string | null;
           user_agent?: string | null;
@@ -515,7 +542,16 @@ export type Database = {
           match_tier: 'hot' | 'warm' | 'cold' | null;
           match_step_id: string | null;
           match_option_id: string | null;
-          assign_to_member_id: string;
+          assign_to_member_id: string | null;
+          routing_strategy: 'direct' | 'skill' | 'geographic' | 'value' | 'round_robin' | 'availability';
+          match_country: string[] | null;
+          match_region: string[] | null;
+          match_skill_tags: string[] | null;
+          match_score_min: number | null;
+          match_score_max: number | null;
+          round_robin_pool: string[] | null;
+          round_robin_weights: Json | null;
+          fallback_strategy: 'none' | 'round_robin' | 'unassigned';
           created_at: string;
           updated_at: string;
         };
@@ -529,7 +565,16 @@ export type Database = {
           match_tier?: 'hot' | 'warm' | 'cold' | null;
           match_step_id?: string | null;
           match_option_id?: string | null;
-          assign_to_member_id: string;
+          assign_to_member_id?: string | null;
+          routing_strategy?: 'direct' | 'skill' | 'geographic' | 'value' | 'round_robin' | 'availability';
+          match_country?: string[] | null;
+          match_region?: string[] | null;
+          match_skill_tags?: string[] | null;
+          match_score_min?: number | null;
+          match_score_max?: number | null;
+          round_robin_pool?: string[] | null;
+          round_robin_weights?: Json | null;
+          fallback_strategy?: 'none' | 'round_robin' | 'unassigned';
           created_at?: string;
           updated_at?: string;
         };
@@ -543,7 +588,16 @@ export type Database = {
           match_tier?: 'hot' | 'warm' | 'cold' | null;
           match_step_id?: string | null;
           match_option_id?: string | null;
-          assign_to_member_id?: string;
+          assign_to_member_id?: string | null;
+          routing_strategy?: 'direct' | 'skill' | 'geographic' | 'value' | 'round_robin' | 'availability';
+          match_country?: string[] | null;
+          match_region?: string[] | null;
+          match_skill_tags?: string[] | null;
+          match_score_min?: number | null;
+          match_score_max?: number | null;
+          round_robin_pool?: string[] | null;
+          round_robin_weights?: Json | null;
+          fallback_strategy?: 'none' | 'round_robin' | 'unassigned';
           created_at?: string;
           updated_at?: string;
         };
@@ -657,6 +711,7 @@ export type Database = {
           ab_test_id: string;
           variant: 'a' | 'b';
           impressions: number;
+          opens: number;
           completions: number;
           submissions: number;
           total_score: number;
@@ -670,6 +725,7 @@ export type Database = {
           ab_test_id: string;
           variant: 'a' | 'b';
           impressions?: number;
+          opens?: number;
           completions?: number;
           submissions?: number;
           total_score?: number;
@@ -683,6 +739,7 @@ export type Database = {
           ab_test_id?: string;
           variant?: 'a' | 'b';
           impressions?: number;
+          opens?: number;
           completions?: number;
           submissions?: number;
           total_score?: number;
@@ -1194,6 +1251,222 @@ export type Database = {
         };
         Relationships: [];
       };
+      visitor_sessions: {
+        Row: {
+          id: string;
+          widget_id: string;
+          account_id: string;
+          visitor_fingerprint: string;
+          session_number: number;
+          pages_viewed: number;
+          page_urls: string[];
+          time_on_site_seconds: number;
+          max_scroll_depth: number;
+          widget_opens: number;
+          pricing_page_views: number;
+          high_intent_page_views: number;
+          started_at: string;
+          submitted: boolean;
+          submission_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          widget_id: string;
+          account_id: string;
+          visitor_fingerprint: string;
+          session_number?: number;
+          pages_viewed?: number;
+          page_urls?: string[];
+          time_on_site_seconds?: number;
+          max_scroll_depth?: number;
+          widget_opens?: number;
+          pricing_page_views?: number;
+          high_intent_page_views?: number;
+          started_at?: string;
+          submitted?: boolean;
+          submission_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          widget_id?: string;
+          account_id?: string;
+          visitor_fingerprint?: string;
+          session_number?: number;
+          pages_viewed?: number;
+          page_urls?: string[];
+          time_on_site_seconds?: number;
+          max_scroll_depth?: number;
+          widget_opens?: number;
+          pricing_page_views?: number;
+          high_intent_page_views?: number;
+          started_at?: string;
+          submitted?: boolean;
+          submission_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      score_history: {
+        Row: {
+          id: string;
+          submission_id: string;
+          account_id: string;
+          previous_score: number;
+          new_score: number;
+          previous_tier: string;
+          new_tier: string;
+          change_reason: string;
+          dimensions: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          submission_id: string;
+          account_id: string;
+          previous_score: number;
+          new_score: number;
+          previous_tier: string;
+          new_tier: string;
+          change_reason: string;
+          dimensions?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          submission_id?: string;
+          account_id?: string;
+          previous_score?: number;
+          new_score?: number;
+          previous_tier?: string;
+          new_tier?: string;
+          change_reason?: string;
+          dimensions?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      member_skills: {
+        Row: {
+          id: string;
+          member_id: string;
+          account_id: string;
+          skill_tag: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          account_id: string;
+          skill_tag: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          member_id?: string;
+          account_id?: string;
+          skill_tag?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      member_territories: {
+        Row: {
+          id: string;
+          member_id: string;
+          account_id: string;
+          country_code: string;
+          region_name: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          member_id: string;
+          account_id: string;
+          country_code: string;
+          region_name?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          member_id?: string;
+          account_id?: string;
+          country_code?: string;
+          region_name?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      member_availability: {
+        Row: {
+          member_id: string;
+          account_id: string;
+          status: 'online' | 'offline' | 'busy';
+          status_updated_at: string;
+          last_active_at: string;
+          auto_offline_minutes: number;
+          max_active_leads: number | null;
+          timezone: string;
+          schedule: Json | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          member_id: string;
+          account_id: string;
+          status?: 'online' | 'offline' | 'busy';
+          status_updated_at?: string;
+          last_active_at?: string;
+          auto_offline_minutes?: number;
+          max_active_leads?: number | null;
+          timezone?: string;
+          schedule?: Json | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          member_id?: string;
+          account_id?: string;
+          status?: 'online' | 'offline' | 'busy';
+          status_updated_at?: string;
+          last_active_at?: string;
+          auto_offline_minutes?: number;
+          max_active_leads?: number | null;
+          timezone?: string;
+          schedule?: Json | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      round_robin_state: {
+        Row: {
+          rule_id: string;
+          account_id: string;
+          current_index: number;
+          assignment_counts: Json;
+          last_assigned_member_id: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          rule_id: string;
+          account_id: string;
+          current_index?: number;
+          assignment_counts?: Json;
+          last_assigned_member_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          rule_id?: string;
+          account_id?: string;
+          current_index?: number;
+          assignment_counts?: Json;
+          last_assigned_member_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       stripe_events: {
         Row: {
           event_id: string;
@@ -1252,6 +1525,14 @@ export type Database = {
         };
         Returns: boolean;
       };
+      advance_round_robin: {
+        Args: {
+          p_rule_id: string;
+          p_pool: string[];
+          p_max_leads: Json;
+        };
+        Returns: string | null;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -1294,6 +1575,20 @@ export type ClientAccount = Tables<'client_accounts'>;
 export type SupportTicket = Tables<'support_tickets'>;
 export type TicketMessage = Tables<'ticket_messages'>;
 export type StripeEvent = Tables<'stripe_events'>;
+
+// Predictive scoring and routing types
+export type VisitorSession = Tables<'visitor_sessions'>;
+export type ScoreHistory = Tables<'score_history'>;
+export type MemberSkill = Tables<'member_skills'>;
+export type MemberTerritory = Tables<'member_territories'>;
+export type MemberAvailability = Tables<'member_availability'>;
+export type RoundRobinState = Tables<'round_robin_state'>;
+
+// Routing strategy type
+export type RoutingStrategy = LeadRoutingRule['routing_strategy'];
+
+// Availability status type
+export type AvailabilityStatus = MemberAvailability['status'];
 
 // Drip sequence types
 export type DripSequence = Tables<'drip_sequences'>;

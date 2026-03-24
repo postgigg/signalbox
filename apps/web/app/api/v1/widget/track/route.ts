@@ -108,21 +108,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   }
 
-  // Track A/B test impressions and completions
-  if (abTestId && abVariant && (event === 'impression' || event === 'completion')) {
-    const today = new Date().toISOString().split('T')[0]!;
+  // Track A/B test funnel events (impressions, opens, completions)
+  if (abTestId && abVariant && (event === 'impression' || event === 'open' || event === 'completion')) {
+    const abDate = new Date().toISOString().split('T')[0]!;
     const { data: existingAbResult } = await admin
       .from('ab_test_results')
-      .select('id, impressions, completions')
+      .select('id, impressions, opens, completions')
       .eq('ab_test_id', abTestId)
       .eq('variant', abVariant)
-      .eq('date', today)
+      .eq('date', abDate)
       .maybeSingle();
 
     if (existingAbResult) {
       const abUpdates: Record<string, number> = {};
       if (event === 'impression') {
         abUpdates.impressions = existingAbResult.impressions + 1;
+      } else if (event === 'open') {
+        abUpdates.opens = existingAbResult.opens + 1;
       } else {
         abUpdates.completions = existingAbResult.completions + 1;
       }
@@ -134,8 +136,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       await admin.from('ab_test_results').insert({
         ab_test_id: abTestId,
         variant: abVariant,
-        date: today,
+        date: abDate,
         impressions: event === 'impression' ? 1 : 0,
+        opens: event === 'open' ? 1 : 0,
         completions: event === 'completion' ? 1 : 0,
       });
     }

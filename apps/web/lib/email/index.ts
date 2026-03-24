@@ -1,8 +1,8 @@
 import { sendEmail } from './client';
-import { renderNewLeadNotification, renderPaymentFailed } from './templates';
+import { renderNewLeadNotification, renderPaymentFailed, renderLeadAssigned } from './templates';
 
 import type { SendEmailResult } from './client';
-import type { NewLeadNotificationData, PaymentFailedData } from './templates';
+import type { NewLeadNotificationData, PaymentFailedData, LeadAssignedData } from './templates';
 
 // Re-export client for direct use
 export { sendEmail, sendBatchEmails } from './client';
@@ -18,6 +18,7 @@ export {
   renderWeeklyDigest,
   renderPaymentFailed,
   renderWebhookFailures,
+  renderLeadAssigned,
 } from './templates';
 
 export interface NewLeadEmailParams {
@@ -55,6 +56,48 @@ export async function sendNewLeadNotification(
     text: rendered.text,
     tags: [
       { name: 'type', value: 'new_lead' },
+      { name: 'tier', value: params.leadTier },
+    ],
+  });
+}
+
+export interface LeadAssignedEmailParams {
+  to: string;
+  assigneeName: string;
+  accountName: string;
+  widgetName: string;
+  visitorName: string;
+  visitorEmail: string;
+  leadTier: 'hot' | 'warm' | 'cold';
+  leadScore: number;
+  submissionId: string;
+  ruleName: string;
+}
+
+export async function sendLeadAssignedNotification(
+  params: LeadAssignedEmailParams
+): Promise<SendEmailResult> {
+  const templateData: LeadAssignedData = {
+    assigneeName: params.assigneeName,
+    accountName: params.accountName,
+    widgetName: params.widgetName,
+    visitorName: params.visitorName,
+    visitorEmail: params.visitorEmail,
+    leadScore: params.leadScore,
+    leadTier: params.leadTier,
+    submissionId: params.submissionId,
+    ruleName: params.ruleName,
+  };
+
+  const rendered = renderLeadAssigned(templateData);
+
+  return sendEmail({
+    to: params.to,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text,
+    tags: [
+      { name: 'type', value: 'lead_assigned' },
       { name: 'tier', value: params.leadTier },
     ],
   });

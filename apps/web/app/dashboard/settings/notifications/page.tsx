@@ -10,6 +10,7 @@ const SETTINGS_NAV = [
   { href: '/dashboard/settings/notifications', label: 'Notifications' },
   { href: '/dashboard/settings/api', label: 'API' },
   { href: '/dashboard/settings/routing', label: 'Routing' },
+  { href: '/dashboard/settings/scoring', label: 'Scoring' },
 ] as const;
 
 interface NotificationPrefs {

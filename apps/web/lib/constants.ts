@@ -29,6 +29,9 @@ export interface PlanConfig {
     maxSharedLinks: number;
     dripSequences: boolean;
     maxDripSequences: number;
+    predictiveScoring: boolean;
+    advancedRouting: boolean;
+    maxRoutingRules: number;
   };
 }
 
@@ -60,6 +63,9 @@ export const PLANS: Record<string, PlanConfig> = {
       maxSharedLinks: 0,
       dripSequences: false,
       maxDripSequences: 0,
+      predictiveScoring: false,
+      advancedRouting: false,
+      maxRoutingRules: 0,
     },
   },
   starter: {
@@ -89,6 +95,9 @@ export const PLANS: Record<string, PlanConfig> = {
       maxSharedLinks: 0,
       dripSequences: false,
       maxDripSequences: 0,
+      predictiveScoring: false,
+      advancedRouting: false,
+      maxRoutingRules: 0,
     },
   },
   pro: {
@@ -118,6 +127,9 @@ export const PLANS: Record<string, PlanConfig> = {
       maxSharedLinks: 0,
       dripSequences: true,
       maxDripSequences: 3,
+      predictiveScoring: true,
+      advancedRouting: true,
+      maxRoutingRules: 15,
     },
   },
   agency: {
@@ -147,6 +159,9 @@ export const PLANS: Record<string, PlanConfig> = {
       maxSharedLinks: 25,
       dripSequences: true,
       maxDripSequences: 10,
+      predictiveScoring: true,
+      advancedRouting: true,
+      maxRoutingRules: 50,
     },
   },
 } as const;
@@ -416,6 +431,7 @@ export const WEBHOOK_EVENTS = [
   'submission.updated',
   'lead.qualified',
   'lead.converted',
+  'lead.score_changed',
 ] as const;
 
 export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
@@ -510,6 +526,51 @@ export const DRIP_DEFAULT_STEPS = [
     bodyHtml: '<p>Hi {{visitor_name}},</p><p>This is our last follow-up regarding your recent inquiry with {{account_name}}. We do not want you to miss out on the help you were looking for.</p><p>If your situation has changed or you have found what you need, no worries at all. But if you still need assistance, we are here for you. Just reply to this email or give us a call.</p><p>Best regards,<br/>The {{account_name}} Team</p>',
     bodyText: 'Hi {{visitor_name}},\n\nThis is our last follow-up regarding your recent inquiry with {{account_name}}. We do not want you to miss out on the help you were looking for.\n\nIf your situation has changed or you have found what you need, no worries at all. But if you still need assistance, we are here for you. Just reply to this email or give us a call.\n\nBest regards,\nThe {{account_name}} Team',
   },
+] as const;
+
+// ---------------------------------------------------------------------------
+// Routing strategies
+// ---------------------------------------------------------------------------
+
+export const ROUTING_STRATEGIES = [
+  { value: 'direct', label: 'Direct Assignment', description: 'Assign to a specific team member' },
+  { value: 'skill', label: 'Skill-Based', description: 'Route to members with matching skills' },
+  { value: 'geographic', label: 'Geographic', description: 'Route by visitor country or region' },
+  { value: 'value', label: 'Value-Based', description: 'Route by lead score range' },
+  { value: 'round_robin', label: 'Round Robin', description: 'Distribute evenly across a team pool' },
+  { value: 'availability', label: 'Availability', description: 'Route to online members with capacity' },
+] as const;
+
+export type RoutingStrategyValue = (typeof ROUTING_STRATEGIES)[number]['value'];
+
+// ---------------------------------------------------------------------------
+// Scoring dimension defaults
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_SCORING_CONFIG = {
+  formWeight: 0.60,
+  behavioralWeight: 0.20,
+  intentWeight: 0.20,
+  decayRatePerWeek: 5,
+  decayMax: 30,
+  decayEnabled: true,
+  highIntentPages: ['/pricing', '/demo', '/contact', '/compare'],
+} as const;
+
+export interface ScoringConfig {
+  formWeight: number;
+  behavioralWeight: number;
+  intentWeight: number;
+  decayRatePerWeek: number;
+  decayMax: number;
+  decayEnabled: boolean;
+  highIntentPages: string[];
+}
+
+export const SCORING_DIMENSIONS = [
+  { key: 'form', label: 'Form Answers', description: 'Score from qualifying questions' },
+  { key: 'behavioral', label: 'Behavioral', description: 'Pages viewed, time on site, scroll depth' },
+  { key: 'intent', label: 'Intent Signals', description: 'Pricing page visits, return visits' },
 ] as const;
 
 export const API_KEY_PREFIX = 'sb_live_';

@@ -11,6 +11,7 @@ import { WidgetStateMachine } from './state';
 import { fetchConfig, submitForm, WidgetApiError } from './api';
 import { WidgetRenderer } from './renderer';
 import { validateContact, hasErrors } from './validators';
+import { BehaviorTracker } from './tracker';
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const DEFAULT_API_URL = 'https://hawkleads.io';
@@ -93,6 +94,7 @@ class HawkLeadsWidget {
   private validationErrors: ValidationErrors = {};
   private abVariant: 'a' | 'b' | null = null;
   private abTestId: string | null = null;
+  private tracker: BehaviorTracker | null = null;
 
   constructor(key: string, apiUrl: string) {
     this.widgetKey = key;
@@ -168,6 +170,9 @@ class HawkLeadsWidget {
       this.machine.configLoaded(config);
       this.renderer.init(config);
       trackEvent(this.apiUrl, this.widgetKey, 'impression', undefined, this.abTestId, this.abVariant);
+
+      // Initialize behavioral tracker
+      this.tracker = new BehaviorTracker();
 
       // Attention-grabbing triggers
       this.scheduleAttentionGrabbers();
@@ -256,6 +261,7 @@ class HawkLeadsWidget {
     if (ctx.state !== 'ready') return;
 
     this.machine.open();
+    this.tracker?.recordWidgetOpen();
     trackEvent(this.apiUrl, this.widgetKey, 'open', undefined, this.abTestId, this.abVariant);
     const config = ctx.config;
     if (!config || config.steps.length === 0) return;
@@ -403,6 +409,10 @@ class HawkLeadsWidget {
       }
       if (this.abVariant) {
         payload.abVariant = this.abVariant;
+      }
+      if (this.tracker) {
+        payload.behavioralData = this.tracker.getSessionData();
+        payload.visitorFingerprint = this.tracker.getFingerprint();
       }
 
       const result = await submitForm(payload, this.apiUrl);

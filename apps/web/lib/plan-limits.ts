@@ -20,6 +20,9 @@ interface PlanLimits {
   maxSharedLinks: number;
   dripSequences: boolean;
   maxDripSequences: number;
+  predictiveScoring: boolean;
+  advancedRouting: boolean;
+  maxRoutingRules: number;
 }
 
 export function getPlanLimits(plan: Plan): PlanLimits {

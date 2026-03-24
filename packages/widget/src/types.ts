@@ -116,6 +116,18 @@ export interface ContactInfo {
   message?: string;
 }
 
+// ── Behavioral Tracking ──────────────────────────────────────────────────
+export interface BehavioralSessionData {
+  pagesViewed: number;
+  pageUrls: string[];
+  timeOnSiteSeconds: number;
+  maxScrollDepth: number;
+  widgetOpens: number;
+  sessionNumber: number;
+  pricingPageViews: number;
+  highIntentPageViews: number;
+}
+
 // ── Submission ─────────────────────────────────────────────────────────────
 export interface SubmitPayload {
   widgetKey: string;
@@ -134,6 +146,8 @@ export interface SubmitPayload {
   utmCampaign?: string;
   abTestId?: string;
   abVariant?: 'a' | 'b';
+  behavioralData?: BehavioralSessionData;
+  visitorFingerprint?: string;
 }
 
 export interface SubmitResponse {

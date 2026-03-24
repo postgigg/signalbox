@@ -43,22 +43,23 @@ export async function GET(
   // Fetch aggregated results
   const { data: results } = await admin
     .from('ab_test_results')
-    .select('variant, impressions, completions, submissions, total_score, hot_count, warm_count, cold_count, date')
+    .select('variant, impressions, opens, completions, submissions, total_score, hot_count, warm_count, cold_count, date')
     .eq('ab_test_id', id)
     .order('date', { ascending: true });
 
   // Aggregate by variant
-  const variantA = { impressions: 0, submissions: 0, totalScore: 0, hotCount: 0, warmCount: 0, coldCount: 0 };
-  const variantB = { impressions: 0, submissions: 0, totalScore: 0, hotCount: 0, warmCount: 0, coldCount: 0 };
+  const variantA = { impressions: 0, opens: 0, submissions: 0, totalScore: 0, hotCount: 0, warmCount: 0, coldCount: 0 };
+  const variantB = { impressions: 0, opens: 0, submissions: 0, totalScore: 0, hotCount: 0, warmCount: 0, coldCount: 0 };
 
-  const dailyA: Array<{ date: string; impressions: number; submissions: number }> = [];
-  const dailyB: Array<{ date: string; impressions: number; submissions: number }> = [];
+  const dailyA: Array<{ date: string; impressions: number; opens: number; submissions: number }> = [];
+  const dailyB: Array<{ date: string; impressions: number; opens: number; submissions: number }> = [];
 
   for (const row of results ?? []) {
     const target = row.variant === 'a' ? variantA : variantB;
     const daily = row.variant === 'a' ? dailyA : dailyB;
 
     target.impressions += row.impressions;
+    target.opens += row.opens;
     target.submissions += row.submissions;
     target.totalScore += row.total_score;
     target.hotCount += row.hot_count;
@@ -68,6 +69,7 @@ export async function GET(
     daily.push({
       date: row.date,
       impressions: row.impressions,
+      opens: row.opens,
       submissions: row.submissions,
     });
   }
@@ -86,6 +88,7 @@ export async function GET(
     },
     variantA: {
       impressions: variantA.impressions,
+      opens: variantA.opens,
       submissions: variantA.submissions,
       conversionRate: significance.conversionRateA,
       avgScore: significance.avgScoreA,
@@ -96,6 +99,7 @@ export async function GET(
     },
     variantB: {
       impressions: variantB.impressions,
+      opens: variantB.opens,
       submissions: variantB.submissions,
       conversionRate: significance.conversionRateB,
       avgScore: significance.avgScoreB,

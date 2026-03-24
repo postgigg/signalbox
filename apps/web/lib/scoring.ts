@@ -1,3 +1,5 @@
+import { BEHAVIORAL_THRESHOLDS, INTENT_THRESHOLDS } from '@/lib/scoring-constants';
+
 import type { Json } from '@/lib/supabase/types';
 
 export interface FlowOption {
@@ -226,4 +228,192 @@ export function validateFlowSteps(
     const message = err instanceof Error ? err.message : 'Invalid flow steps';
     return { valid: false, error: message };
   }
+}
+
+// ---------------------------------------------------------------------------
+// Predictive scoring interfaces
+// ---------------------------------------------------------------------------
+
+export type LeadTier = 'hot' | 'warm' | 'cold';
+
+export interface BehavioralSessionData {
+  readonly pagesViewed: number;
+  readonly pageUrls: readonly string[];
+  readonly timeOnSiteSeconds: number;
+  readonly maxScrollDepth: number;
+  readonly widgetOpens: number;
+  readonly sessionNumber: number;
+  readonly pricingPageViews: number;
+  readonly highIntentPageViews: number;
+}
+
+export interface CompositeScoreParams {
+  readonly formScore: number;
+  readonly behavioralScore: number;
+  readonly intentScore: number;
+  readonly decayPenalty: number;
+  readonly formWeight: number;
+  readonly behavioralWeight: number;
+  readonly intentWeight: number;
+  readonly hotThreshold: number;
+  readonly warmThreshold: number;
+}
+
+export interface CompositeScoreResult {
+  readonly leadScore: number;
+  readonly leadTier: LeadTier;
+  readonly dimensions: {
+    readonly form: number;
+    readonly behavioral: number;
+    readonly intent: number;
+    readonly decay: number;
+    readonly formWeighted: number;
+    readonly behavioralWeighted: number;
+    readonly intentWeighted: number;
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Predictive scoring functions
+// ---------------------------------------------------------------------------
+
+/**
+ * Normalizes a single metric value to a 0-1 range using min/max thresholds.
+ */
+function normalizeMetric(value: number, min: number, max: number): number {
+  if (max === min) return 0;
+  return Math.min(1, Math.max(0, (value - min) / (max - min)));
+}
+
+/**
+ * Determines the lead tier based on score and thresholds.
+ */
+export function determineTier(
+  score: number,
+  hotThreshold: number,
+  warmThreshold: number,
+): LeadTier {
+  if (score >= hotThreshold) return 'hot';
+  if (score >= warmThreshold) return 'warm';
+  return 'cold';
+}
+
+/**
+ * Calculates a behavioral engagement score (0-100) from session data.
+ * Normalizes each metric against configured thresholds and applies weights.
+ */
+export function calculateBehavioralScore(
+  sessionData: BehavioralSessionData,
+): number {
+  const thresholds = BEHAVIORAL_THRESHOLDS;
+
+  const pagesNorm = normalizeMetric(
+    sessionData.pagesViewed,
+    thresholds.pagesViewed.min,
+    thresholds.pagesViewed.max,
+  );
+  const timeNorm = normalizeMetric(
+    sessionData.timeOnSiteSeconds,
+    thresholds.timeOnSiteSeconds.min,
+    thresholds.timeOnSiteSeconds.max,
+  );
+  const scrollNorm = normalizeMetric(
+    sessionData.maxScrollDepth,
+    thresholds.maxScrollDepth.min,
+    thresholds.maxScrollDepth.max,
+  );
+  const widgetNorm = normalizeMetric(
+    sessionData.widgetOpens,
+    thresholds.widgetOpens.min,
+    thresholds.widgetOpens.max,
+  );
+  const sessionNorm = normalizeMetric(
+    sessionData.sessionNumber,
+    thresholds.sessionCount.min,
+    thresholds.sessionCount.max,
+  );
+
+  const weighted =
+    pagesNorm * thresholds.pagesViewed.weight +
+    timeNorm * thresholds.timeOnSiteSeconds.weight +
+    scrollNorm * thresholds.maxScrollDepth.weight +
+    widgetNorm * thresholds.widgetOpens.weight +
+    sessionNorm * thresholds.sessionCount.weight;
+
+  return Math.round(weighted * 100);
+}
+
+/**
+ * Calculates an intent signal score (0-100) from session data and return visits.
+ * Normalizes intent metrics against configured thresholds and applies weights.
+ */
+export function calculateIntentScore(
+  sessionData: BehavioralSessionData,
+  returnVisitCount: number,
+): number {
+  const thresholds = INTENT_THRESHOLDS;
+
+  const pricingNorm = normalizeMetric(
+    sessionData.pricingPageViews,
+    thresholds.pricingPageViews.min,
+    thresholds.pricingPageViews.max,
+  );
+  const highIntentNorm = normalizeMetric(
+    sessionData.highIntentPageViews,
+    thresholds.highIntentPageViews.min,
+    thresholds.highIntentPageViews.max,
+  );
+  const returnNorm = normalizeMetric(
+    returnVisitCount,
+    thresholds.returnVisitCount.min,
+    thresholds.returnVisitCount.max,
+  );
+  const timeOnHighIntentNorm = normalizeMetric(
+    0,
+    thresholds.timeOnHighIntentPages.min,
+    thresholds.timeOnHighIntentPages.max,
+  );
+
+  const weighted =
+    pricingNorm * thresholds.pricingPageViews.weight +
+    highIntentNorm * thresholds.highIntentPageViews.weight +
+    returnNorm * thresholds.returnVisitCount.weight +
+    timeOnHighIntentNorm * thresholds.timeOnHighIntentPages.weight;
+
+  return Math.round(weighted * 100);
+}
+
+/**
+ * Calculates a composite lead score from form, behavioral, and intent dimensions.
+ * Applies decay penalty and determines the final tier.
+ */
+export function calculateCompositeScore(
+  params: CompositeScoreParams,
+): CompositeScoreResult {
+  const formWeighted = params.formWeight * params.formScore;
+  const behavioralWeighted = params.behavioralWeight * params.behavioralScore;
+  const intentWeighted = params.intentWeight * params.intentScore;
+
+  const raw = formWeighted + behavioralWeighted + intentWeighted - params.decayPenalty;
+  const leadScore = Math.max(0, Math.min(100, Math.round(raw)));
+
+  const leadTier = determineTier(
+    leadScore,
+    params.hotThreshold,
+    params.warmThreshold,
+  );
+
+  return {
+    leadScore,
+    leadTier,
+    dimensions: {
+      form: params.formScore,
+      behavioral: params.behavioralScore,
+      intent: params.intentScore,
+      decay: params.decayPenalty,
+      formWeighted: Math.round(formWeighted),
+      behavioralWeighted: Math.round(behavioralWeighted),
+      intentWeighted: Math.round(intentWeighted),
+    },
+  };
 }

@@ -14,6 +14,11 @@ interface TeamMember {
   readonly created_at: string;
 }
 
+interface MemberSummary {
+  readonly skillsCount: number;
+  readonly territoriesCount: number;
+}
+
 const SETTINGS_NAV = [
   { href: '/dashboard/settings', label: 'Account' },
   { href: '/dashboard/settings/team', label: 'Team' },
@@ -21,12 +26,14 @@ const SETTINGS_NAV = [
   { href: '/dashboard/settings/notifications', label: 'Notifications' },
   { href: '/dashboard/settings/api', label: 'API' },
   { href: '/dashboard/settings/routing', label: 'Routing' },
+  { href: '/dashboard/settings/scoring', label: 'Scoring' },
 ] as const;
 
 const ROLES = ['admin', 'viewer'] as const;
 
 export default function TeamSettingsPage(): React.ReactElement {
   const [members, setMembers] = useState<TeamMember[]>([]);
+  const [memberSummaries, setMemberSummaries] = useState<Record<string, MemberSummary>>({});
   const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'admin' | 'viewer'>('viewer');
@@ -60,7 +67,28 @@ export default function TeamSettingsPage(): React.ReactElement {
           .eq('account_id', memberData.account_id)
           .order('created_at', { ascending: true });
 
-        setMembers((data as TeamMember[]) ?? []);
+        const teamMembers = (data as TeamMember[] | null) ?? [];
+        setMembers(teamMembers);
+
+        // Fetch skills and territories counts for each member
+        const summaries: Record<string, MemberSummary> = {};
+        for (const m of teamMembers) {
+          const [skillsResult, territoriesResult] = await Promise.all([
+            supabase
+              .from('member_skills')
+              .select('id', { count: 'exact', head: true })
+              .eq('member_id', m.id),
+            supabase
+              .from('member_territories')
+              .select('id', { count: 'exact', head: true })
+              .eq('member_id', m.id),
+          ]);
+          summaries[m.id] = {
+            skillsCount: skillsResult.count ?? 0,
+            territoriesCount: territoriesResult.count ?? 0,
+          };
+        }
+        setMemberSummaries(summaries);
       } catch {
         // Failed to load team
       } finally {
@@ -270,44 +298,63 @@ export default function TeamSettingsPage(): React.ReactElement {
                   <th className="text-left py-3 px-4 font-medium">Member</th>
                   <th className="text-left py-3 px-4 font-medium">Role</th>
                   <th className="text-left py-3 px-4 font-medium">Status</th>
+                  <th className="text-left py-3 px-4 font-medium">Summary</th>
                   <th className="text-left py-3 px-4 font-medium">Joined</th>
                   <th className="text-right py-3 px-4 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {members.map((member) => (
-                  <tr key={member.id} className="table-row">
-                    <td className="py-3 px-4 font-medium text-ink">
-                      {member.invited_email ?? member.user_id.slice(0, 8)}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`text-xs px-2 py-0.5 rounded-pill font-medium ${getRoleBadgeClass(member.role)}`}>
-                        {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      {member.accepted_at ? (
-                        <span className="text-xs text-success">Active</span>
-                      ) : (
-                        <span className="text-xs text-warning">Pending</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4 text-stone">
-                      {new Date(member.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      {member.role !== 'owner' && (
-                        <button
-                          type="button"
-                          onClick={() => void handleRemoveMember(member.id)}
-                          className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast"
+                {members.map((member) => {
+                  const summary = memberSummaries[member.id];
+                  return (
+                    <tr key={member.id} className="table-row">
+                      <td className="py-3 px-4 font-medium text-ink">
+                        <Link
+                          href={`/dashboard/settings/team/${member.id}`}
+                          className="text-ink hover:text-signal transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-ink/30 rounded-sm"
                         >
-                          Remove
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                          {member.invited_email ?? member.user_id.slice(0, 8)}
+                        </Link>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-pill font-medium ${getRoleBadgeClass(member.role)}`}>
+                          {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {member.accepted_at ? (
+                          <span className="text-xs text-success">Active</span>
+                        ) : (
+                          <span className="text-xs text-warning">Pending</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        {summary ? (
+                          <span className="text-xs text-stone">
+                            {summary.skillsCount} {summary.skillsCount === 1 ? 'skill' : 'skills'},
+                            {' '}{summary.territoriesCount} {summary.territoriesCount === 1 ? 'territory' : 'territories'}
+                          </span>
+                        ) : (
+                          <div className="skeleton h-3 w-20" />
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-stone">
+                        {new Date(member.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        {member.role !== 'owner' && (
+                          <button
+                            type="button"
+                            onClick={() => void handleRemoveMember(member.id)}
+                            className="text-xs text-danger hover:text-danger/80 transition-colors duration-fast"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

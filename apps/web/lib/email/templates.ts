@@ -478,3 +478,63 @@ Check webhooks: ${settingsUrl}`;
     text,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Template: Lead assigned notification
+// ---------------------------------------------------------------------------
+
+export interface LeadAssignedData {
+  assigneeName: string;
+  accountName: string;
+  widgetName: string;
+  visitorName: string;
+  visitorEmail: string;
+  leadScore: number;
+  leadTier: 'hot' | 'warm' | 'cold';
+  submissionId: string;
+  ruleName: string;
+}
+
+export function renderLeadAssigned(
+  data: LeadAssignedData
+): { subject: string; html: string; text: string } {
+  const firstName = data.assigneeName.split(' ')[0] ?? data.assigneeName;
+  const tierConfig = TIER_CONFIG[data.leadTier];
+  const dashboardUrl = `${APP_URL}/dashboard/leads/${data.submissionId}`;
+
+  const html = layout(`
+    <h2>Lead Assigned to You</h2>
+    <p>Hey ${firstName}, a new lead has been routed to you via the rule <strong>${data.ruleName}</strong>.</p>
+    <table style="width:100%;margin:16px 0;font-size:14px;">
+      <tr><td style="padding:4px 0;color:#71717a;">Name</td><td style="font-weight:600;">${data.visitorName}</td></tr>
+      <tr><td style="padding:4px 0;color:#71717a;">Email</td><td style="font-weight:600;">${data.visitorEmail}</td></tr>
+      <tr><td style="padding:4px 0;color:#71717a;">Widget</td><td style="font-weight:600;">${data.widgetName}</td></tr>
+    </table>
+    <div style="text-align:center;margin:16px 0;">
+      <span class="tier-badge" style="background-color:${tierConfig.bgColor};color:${tierConfig.textColor};">
+        ${tierConfig.label} &mdash; Score: ${data.leadScore}/100
+      </span>
+    </div>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${dashboardUrl}">View Lead</a>
+    </div>
+  `);
+
+  const text = `Lead Assigned to You
+
+Hey ${firstName}, a new lead has been routed to you via the rule "${data.ruleName}".
+
+Name: ${data.visitorName}
+Email: ${data.visitorEmail}
+Widget: ${data.widgetName}
+Tier: ${tierConfig.label}
+Score: ${data.leadScore}/100
+
+View lead: ${dashboardUrl}`;
+
+  return {
+    subject: `[${tierConfig.label}] Lead assigned to you: ${data.visitorName} — ${data.accountName}`,
+    html,
+    text,
+  };
+}

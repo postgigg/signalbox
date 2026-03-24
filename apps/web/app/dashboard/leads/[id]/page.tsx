@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { CopyButton } from './CopyButton';
 import { LeadSidebar } from './LeadSidebar';
+import { ScoreBreakdown } from './ScoreBreakdown';
 
 import type { Submission } from '@/lib/supabase/types';
 
@@ -13,6 +14,23 @@ interface AnswerEntry {
   readonly question: string;
   readonly label: string;
   readonly scoreWeight: number;
+}
+
+interface ScoreHistoryRow {
+  readonly id: string;
+  readonly previous_score: number;
+  readonly new_score: number;
+  readonly previous_tier: string;
+  readonly new_tier: string;
+  readonly change_reason: string;
+  readonly created_at: string;
+}
+
+interface BehavioralInsightsData {
+  readonly pagesViewed: number;
+  readonly timeOnSiteSeconds: number;
+  readonly sessionNumber: number;
+  readonly maxScrollDepth: number;
 }
 
 interface LeadDetailPageProps {
@@ -48,6 +66,40 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
   }
 
   const submission = lead as Submission;
+
+  // Fetch score history for this lead
+  const { data: scoreHistoryData } = await supabase
+    .from('score_history')
+    .select('id, previous_score, new_score, previous_tier, new_tier, change_reason, created_at')
+    .eq('submission_id', id)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  const scoreHistory: ScoreHistoryRow[] = (scoreHistoryData as ScoreHistoryRow[] | null) ?? [];
+
+  // Fetch behavioral insights from visitor_sessions
+  let behavioralInsights: BehavioralInsightsData | null = null;
+  const { data: visitorSession } = await supabase
+    .from('visitor_sessions')
+    .select('pages_viewed, time_on_site_seconds, session_number, max_scroll_depth')
+    .eq('submission_id', id)
+    .limit(1)
+    .maybeSingle();
+
+  if (visitorSession) {
+    const vs = visitorSession as { pages_viewed: number; time_on_site_seconds: number; session_number: number; max_scroll_depth: number };
+    behavioralInsights = {
+      pagesViewed: vs.pages_viewed,
+      timeOnSiteSeconds: vs.time_on_site_seconds,
+      sessionNumber: vs.session_number,
+      maxScrollDepth: vs.max_scroll_depth,
+    };
+  }
+
+  const hasScoreBreakdown = submission.form_score !== undefined
+    || submission.behavioral_score !== undefined
+    || submission.intent_score !== undefined;
+
   const rawAnswers: unknown[] = Array.isArray(submission.answers) ? submission.answers : [];
   const answers: AnswerEntry[] = rawAnswers.filter(
     (a): a is AnswerEntry =>
@@ -133,6 +185,18 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
               </div>
             )}
           </div>
+
+          {/* Score Breakdown */}
+          {hasScoreBreakdown && (
+            <ScoreBreakdown
+              formScore={submission.form_score}
+              behavioralScore={submission.behavioral_score}
+              intentScore={submission.intent_score}
+              decayPenalty={submission.decay_penalty}
+              behavioralInsights={behavioralInsights}
+              scoreHistory={scoreHistory}
+            />
+          )}
 
           {/* Suggested Opener */}
           <div className="card">

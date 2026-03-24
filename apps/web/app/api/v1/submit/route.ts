@@ -7,24 +7,42 @@ import { getClientIp, getCountry } from '@/lib/ip';
 import { parseDeviceType } from '@/lib/device';
 import {
   calculateLeadScore,
+  calculateBehavioralScore,
+  calculateIntentScore,
+  calculateCompositeScore,
   denormalizeAnswers,
   parseFlowSteps,
 } from '@/lib/scoring';
-import { sendNewLeadNotification } from '@/lib/email';
+import { sendNewLeadNotification, sendLeadAssignedNotification } from '@/lib/email';
 import { fireWebhooks } from '@/lib/webhooks';
 import { sendSlackNotification } from '@/lib/slack';
 import { stripHtml } from '@/lib/sanitize';
 import { evaluateRoutingRules } from '@/lib/lead-routing';
 import { getPlanLimits } from '@/lib/plan-limits';
 import { enrollInDripSequence } from '@/lib/drip';
+import { DEFAULT_SCORING_CONFIG } from '@/lib/constants';
 
+import type { RoutingContext } from '@/lib/lead-routing';
 import type { Plan } from '@/lib/supabase/types';
+import type { ScoringConfig } from '@/lib/constants';
+import type { BehavioralSessionData } from '@/lib/scoring';
 
 export const runtime = 'nodejs';
 
 const answerSchema = z.object({
   stepId: z.string().min(1),
   optionId: z.string().min(1),
+}).strict();
+
+const behavioralDataSchema = z.object({
+  pagesViewed: z.number().int().min(0).max(1000),
+  pageUrls: z.array(z.string().max(2000)).max(100),
+  timeOnSiteSeconds: z.number().int().min(0).max(86400),
+  maxScrollDepth: z.number().int().min(0).max(100),
+  widgetOpens: z.number().int().min(0).max(100),
+  sessionNumber: z.number().int().min(1).max(1000),
+  pricingPageViews: z.number().int().min(0).max(100),
+  highIntentPageViews: z.number().int().min(0).max(100),
 }).strict();
 
 const submitSchema = z.object({
@@ -44,6 +62,8 @@ const submitSchema = z.object({
   challengeToken: z.string().min(1),
   abTestId: z.string().uuid().optional(),
   abVariant: z.enum(['a', 'b']).optional(),
+  behavioralData: behavioralDataSchema.optional(),
+  visitorFingerprint: z.string().max(64).optional(),
 }).strict();
 
 type SubmitPayload = z.infer<typeof submitSchema>;
@@ -231,13 +251,43 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 12. Calculate lead score
-  const { rawScore, leadScore, leadTier } = calculateLeadScore(
+  // 12. Calculate form score
+  const { rawScore, leadScore: formScore } = calculateLeadScore(
     steps,
     payload.answers,
     account.hot_lead_threshold,
     account.warm_lead_threshold,
   );
+
+  // 12b. Calculate composite score with behavioral + intent dimensions
+  const planLimits = getPlanLimits(account.plan as Plan);
+  const scoringConfig: ScoringConfig = planLimits.predictiveScoring
+    ? { ...DEFAULT_SCORING_CONFIG, ...(account.scoring_config as Partial<ScoringConfig>) }
+    : { ...DEFAULT_SCORING_CONFIG, behavioralWeight: 0, intentWeight: 0, formWeight: 1.0 };
+
+  let behavioralScore = 0;
+  let intentScore = 0;
+  const sessionData: BehavioralSessionData | null = payload.behavioralData ?? null;
+
+  if (sessionData && planLimits.predictiveScoring) {
+    behavioralScore = calculateBehavioralScore(sessionData);
+    intentScore = calculateIntentScore(sessionData, sessionData.sessionNumber);
+  }
+
+  const composite = calculateCompositeScore({
+    formScore,
+    behavioralScore,
+    intentScore,
+    decayPenalty: 0,
+    formWeight: scoringConfig.formWeight,
+    behavioralWeight: scoringConfig.behavioralWeight,
+    intentWeight: scoringConfig.intentWeight,
+    hotThreshold: account.hot_lead_threshold,
+    warmThreshold: account.warm_lead_threshold,
+  });
+
+  const leadScore = composite.leadScore;
+  const leadTier = composite.leadTier;
 
   // 13. Denormalize answers
   const denormalized = denormalizeAnswers(steps, payload.answers);
@@ -248,20 +298,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const country = getCountry(request);
 
   // 14b. Evaluate lead routing rules (Pro+ only)
-  const planLimits = getPlanLimits(account.plan as Plan);
   let assignedTo: string | null = null;
   let assignedByRuleId: string | null = null;
+  let routingStrategy: string | null = null;
 
   if (planLimits.leadRouting) {
-    const routingResult = await evaluateRoutingRules(
-      account.id,
-      widget.id,
+    const routingContext: RoutingContext = {
+      accountId: account.id,
+      widgetId: widget.id,
       leadTier,
-      payload.answers,
-    );
+      leadScore,
+      answers: payload.answers,
+      country,
+    };
+    const routingResult = await evaluateRoutingRules(routingContext);
     if (routingResult) {
       assignedTo = routingResult.memberId;
       assignedByRuleId = routingResult.ruleId;
+      routingStrategy = routingResult.strategy;
     }
   }
 
@@ -280,6 +334,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       raw_score: rawScore,
       lead_score: leadScore,
       lead_tier: leadTier,
+      form_score: formScore,
+      behavioral_score: behavioralScore,
+      intent_score: intentScore,
+      score_dimensions: composite.dimensions as unknown as Record<string, number>,
+      visitor_fingerprint: payload.visitorFingerprint ?? null,
+      routing_strategy: routingStrategy,
       source_url: payload.sourceUrl ?? null,
       ip_address: ip,
       user_agent: userAgent,
@@ -340,6 +400,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         cold_count: leadTier === 'cold' ? 1 : 0,
       });
     }
+  }
+
+  // 15c. Upsert visitor session if behavioral data was provided
+  if (sessionData && payload.visitorFingerprint) {
+    admin
+      .from('visitor_sessions')
+      .insert({
+        widget_id: widget.id,
+        account_id: account.id,
+        visitor_fingerprint: payload.visitorFingerprint,
+        session_number: sessionData.sessionNumber,
+        pages_viewed: sessionData.pagesViewed,
+        page_urls: sessionData.pageUrls as string[],
+        time_on_site_seconds: sessionData.timeOnSiteSeconds,
+        max_scroll_depth: sessionData.maxScrollDepth,
+        widget_opens: sessionData.widgetOpens,
+        pricing_page_views: sessionData.pricingPageViews,
+        high_intent_page_views: sessionData.highIntentPageViews,
+        submitted: true,
+        submission_id: submission.id,
+      })
+      .then(() => { /* non-blocking */ })
+      .catch(() => { /* visitor session insert failure is non-blocking */ });
   }
 
   // 16. Atomically increment widget submission_count (prevents race conditions)
@@ -427,6 +510,59 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
   }
 
+  // 18b. Notify assigned team member if lead was routed
+  if (assignedTo && assignedByRuleId) {
+    const memberIdForEmail = assignedTo;
+    const ruleIdForEmail = assignedByRuleId;
+
+    Promise.all([
+      admin
+        .from('members')
+        .select('user_id, invited_email')
+        .eq('id', memberIdForEmail)
+        .single(),
+      admin
+        .from('lead_routing_rules')
+        .select('name')
+        .eq('id', ruleIdForEmail)
+        .single(),
+    ])
+      .then(async ([memberResult, ruleResult]) => {
+        if (!memberResult.data || !ruleResult.data) return;
+
+        // Resolve the member's email: try auth user email first, fall back to invited_email
+        let assigneeEmail: string | null = memberResult.data.invited_email;
+        let assigneeName = 'Team Member';
+
+        const { data: authUser } = await admin.auth.admin.getUserById(memberResult.data.user_id);
+        if (authUser?.user?.email) {
+          assigneeEmail = authUser.user.email;
+          const meta = authUser.user.user_metadata as Record<string, unknown> | undefined;
+          if (meta && typeof meta.full_name === 'string') {
+            assigneeName = meta.full_name;
+          }
+        }
+
+        if (!assigneeEmail) return;
+
+        await sendLeadAssignedNotification({
+          to: assigneeEmail,
+          assigneeName,
+          accountName: account.name,
+          widgetName: widget.name,
+          visitorName: payload.visitorName,
+          visitorEmail: payload.visitorEmail,
+          leadTier,
+          leadScore,
+          submissionId: submission.id,
+          ruleName: ruleResult.data.name,
+        });
+      })
+      .catch(() => {
+        // Assignee notification failure — non-blocking
+      });
+  }
+
   // 19. Fire Slack notification if configured
   if (account.slack_webhook_url) {
     const slackWebhookUrl = account.slack_webhook_url;
@@ -463,7 +599,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 19b. Enroll in drip sequence for warm/cold leads (Pro+ only)
   if ((leadTier === 'warm' || leadTier === 'cold') && planLimits.dripSequences) {
-    enrollInDripSequence(admin, account.id, widget.id, submission.id, leadTier).catch(() => {
+    const dripTier: 'warm' | 'cold' = leadTier;
+    enrollInDripSequence(admin, account.id, widget.id, submission.id, dripTier).catch(() => {
       // Drip enrollment failure — non-blocking
     });
   }
