@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 interface AnalyticsData {
   readonly name: string;
@@ -20,12 +21,9 @@ interface AnalyticsData {
   }>;
 }
 
-export default function SharedAnalyticsPage({
-  params,
-}: {
-  readonly params: Promise<{ token: string }>;
-}): React.ReactElement {
-  const { token } = use(params instanceof Promise ? params : Promise.resolve(params));
+export default function SharedAnalyticsPage(): React.ReactElement {
+  const params = useParams();
+  const token = typeof params.token === 'string' ? params.token : '';
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
