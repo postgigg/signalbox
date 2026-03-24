@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 
+import { HelpTip } from '@/components/shared/HelpTip';
+import { PageGuide } from '@/components/shared/PageGuide';
 import {
   DEFAULT_SCORING_CONFIG,
   SCORING_DIMENSIONS,
 } from '@/lib/constants';
+import { HELP_TIPS } from '@/lib/help-content';
 
 import type { ScoringConfig } from '@/lib/constants';
 
@@ -26,6 +29,12 @@ const DIMENSION_COLORS: Record<string, string> = {
   form: 'bg-blue-500',
   behavioral: 'bg-green-500',
   intent: 'bg-amber-500',
+};
+
+const DIMENSION_HELP: Record<string, string> = {
+  form: HELP_TIPS.scoring.formWeight,
+  behavioral: HELP_TIPS.scoring.behavioralWeight,
+  intent: HELP_TIPS.scoring.intentWeight,
 };
 
 interface AccountData {
@@ -241,6 +250,10 @@ export default function ScoringSettingsPage(): React.ReactElement {
         Adjust how lead scores are calculated across form answers, behavioral signals, and intent data.
       </p>
 
+      <PageGuide storageKey="scoring-config" title="How scoring works">
+        {HELP_TIPS.scoring.pageGuide}
+      </PageGuide>
+
       {loading && (
         <div className="mt-6 space-y-4">
           <div className="border border-gray-200 rounded-lg p-6">
@@ -282,6 +295,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-display text-base font-semibold text-ink mb-1">
               Dimension Weights
+              <HelpTip text={HELP_TIPS.scoring.dimensionWeights} />
             </h3>
             <p className="text-sm text-stone font-body mb-4">
               Control how much each scoring dimension contributes to the final score. Weights must sum to 1.0.
@@ -299,7 +313,10 @@ export default function ScoringSettingsPage(): React.ReactElement {
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
                         <span className={`w-3 h-3 rounded-sm ${colorClass}`} />
-                        <span className="text-sm font-medium text-ink">{dim.label}</span>
+                        <span className="text-sm font-medium text-ink">
+                          {dim.label}
+                          {DIMENSION_HELP[key] !== undefined && <HelpTip text={DIMENSION_HELP[key]} />}
+                        </span>
                       </div>
                       <span className="text-sm font-mono text-stone">{Math.round(value * 100)}%</span>
                     </div>
@@ -345,6 +362,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-display text-base font-semibold text-ink mb-1">
               Score Decay
+              <HelpTip text={HELP_TIPS.scoring.decay} />
             </h3>
             <p className="text-sm text-stone font-body mb-4">
               Automatically reduce lead scores over time when there is no engagement.
@@ -366,6 +384,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
                   <div>
                     <label htmlFor="decay-rate" className="block text-sm font-medium text-ink mb-1">
                       Points per week
+                      <HelpTip text={HELP_TIPS.scoring.decayRate} />
                     </label>
                     <input
                       id="decay-rate"
@@ -384,6 +403,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
                   <div>
                     <label htmlFor="decay-max" className="block text-sm font-medium text-ink mb-1">
                       Maximum decay
+                      <HelpTip text={HELP_TIPS.scoring.decayMax} />
                     </label>
                     <input
                       id="decay-max"
@@ -408,6 +428,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-display text-base font-semibold text-ink mb-1">
               High-Intent Page Patterns
+              <HelpTip text={HELP_TIPS.scoring.highIntentPages} />
             </h3>
             <p className="text-sm text-stone font-body mb-4">
               URL patterns that indicate high purchase intent. Visitors who view these pages receive a higher intent score.

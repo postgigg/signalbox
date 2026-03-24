@@ -76,6 +76,26 @@ export const HELP_TIPS = {
     widgetKey:
       'A public identifier for your widget. Not a secret. Safe to put in your website HTML.',
   },
+  scoring: {
+    pageGuide:
+      'Lead scores combine three signals: form answers, on-site behavior, and purchase intent. Adjust the weights to prioritize what matters most for your business. Changes apply to new submissions only.',
+    dimensionWeights:
+      'Weights control how the final score is calculated. For example, 60% Form / 20% Behavioral / 20% Intent means form answers have three times more influence than each behavioral signal.',
+    formWeight:
+      'Score from the qualifying questions in your flow. Higher weight means the answers visitors choose matter more.',
+    behavioralWeight:
+      'Based on pages viewed, time on site, scroll depth, and return visits. Captures engagement even before the form is filled out.',
+    intentWeight:
+      'Tracks visits to high-value pages like pricing or demo. Repeat visitors and pricing page views signal stronger purchase intent.',
+    decay:
+      'Scores naturally lose points over time when a lead goes quiet. This keeps your hottest leads at the top. Decay stops once the maximum deduction is reached.',
+    decayRate:
+      'Points subtracted each week with no activity. A rate of 5 means a lead loses 5 points per week of silence.',
+    decayMax:
+      'The cap on total decay. With a max of 30, a lead scoring 80 can only drop to 50 from decay alone.',
+    highIntentPages:
+      'URL paths on your site that signal buying intent. Visitors who view these pages get a higher intent score. Use path prefixes like /pricing or /demo.',
+  },
   settings: {
     hotThreshold:
       'Leads scoring at or above this are labeled Hot. Your highest-priority leads.',
