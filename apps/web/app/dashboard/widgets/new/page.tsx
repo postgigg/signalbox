@@ -38,11 +38,18 @@ interface PlanCheckState {
   atLimit: boolean;
 }
 
+interface ClientOption {
+  readonly id: string;
+  readonly name: string;
+}
+
 export default function NewWidgetPage(): React.ReactElement {
   const router = useRouter();
   const [name, setName] = useState('');
   const [domain, setDomain] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [selectedClient, setSelectedClient] = useState('');
+  const [clients, setClients] = useState<ClientOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [planCheck, setPlanCheck] = useState<PlanCheckState>({
@@ -98,6 +105,15 @@ export default function NewWidgetPage(): React.ReactElement {
           widgetLimit: limit,
           atLimit: currentCount >= limit,
         });
+
+        // Fetch client accounts for agency plans
+        if (currentPlan === 'agency') {
+          const clientResponse = await fetch('/api/v1/clients');
+          if (clientResponse.ok) {
+            const clientJson = await clientResponse.json() as { data: ClientOption[] };
+            setClients(clientJson.data ?? []);
+          }
+        }
       } catch {
         setPlanCheck((prev) => ({ ...prev, loading: false }));
       }
@@ -128,6 +144,7 @@ export default function NewWidgetPage(): React.ReactElement {
           name: name.trim() || 'My Widget',
           domain: domain.trim() || undefined,
           industry: selectedTemplate,
+          clientAccountId: selectedClient || undefined,
         }),
       });
 
@@ -248,6 +265,27 @@ export default function NewWidgetPage(): React.ReactElement {
               className="input-field"
             />
           </div>
+          {planCheck.plan === 'agency' && clients.length > 0 && (
+            <div className="sm:col-span-2">
+              <label htmlFor="widgetClient" className="input-label">
+                Assign to Client (optional)
+              </label>
+              <select
+                id="widgetClient"
+                value={selectedClient}
+                onChange={(e) => setSelectedClient(e.target.value)}
+                className="input-field"
+              >
+                <option value="">No client (internal)</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>{client.name}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-stone">
+                Link this widget to a client account for organized reporting.
+              </p>
+            </div>
+          )}
         </div>
 
         <div>

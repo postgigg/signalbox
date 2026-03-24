@@ -12,6 +12,7 @@ const createWidgetSchema = z.object({
   domain: z.string().max(253).optional(),
   templateId: z.string().uuid().optional(),
   industry: z.string().max(50).optional(),
+  clientAccountId: z.string().uuid().optional(),
 }).strict();
 
 const DEFAULT_THEME: Json = {
@@ -154,6 +155,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   }
 
+  // Validate client_account_id belongs to this account if provided
+  if (parsed.data.clientAccountId) {
+    const { data: clientAccount } = await admin
+      .from('client_accounts')
+      .select('id')
+      .eq('id', parsed.data.clientAccountId)
+      .eq('parent_account_id', account.id)
+      .single();
+
+    if (!clientAccount) {
+      return NextResponse.json(
+        { error: 'Client account not found' },
+        { status: 400 },
+      );
+    }
+  }
+
   // Create widget
   const { data: widget, error: insertError } = await admin
     .from('widgets')
@@ -164,6 +182,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       theme: DEFAULT_THEME,
       confirmation: DEFAULT_CONFIRMATION,
       submission_limit: limits.submissionsPerMonth,
+      client_account_id: parsed.data.clientAccountId ?? null,
     })
     .select('*')
     .single();
