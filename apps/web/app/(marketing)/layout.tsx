@@ -88,58 +88,93 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
           {/* Mobile hamburger button */}
           <button
             type="button"
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            onClick={() => setMobileMenuOpen(true)}
             className="md:hidden p-2 -mr-2 rounded-sm hover:bg-surface-alt transition-colors duration-fast"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-label="Open menu"
           >
-            {mobileMenuOpen ? (
+            <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+        </nav>
+      </header>
+
+      {/* Mobile slide-in drawer */}
+      <div
+        className={`fixed inset-0 z-[60] md:hidden ${
+          mobileMenuOpen ? '' : 'pointer-events-none'
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className={`absolute inset-0 bg-ink/40 transition-opacity duration-200 ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+
+        {/* Drawer panel */}
+        <nav
+          className={`absolute top-0 right-0 bottom-0 w-72 bg-paper border-l border-border flex flex-col transition-transform duration-200 ease-out ${
+            mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          {/* Drawer header */}
+          <div className="h-16 flex items-center justify-between px-6 border-b border-border flex-shrink-0">
+            <span className="text-sm font-semibold text-ink font-body">Menu</span>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 -mr-2 rounded-sm hover:bg-surface-alt transition-colors duration-fast"
+              aria-label="Close menu"
+            >
               <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
-            ) : (
-              <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-            )}
-          </button>
-        </nav>
+            </button>
+          </div>
 
-        {/* Mobile menu dropdown */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-paper px-6 py-4 space-y-1">
+          {/* Drawer links */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block py-2.5 text-sm font-body transition-colors duration-fast ${
+                className={`flex items-center px-3 py-3 rounded-md text-sm font-body transition-colors duration-fast ${
                   pathname === link.href
-                    ? 'text-ink font-medium'
-                    : 'text-stone hover:text-ink'
+                    ? 'text-ink font-medium bg-surface-alt'
+                    : 'text-stone hover:text-ink hover:bg-surface-alt'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="pt-2 border-t border-border mt-2">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2.5 text-sm font-body text-stone hover:text-ink transition-colors duration-fast"
-              >
-                Log In
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setMobileMenuOpen(false)}
-                className="btn-primary w-full mt-2 text-center text-sm"
-              >
-                Start Free Trial
-              </Link>
-            </div>
+
+            <div className="my-3 border-t border-border" />
+
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center px-3 py-3 rounded-md text-sm font-body text-stone hover:text-ink hover:bg-surface-alt transition-colors duration-fast"
+            >
+              Log In
+            </Link>
           </div>
-        )}
-      </header>
+
+          {/* Drawer footer CTA */}
+          <div className="px-4 pb-6 pt-2 flex-shrink-0">
+            <Link
+              href="/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="btn-primary w-full text-center text-sm"
+            >
+              Start Free Trial
+            </Link>
+          </div>
+        </nav>
+      </div>
 
       <main className="flex-1 pt-16">{children}</main>
 
