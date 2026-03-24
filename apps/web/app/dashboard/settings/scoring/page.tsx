@@ -133,7 +133,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
 
       const otherSum = otherKeys.reduce((sum, k) => sum + (prev[weightKey(k)] as number), 0);
 
-      const updated = { ...prev };
+      const updated: Record<string, number | boolean | readonly string[]> = { ...prev };
       updated[weightKey(changedKey)] = newValue;
 
       if (otherSum === 0) {
@@ -162,7 +162,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
         }
       }
 
-      return updated;
+      return updated as unknown as ScoringConfig;
     });
   }, []);
 

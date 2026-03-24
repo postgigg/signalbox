@@ -564,7 +564,7 @@ export interface ScoringConfig {
   decayRatePerWeek: number;
   decayMax: number;
   decayEnabled: boolean;
-  highIntentPages: string[];
+  highIntentPages: readonly string[];
 }
 
 export const SCORING_DIMENSIONS = [

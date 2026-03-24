@@ -404,25 +404,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 15c. Upsert visitor session if behavioral data was provided
   if (sessionData && payload.visitorFingerprint) {
-    admin
-      .from('visitor_sessions')
-      .insert({
-        widget_id: widget.id,
-        account_id: account.id,
-        visitor_fingerprint: payload.visitorFingerprint,
-        session_number: sessionData.sessionNumber,
-        pages_viewed: sessionData.pagesViewed,
-        page_urls: sessionData.pageUrls as string[],
-        time_on_site_seconds: sessionData.timeOnSiteSeconds,
-        max_scroll_depth: sessionData.maxScrollDepth,
-        widget_opens: sessionData.widgetOpens,
-        pricing_page_views: sessionData.pricingPageViews,
-        high_intent_page_views: sessionData.highIntentPageViews,
-        submitted: true,
-        submission_id: submission.id,
-      })
-      .then(() => { /* non-blocking */ })
-      .catch(() => { /* visitor session insert failure is non-blocking */ });
+    void Promise.resolve(
+      admin
+        .from('visitor_sessions')
+        .insert({
+          widget_id: widget.id,
+          account_id: account.id,
+          visitor_fingerprint: payload.visitorFingerprint,
+          session_number: sessionData.sessionNumber,
+          pages_viewed: sessionData.pagesViewed,
+          page_urls: sessionData.pageUrls as string[],
+          time_on_site_seconds: sessionData.timeOnSiteSeconds,
+          max_scroll_depth: sessionData.maxScrollDepth,
+          widget_opens: sessionData.widgetOpens,
+          pricing_page_views: sessionData.pricingPageViews,
+          high_intent_page_views: sessionData.highIntentPageViews,
+          submitted: true,
+          submission_id: submission.id,
+        })
+    ).catch(() => { /* visitor session insert failure is non-blocking */ });
   }
 
   // 16. Atomically increment widget submission_count (prevents race conditions)

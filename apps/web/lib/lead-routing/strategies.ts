@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { Database } from '@/lib/supabase/types';
+import type { Database, Json } from '@/lib/supabase/types';
 
 import type {
   RoutingRuleRow,
@@ -80,7 +80,7 @@ export async function resolveRoundRobin(
   const { data: memberId } = await admin.rpc('advance_round_robin', {
     p_rule_id: rule.id,
     p_pool: rule.round_robin_pool,
-    p_max_leads: (rule.round_robin_weights ?? {}) as Record<string, unknown>,
+    p_max_leads: (rule.round_robin_weights ?? {}) as Json,
   });
 
   return memberId as string | null;
