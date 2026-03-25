@@ -45,7 +45,9 @@
       "Bash(stripe products:*)",
       "Bash(stripe config:*)",
       "Bash(node:*)",
-      "Bash(tasklist:*.)"
+      "Bash(test:*)",
+      "Bash(npx eslint:*)",
+      "Bash(find C:\\\\Users\\\\exont\\\\OneDrive\\\\Desktop\\\\signalbox\\\\apps\\\\web\\\\app\\\\\\(auth\\):*)"
     ]
   }
 }

@@ -56,6 +56,21 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
     }
   }
 
+  // Fetch client name if widget is assigned to a client
+  let clientName: string | null = null;
+  let clientId: string | null = null;
+  if (widget.client_account_id) {
+    const { data: clientData } = await supabase
+      .from('client_accounts')
+      .select('id, name')
+      .eq('id', widget.client_account_id)
+      .single();
+    if (clientData) {
+      clientName = clientData.name;
+      clientId = clientData.id;
+    }
+  }
+
   const baseNavItems = [
     { href: `/dashboard/widgets/${id}`, label: 'Overview' },
     { href: `/dashboard/widgets/${id}/flow`, label: 'Flow Builder' },
@@ -93,6 +108,14 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
             >
               {widget.is_active ? 'Active' : 'Inactive'}
             </span>
+            {clientName !== null && clientId !== null && (
+              <Link
+                href={`/dashboard/clients/${clientId}`}
+                className="text-xs px-2 py-0.5 rounded-pill font-medium bg-signal-light text-signal hover:text-signal/80 transition-colors duration-150"
+              >
+                {clientName}
+              </Link>
+            )}
           </div>
         </div>
       </div>

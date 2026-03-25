@@ -340,6 +340,16 @@ If any step fails, fix before proceeding. No skipping.
 
 ---
 
+## VARIABLE & NAMING PRESERVATION — HARD RULES
+
+- NEVER rename existing variables, functions, or parameters when fixing type errors or bugs
+- NEVER introduce a new variable name to replace an existing one (e.g., do NOT rename `weightKey` to `getWeightKey`, `updated` to `weights`, etc.)
+- When fixing type errors on existing code, use type narrowing, type assertions, intermediate casts, or wrapper types — NOT variable renames
+- If a variable name must change, trace every usage through the entire codebase first and update all references — but default to NOT renaming
+- Refactoring variable names is only allowed when the user explicitly requests it
+
+---
+
 ## WHAT NOT TO DO — HARD RULES
 
 - NO `any` types — EVER
