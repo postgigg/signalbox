@@ -126,7 +126,7 @@ export default function RoutingSettingsPage(): React.ReactElement {
         const response = await fetch('/api/v1/routing-rules');
         if (response.ok) {
           const result = await response.json() as { data: RoutingRule[] };
-          setRules(result.data);
+          setRules(result.data ?? []);
         }
       } catch {
         // Failed to load

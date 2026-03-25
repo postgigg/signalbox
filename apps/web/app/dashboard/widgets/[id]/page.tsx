@@ -80,7 +80,7 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
     { href: `/dashboard/widgets/${id}/sequences`, label: 'Sequences' },
   ];
 
-  if (accountPlan === 'agency') {
+  if (accountPlan === 'pro' || accountPlan === 'agency') {
     baseNavItems.push({ href: `/dashboard/widgets/${id}/routing`, label: 'Routing' });
   }
 
