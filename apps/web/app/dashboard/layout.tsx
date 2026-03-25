@@ -10,11 +10,14 @@ import { OnboardingOverlay } from '@/components/dashboard/OnboardingOverlay';
 
 import type { ReactNode } from 'react';
 
+const ADMIN_EMAILS = ['exontract@gmail.com'];
+
 interface NavItem {
   readonly href: string;
   readonly label: string;
   readonly icon: ReactNode;
   readonly agencyOnly?: boolean;
+  readonly adminOnly?: boolean;
 }
 
 const NAV_ITEMS: readonly NavItem[] = [
@@ -39,6 +42,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   {
     href: '/dashboard/inbox',
     label: 'Inbox',
+    adminOnly: true,
     icon: (
       <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -104,6 +108,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [userEmail, setUserEmail] = useState<string>('');
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [inboxUnreadCount, setInboxUnreadCount] = useState(0);
 
@@ -118,6 +123,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
 
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
+        setUserEmail(user.email?.toLowerCase() ?? '');
 
         const { data: memberData } = await supabase
           .from('members')
@@ -148,6 +154,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   }, []);
 
   useEffect(() => {
+    if (!ADMIN_EMAILS.includes(userEmail)) return;
     async function fetchUnreadCount(): Promise<void> {
       try {
         const response = await fetch('/api/v1/admin/inbox/unread-count');
@@ -159,7 +166,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
       }
     }
     void fetchUnreadCount();
-  }, []);
+  }, [userEmail]);
 
   const handleOnboardingComplete = useCallback((): void => {
     setShowOnboarding(false);
@@ -185,8 +192,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
     return pathname.startsWith(href);
   }
 
+  const isAdmin = ADMIN_EMAILS.includes(userEmail);
   const visibleNavItems = NAV_ITEMS.filter((item) => {
     if (item.agencyOnly === true && accountPlan !== 'agency') return false;
+    if (item.adminOnly === true && !isAdmin) return false;
     return true;
   });
 
