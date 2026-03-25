@@ -783,6 +783,66 @@ export type Database = {
         };
         Relationships: [];
       };
+      inbound_emails: {
+        Row: {
+          id: string;
+          message_id: string;
+          from_email: string;
+          from_name: string;
+          to_email: string;
+          subject: string;
+          body_html: string | null;
+          body_text: string | null;
+          cc: string | null;
+          bcc: string | null;
+          reply_to: string | null;
+          spam_status: string | null;
+          is_read: boolean;
+          is_archived: boolean;
+          is_starred: boolean;
+          received_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          from_email: string;
+          from_name?: string;
+          to_email: string;
+          subject?: string;
+          body_html?: string | null;
+          body_text?: string | null;
+          cc?: string | null;
+          bcc?: string | null;
+          reply_to?: string | null;
+          spam_status?: string | null;
+          is_read?: boolean;
+          is_archived?: boolean;
+          is_starred?: boolean;
+          received_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          message_id?: string;
+          from_email?: string;
+          from_name?: string;
+          to_email?: string;
+          subject?: string;
+          body_html?: string | null;
+          body_text?: string | null;
+          cc?: string | null;
+          bcc?: string | null;
+          reply_to?: string | null;
+          spam_status?: string | null;
+          is_read?: boolean;
+          is_archived?: boolean;
+          is_starred?: boolean;
+          received_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       widget_analytics: {
         Row: {
           id: string;
@@ -1565,6 +1625,7 @@ export type SharedAnalyticsLink = Tables<'shared_analytics_links'>;
 export type AbTest = Tables<'ab_tests'>;
 export type AbTestResult = Tables<'ab_test_results'>;
 export type FlowTemplate = Tables<'flow_templates'>;
+export type InboundEmail = Tables<'inbound_emails'>;
 export type WidgetAnalytics = Tables<'widget_analytics'>;
 export type NotificationPreference = Tables<'notification_preferences'>;
 export type PlatformMetric = Tables<'platform_metrics'>;

@@ -35,11 +35,24 @@ function layout(content: string): string {
   <div class="container">
     <div class="card">
       <div class="header">
-        <h1>${APP_NAME}</h1>
+        <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+          <tr>
+            <td style="vertical-align:middle;padding-right:8px;">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                <path d="M12 8L22 56" stroke="#0f172a" stroke-width="6" stroke-linecap="round" />
+                <path d="M26 4L40 60" stroke="#0f172a" stroke-width="7" stroke-linecap="round" />
+                <path d="M44 12L50 52" stroke="#0f172a" stroke-width="5" stroke-linecap="round" />
+              </svg>
+            </td>
+            <td style="vertical-align:middle;">
+              <h1 style="margin:0;font-size:20px;font-weight:700;color:#0f172a;">${APP_NAME}</h1>
+            </td>
+          </tr>
+        </table>
       </div>
       ${content}
       <div class="footer">
-        <p>&copy; ${new Date().getFullYear()} ${APP_NAME}. All rights reserved.</p>
+        <p>&copy; ${new Date().getFullYear()} <a href="https://hawkleads.io" style="color:#3b82f6;text-decoration:none;">hawkleads.io</a> (a WorkBird LLC company)</p>
         <p><a href="${APP_URL}">Dashboard</a> &middot; <a href="mailto:${SUPPORT_EMAIL}">Support</a></p>
       </div>
     </div>

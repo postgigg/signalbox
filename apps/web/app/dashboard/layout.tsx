@@ -37,6 +37,15 @@ const NAV_ITEMS: readonly NavItem[] = [
     ),
   },
   {
+    href: '/dashboard/inbox',
+    label: 'Inbox',
+    icon: (
+      <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/widgets',
     label: 'Widgets',
     icon: (
@@ -96,6 +105,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   const [loggingOut, setLoggingOut] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [inboxUnreadCount, setInboxUnreadCount] = useState(0);
 
   useEffect(() => {
     async function loadAccountData(): Promise<void> {
@@ -135,6 +145,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
       }
     }
     void loadAccountData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUnreadCount(): Promise<void> {
+      try {
+        const response = await fetch('/api/v1/admin/inbox/unread-count');
+        if (!response.ok) return;
+        const data = (await response.json()) as { count: number };
+        setInboxUnreadCount(data.count);
+      } catch {
+        // Failed to fetch unread count
+      }
+    }
+    void fetchUnreadCount();
   }, []);
 
   const handleOnboardingComplete = useCallback((): void => {
@@ -232,6 +256,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
             >
               {item.icon}
               {item.label}
+              {item.label === 'Inbox' && inboxUnreadCount > 0 && (
+                <span className="ml-auto text-xs px-1.5 py-0.5 rounded-pill bg-signal-light text-signal font-medium min-w-[20px] text-center">
+                  {inboxUnreadCount > 99 ? '99+' : inboxUnreadCount}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
