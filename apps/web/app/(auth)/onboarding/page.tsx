@@ -70,11 +70,13 @@ export default function OnboardingPage(): React.ReactElement {
         return;
       }
 
-      const slug = accountName
+      const baseSlug = accountName
         .trim()
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
+      const suffix = Math.random().toString(36).slice(2, 8);
+      const slug = `${baseSlug}-${suffix}`;
 
       const { data: account, error: accountError } = await supabase
         .from('accounts')
