@@ -18,8 +18,12 @@ interface InboxEmail {
 }
 
 interface InboxResponse {
-  readonly emails: InboxEmail[];
-  readonly total: number;
+  readonly data: InboxEmail[];
+  readonly pagination: {
+    readonly page: number;
+    readonly limit: number;
+    readonly total: number;
+  };
 }
 
 const STATUS_OPTIONS = ['all', 'unread', 'read', 'starred', 'archived'] as const;
@@ -41,7 +45,7 @@ export default function InboxPage(): React.ReactElement {
     try {
       const params = new URLSearchParams();
       params.set('limit', String(PAGE_SIZE));
-      params.set('offset', String(page * PAGE_SIZE));
+      params.set('page', String(page + 1));
       if (statusFilter !== 'all') {
         params.set('status', statusFilter);
       }
@@ -52,9 +56,9 @@ export default function InboxPage(): React.ReactElement {
       const response = await fetch(`/api/v1/admin/inbox?${params.toString()}`);
       if (!response.ok) return;
 
-      const data = (await response.json()) as InboxResponse;
-      setEmails(data.emails);
-      setTotalCount(data.total);
+      const result = (await response.json()) as InboxResponse;
+      setEmails(result.data ?? []);
+      setTotalCount(result.pagination?.total ?? 0);
     } catch {
       // Failed to fetch inbox
     } finally {

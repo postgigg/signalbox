@@ -12,7 +12,7 @@ async function verifyAdmin(): Promise<{ email: string } | null> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email) return null;
-  if (!SUPER_ADMIN_EMAILS.includes(user.email.toLowerCase())) return null;
+  if (SUPER_ADMIN_EMAILS.length > 0 && !SUPER_ADMIN_EMAILS.includes(user.email.toLowerCase())) return null;
   return { email: user.email.toLowerCase() };
 }
 
