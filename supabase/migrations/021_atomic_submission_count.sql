@@ -9,7 +9,7 @@ BEGIN
   UPDATE widgets
   SET submission_count = submission_count + 1
   WHERE id = widget_uuid
-    AND submission_count < current_limit
+    AND (current_limit = -1 OR submission_count < current_limit)
   RETURNING submission_count INTO updated_count;
 
   RETURN updated_count IS NOT NULL;

@@ -488,22 +488,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // 18. Fire async side effects (email + webhooks) — do not await
   const notificationEmail = account.notification_email;
   if (notificationEmail) {
-    sendNewLeadNotification({
-      to: notificationEmail,
-      widgetName: widget.name,
-      visitorName: payload.visitorName,
-      visitorEmail: payload.visitorEmail,
-      leadTier,
-      leadScore,
-    })
-      .then(async () => {
-        await admin
-          .from('submissions')
-          .update({
-            notification_sent: true,
-            notification_sent_at: new Date().toISOString(),
-          })
-          .eq('id', submission.id);
+    // Check email notification preferences before sending
+    Promise.resolve(
+      admin
+        .from('notification_preferences')
+        .select('email_on_hot_lead, email_on_warm_lead, email_on_cold_lead')
+        .eq('account_id', account.id)
+        .limit(1)
+        .maybeSingle()
+    )
+      .then(({ data: emailPref }: { data: { email_on_hot_lead: boolean; email_on_warm_lead: boolean; email_on_cold_lead: boolean } | null }) => {
+        // Default to sending for hot/warm if no preferences row exists
+        const shouldNotify = !emailPref
+          ? (leadTier === 'hot' || leadTier === 'warm')
+          : (leadTier === 'hot' && emailPref.email_on_hot_lead) ||
+            (leadTier === 'warm' && emailPref.email_on_warm_lead) ||
+            (leadTier === 'cold' && emailPref.email_on_cold_lead);
+
+        if (!shouldNotify) return;
+
+        return sendNewLeadNotification({
+          to: notificationEmail,
+          widgetName: widget.name,
+          visitorName: payload.visitorName,
+          visitorEmail: payload.visitorEmail,
+          leadTier,
+          leadScore,
+        })
+          .then(async () => {
+            await admin
+              .from('submissions')
+              .update({
+                notification_sent: true,
+                notification_sent_at: new Date().toISOString(),
+              })
+              .eq('id', submission.id);
+          });
       })
       .catch(() => {
         // Email delivery failure — non-blocking
@@ -526,9 +546,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         .select('name')
         .eq('id', ruleIdForEmail)
         .single(),
+      admin
+        .from('notification_preferences')
+        .select('email_on_hot_lead, email_on_warm_lead, email_on_cold_lead')
+        .eq('account_id', account.id)
+        .eq('member_id', memberIdForEmail)
+        .limit(1)
+        .maybeSingle(),
     ])
-      .then(async ([memberResult, ruleResult]) => {
+      .then(async ([memberResult, ruleResult, prefResult]) => {
         if (!memberResult.data || !ruleResult.data) return;
+
+        // Check member's email preferences — default to hot/warm if no row
+        const emailPref = prefResult.data as { email_on_hot_lead: boolean; email_on_warm_lead: boolean; email_on_cold_lead: boolean } | null;
+        const shouldNotify = !emailPref
+          ? (leadTier === 'hot' || leadTier === 'warm')
+          : (leadTier === 'hot' && emailPref.email_on_hot_lead) ||
+            (leadTier === 'warm' && emailPref.email_on_warm_lead) ||
+            (leadTier === 'cold' && emailPref.email_on_cold_lead);
+
+        if (!shouldNotify) return;
 
         // Resolve the member's email: try auth user email first, fall back to invited_email
         let assigneeEmail: string | null = memberResult.data.invited_email;

@@ -70,7 +70,7 @@ export default function SignupPage(): React.ReactElement {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?type=signup`,
+          emailRedirectTo: `${window.location.origin}/api/auth/callback?type=signup`,
         },
       });
 

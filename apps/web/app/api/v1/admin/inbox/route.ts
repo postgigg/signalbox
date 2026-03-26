@@ -18,7 +18,7 @@ async function verifyAdmin(): Promise<{ email: string } | null> {
   return { email: user.email.toLowerCase() };
 }
 
-const LIST_SELECT_COLUMNS = 'id, message_id, from_email, from_name, to_email, subject, is_read, is_archived, is_starred, received_at' as const;
+const LIST_SELECT_COLUMNS = 'id, message_id, from_email, from_name, to_email, subject, body_text, is_read, is_archived, is_starred, received_at' as const;
 
 const listQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
