@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import type { FormEvent } from 'react';
 
 export default function SignupPage(): React.ReactElement {
+  const searchParams = useSearchParams();
+  const prefillEmail = searchParams.get('email') ?? '';
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

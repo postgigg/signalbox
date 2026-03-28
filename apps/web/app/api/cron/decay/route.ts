@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { calculateDecayPenalty } from '@/lib/decay';
 import { calculateCompositeScore, determineTier } from '@/lib/scoring';
+import { fireWebhooks } from '@/lib/webhooks';
 
 import type { ScoringConfig } from '@/lib/constants';
 import type { Json } from '@/lib/supabase/types';
@@ -193,6 +194,20 @@ async function processDecayBatch(
 
     if (!updateError) {
       processed += 1;
+
+      // Fire lead.score_changed webhook when score actually changed
+      if (result.leadScore !== sub.lead_score) {
+        void fireWebhooks(sub.account_id, 'lead.score_changed', {
+          submissionId: sub.id,
+          accountId: sub.account_id,
+          previousScore: sub.lead_score,
+          newScore: result.leadScore,
+          previousTier: sub.lead_tier,
+          newTier,
+          changeReason: CHANGE_REASON,
+          updatedAt: new Date().toISOString(),
+        });
+      }
     }
 
     // Log tier change to score_history

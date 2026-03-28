@@ -33,8 +33,9 @@ export default function LoginPage(): React.ReactElement {
 function LoginForm(): React.ReactElement {
   const searchParams = useSearchParams();
   const redirectTo = safeRedirectUrl(searchParams.get('redirect') ?? '/', '/dashboard');
+  const prefillEmail = searchParams.get('email') ?? '';
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -96,7 +97,7 @@ function LoginForm(): React.ReactElement {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/api/auth/callback?type=signup`,
+          redirectTo: `${window.location.origin}/api/auth/callback?type=login`,
         },
       });
 

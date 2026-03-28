@@ -1,8 +1,8 @@
 import { sendEmail } from './client';
-import { renderNewLeadNotification, renderPaymentFailed, renderLeadAssigned } from './templates';
+import { renderNewLeadNotification, renderPaymentFailed, renderLeadAssigned, renderTeamInvite } from './templates';
 
 import type { SendEmailResult } from './client';
-import type { NewLeadNotificationData, PaymentFailedData, LeadAssignedData } from './templates';
+import type { NewLeadNotificationData, PaymentFailedData, LeadAssignedData, TeamInviteData } from './templates';
 
 // Re-export client for direct use
 export { sendEmail, sendBatchEmails } from './client';
@@ -19,6 +19,7 @@ export {
   renderPaymentFailed,
   renderWebhookFailures,
   renderLeadAssigned,
+  renderTeamInvite,
 } from './templates';
 
 export interface NewLeadEmailParams {
@@ -100,6 +101,34 @@ export async function sendLeadAssignedNotification(
       { name: 'type', value: 'lead_assigned' },
       { name: 'tier', value: params.leadTier },
     ],
+  });
+}
+
+export interface TeamInviteEmailParams {
+  to: string;
+  accountName: string;
+  inviterName: string;
+  role: string;
+}
+
+export async function sendTeamInviteEmail(
+  params: TeamInviteEmailParams
+): Promise<SendEmailResult> {
+  const templateData: TeamInviteData = {
+    accountName: params.accountName,
+    inviterName: params.inviterName,
+    invitedEmail: params.to,
+    role: params.role,
+  };
+
+  const rendered = renderTeamInvite(templateData);
+
+  return sendEmail({
+    to: params.to,
+    subject: rendered.subject,
+    html: rendered.html,
+    text: rendered.text,
+    tags: [{ name: 'type', value: 'team_invite' }],
   });
 }
 

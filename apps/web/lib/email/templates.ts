@@ -493,6 +493,52 @@ Check webhooks: ${settingsUrl}`;
 }
 
 // ---------------------------------------------------------------------------
+// Template: Team invite
+// ---------------------------------------------------------------------------
+
+export interface TeamInviteData {
+  accountName: string;
+  inviterName: string;
+  invitedEmail: string;
+  role: string;
+}
+
+export function renderTeamInvite(
+  data: TeamInviteData
+): { subject: string; html: string; text: string } {
+  const signupUrl = `${APP_URL}/signup?email=${encodeURIComponent(data.invitedEmail)}`;
+  const loginUrl = `${APP_URL}/login?email=${encodeURIComponent(data.invitedEmail)}`;
+
+  const html = layout(`
+    <h2>You've been invited to ${APP_NAME}</h2>
+    <p><strong>${data.inviterName}</strong> has invited you to join <strong>${data.accountName}</strong> as ${data.role === 'admin' ? 'an' : 'a'} <strong>${data.role}</strong>.</p>
+    <p>${APP_NAME} helps teams capture, score, and route leads automatically. Create an account with <strong>${data.invitedEmail}</strong> to accept your invitation.</p>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${signupUrl}">Accept Invitation</a>
+    </div>
+    <p style="font-size:12px;color:#71717a;">Already have an account? <a href="${loginUrl}" style="color:#3b82f6;text-decoration:none;">Log in instead</a>.</p>
+    <p style="font-size:12px;color:#71717a;">If you don't recognize this invitation, you can safely ignore this email.</p>
+  `);
+
+  const text = `You've been invited to ${APP_NAME}
+
+${data.inviterName} has invited you to join "${data.accountName}" as a ${data.role}.
+
+Create an account with ${data.invitedEmail} to accept your invitation:
+${signupUrl}
+
+Already have an account? Log in instead: ${loginUrl}
+
+If you don't recognize this invitation, you can safely ignore this email.`;
+
+  return {
+    subject: `${data.inviterName} invited you to ${data.accountName} on ${APP_NAME}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Template: Lead assigned notification
 // ---------------------------------------------------------------------------
 

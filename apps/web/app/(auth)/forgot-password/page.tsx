@@ -5,6 +5,11 @@ import { useState } from 'react';
 
 import type { FormEvent } from 'react';
 
+interface ForgotPasswordResponse {
+  readonly success?: boolean;
+  readonly error?: string;
+}
+
 export default function ForgotPasswordPage(): React.ReactElement {
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -17,18 +22,22 @@ export default function ForgotPasswordPage(): React.ReactElement {
     setLoading(true);
 
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
-
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/api/auth/callback?type=recovery`,
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
 
-      if (resetError) {
-        setError(resetError.message);
+      if (response.status === 429) {
+        setError('Too many requests. Please try again later.');
+        setLoading(false);
+        return;
+      }
+
+      const data = (await response.json()) as ForgotPasswordResponse;
+
+      if (data.error) {
+        setError(data.error);
         setLoading(false);
         return;
       }

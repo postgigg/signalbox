@@ -63,5 +63,35 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // Enforce onboarding completion for dashboard routes
+  const isOnboarding = request.nextUrl.pathname.startsWith('/onboarding');
+  if (user && isDashboard && !isOnboarding) {
+    const { data: member } = await supabase
+      .from('members')
+      .select('account_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (member) {
+      const { data: account } = await supabase
+        .from('accounts')
+        .select('onboarding_completed_at')
+        .eq('id', member.account_id)
+        .single();
+
+      if (account && account.onboarding_completed_at === null) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/onboarding';
+        return NextResponse.redirect(url);
+      }
+    } else {
+      // No member record: redirect to onboarding to create one
+      const url = request.nextUrl.clone();
+      url.pathname = '/onboarding';
+      return NextResponse.redirect(url);
+    }
+  }
+
   return supabaseResponse;
 }

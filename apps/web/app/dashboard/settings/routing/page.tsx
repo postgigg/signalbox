@@ -35,7 +35,6 @@ interface TeamMember {
 
 const SETTINGS_NAV = [
   { href: '/dashboard/settings', label: 'Account' },
-  { href: '/dashboard/settings/team', label: 'Team' },
   { href: '/dashboard/settings/billing', label: 'Billing' },
   { href: '/dashboard/settings/notifications', label: 'Notifications' },
   { href: '/dashboard/settings/api', label: 'API' },

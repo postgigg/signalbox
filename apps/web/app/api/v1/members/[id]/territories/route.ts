@@ -10,7 +10,7 @@ const territoryItemSchema = z.object({
   countryCode: z.string().regex(COUNTRY_CODE_PATTERN, {
     message: 'Country code must be a 2-letter ISO code',
   }),
-  regionName: z.string().max(200).optional(),
+  regionName: z.string().max(200).nullish(),
 });
 
 const putSchema = z.object({

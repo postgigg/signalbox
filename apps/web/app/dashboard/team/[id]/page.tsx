@@ -8,8 +8,10 @@ import type { FormEvent } from 'react';
 interface MemberData {
   readonly id: string;
   readonly invited_email: string | null;
+  readonly email: string | null;
+  readonly full_name: string | null;
   readonly role: string;
-  readonly user_id: string;
+  readonly user_id: string | null;
 }
 
 interface SkillTag {
@@ -107,25 +109,28 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
 
     async function load(): Promise<void> {
       try {
-        const { createBrowserClient } = await import('@supabase/ssr');
-        const supabase = createBrowserClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-        );
-
-        // Fetch member info
-        const { data: memberData } = await supabase
-          .from('members')
-          .select('id, invited_email, role, user_id')
-          .eq('id', memberId)
-          .single();
+        // Fetch member info via API (includes resolved email)
+        const memberResponse = await fetch('/api/v1/members');
+        if (!memberResponse.ok) {
+          setError('Failed to load members.');
+          setLoading(false);
+          return;
+        }
+        const memberResult = await memberResponse.json() as { data: MemberData[] };
+        const memberData = (memberResult.data ?? []).find((m) => m.id === memberId) ?? null;
 
         if (!memberData) {
           setError('Member not found.');
           setLoading(false);
           return;
         }
-        setMember(memberData as MemberData);
+        setMember(memberData);
+
+        const { createBrowserClient } = await import('@supabase/ssr');
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+        );
 
         // Fetch skills
         const { data: skillsData } = await supabase
@@ -209,8 +214,8 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
 
   // Territories management
   const handleAddTerritory = useCallback((): void => {
-    const code = newCountryCode.trim().toUpperCase();
-    if (code.length === 0) return;
+    const code = newCountryCode.trim().toUpperCase().slice(0, 2);
+    if (code.length !== 2 || !/^[A-Z]{2}$/.test(code)) return;
     if (territories.some((t) => t.country_code === code && t.region_name === (newRegion.trim() || null))) return;
     setTerritories((prev) => [
       ...prev,
@@ -239,8 +244,8 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           territories: territories.map((t) => ({
-            countryCode: t.country_code,
-            regionName: t.region_name,
+            countryCode: t.country_code.toUpperCase().slice(0, 2),
+            regionName: t.region_name ?? undefined,
           })),
         }),
       });
@@ -302,8 +307,8 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
     return (
       <div>
         <div className="flex items-center gap-2 mb-6">
-          <Link href="/dashboard/settings/team" className="text-sm text-stone hover:text-ink transition-colors duration-150">
-            Team Settings
+          <Link href="/dashboard/team" className="text-sm text-stone hover:text-ink transition-colors duration-150">
+            Team
           </Link>
           <span className="text-stone-light">/</span>
           <div className="skeleton h-4 w-24" />
@@ -325,7 +330,7 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
   if (!member) {
     return (
       <div>
-        <Link href="/dashboard/settings/team" className="text-sm text-signal hover:text-signal/80 transition-colors duration-150">
+        <Link href="/dashboard/team" className="text-sm text-signal hover:text-signal/80 transition-colors duration-150">
           Back to Team
         </Link>
         <p className="mt-4 text-sm text-stone">Member not found.</p>
@@ -336,12 +341,12 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
   return (
     <div>
       <div className="flex items-center gap-2 mb-6">
-        <Link href="/dashboard/settings/team" className="text-sm text-stone hover:text-ink transition-colors duration-150">
-          Team Settings
+        <Link href="/dashboard/team" className="text-sm text-stone hover:text-ink transition-colors duration-150">
+          Team
         </Link>
         <span className="text-stone-light">/</span>
         <span className="text-sm text-ink font-medium">
-          {member.invited_email ?? member.user_id.slice(0, 8)}
+          {member.full_name ?? member.email ?? member.invited_email ?? member.id.slice(0, 8)}
         </span>
       </div>
 
@@ -363,13 +368,16 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-md bg-surface-alt border border-border flex items-center justify-center">
               <span className="text-lg font-semibold text-stone">
-                {(member.invited_email ?? 'U').charAt(0).toUpperCase()}
+                {(member.full_name ?? member.email ?? member.invited_email ?? 'U').charAt(0).toUpperCase()}
               </span>
             </div>
             <div>
               <h1 className="font-display text-lg font-semibold text-ink">
-                {member.invited_email ?? member.user_id.slice(0, 8)}
+                {member.full_name ?? member.email ?? member.invited_email ?? member.id.slice(0, 8)}
               </h1>
+              {member.full_name && member.email ? (
+                <p className="text-sm text-stone">{member.email}</p>
+              ) : null}
               <div className="flex items-center gap-2 mt-0.5">
                 <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
                   member.role === 'owner' ? 'bg-ink text-white' :
@@ -389,8 +397,11 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
         {/* Skills */}
         <div className="border border-gray-200 rounded-lg p-6">
           <h2 className="font-display text-base font-semibold text-ink mb-1">Skills</h2>
-          <p className="text-sm text-stone font-body mb-4">
+          <p className="text-sm text-stone font-body mb-1">
             Skill tags used for skill-based lead routing.
+          </p>
+          <p className="text-xs text-stone font-body mb-4">
+            Add tags like "sales", "technical", or "spanish". When a routing rule uses skill-based matching, leads go to members whose tags overlap with the rule's required skills.
           </p>
 
           <div className="flex flex-wrap gap-2 mb-3">
@@ -456,8 +467,11 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
         {/* Territories */}
         <div className="border border-gray-200 rounded-lg p-6">
           <h2 className="font-display text-base font-semibold text-ink mb-1">Territories</h2>
-          <p className="text-sm text-stone font-body mb-4">
+          <p className="text-sm text-stone font-body mb-1">
             Geographic territories for geographic lead routing.
+          </p>
+          <p className="text-xs text-stone font-body mb-4">
+            Use 2-letter ISO country codes (e.g. US, GB, DE, FR, JP). When a lead's country matches a territory, routing sends the lead to this member.
           </p>
 
           {territories.length > 0 && (
@@ -497,9 +511,9 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
               type="text"
               value={newCountryCode}
               onChange={(e) => setNewCountryCode(e.target.value)}
-              placeholder="Country code (US, GB, DE)"
+              placeholder="US, GB, DE..."
               className="input-field w-28"
-              maxLength={3}
+              maxLength={2}
             />
             <input
               type="text"
@@ -539,8 +553,11 @@ export default function MemberProfilePage({ params }: MemberProfilePageProps): R
         {/* Availability */}
         <div className="border border-gray-200 rounded-lg p-6">
           <h2 className="font-display text-base font-semibold text-ink mb-1">Availability</h2>
-          <p className="text-sm text-stone font-body mb-4">
+          <p className="text-sm text-stone font-body mb-1">
             Configure availability settings for this team member.
+          </p>
+          <p className="text-xs text-stone font-body mb-4">
+            Availability routing assigns leads to the online member with the fewest active leads. Members are auto-set to offline after the configured inactivity timeout. Set max active leads to cap how many open leads this member can handle at once.
           </p>
 
           <form onSubmit={(e) => void handleSaveAvailability(e)} className="space-y-4">

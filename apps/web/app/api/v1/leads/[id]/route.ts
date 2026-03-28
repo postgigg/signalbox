@@ -5,6 +5,7 @@ import { authenticateRequest, requireRole } from '@/lib/auth';
 import { stripHtml } from '@/lib/sanitize';
 import { pauseDripEnrollments } from '@/lib/drip';
 import { shouldResetDecay } from '@/lib/decay';
+import { fireWebhooks } from '@/lib/webhooks';
 import { DRIP_PAUSE_STATUSES } from '@/lib/constants';
 
 export const runtime = 'nodejs';
@@ -164,6 +165,29 @@ export async function PATCH(
       { error: 'Failed to update lead' },
       { status: 500 },
     );
+  }
+
+  // Fire submission.updated webhook for any successful update
+  if (parsed.data.status !== undefined) {
+    const webhookData: Record<string, unknown> = {
+      submissionId: id,
+      accountId: account.id,
+      previousStatus: existing.status,
+      newStatus: parsed.data.status,
+      updatedAt: updated.updated_at,
+    };
+
+    void fireWebhooks(account.id, 'submission.updated', webhookData);
+
+    // Fire lead.qualified when status changes TO qualified
+    if (parsed.data.status === 'qualified') {
+      void fireWebhooks(account.id, 'lead.qualified', webhookData);
+    }
+
+    // Fire lead.converted when status changes TO converted
+    if (parsed.data.status === 'converted') {
+      void fireWebhooks(account.id, 'lead.converted', webhookData);
+    }
   }
 
   // Pause drip enrollments when status changes to a terminal state

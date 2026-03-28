@@ -8,165 +8,174 @@
   <!-- Background -->
   <rect width="1270" height="760" fill="#0A0A0A"/>
 
-  <!-- Angled accent lines -->
-  <line x1="920" y1="0" x2="860" y2="760" stroke="#E8E4DF" stroke-opacity="0.03" stroke-width="1"/>
-  <line x1="1020" y1="0" x2="960" y2="760" stroke="#E8E4DF" stroke-opacity="0.02" stroke-width="1"/>
-  <line x1="1120" y1="0" x2="1060" y2="760" stroke="#E8E4DF" stroke-opacity="0.015" stroke-width="1"/>
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1270" height="3" fill="#DA552F"/>
 
-  <!-- Large watermark logo mark -->
-  <g transform="translate(780, 100)" opacity="0.025">
-    <path d="M0 260 L140 0 L140 520 Z" fill="#E8E4DF"/>
-    <path d="M60 260 L180 40 L180 480 Z" fill="#E8E4DF"/>
-    <path d="M120 260 L220 80 L220 440 Z" fill="#E8E4DF"/>
+  <!-- Giant background mark — the brand presence -->
+  <g transform="translate(540, 60)" opacity="0.035">
+    <path d="M0 340 L190 0 L190 680 Z" fill="#E8E4DF"/>
+    <path d="M80 340 L240 40 L240 640 Z" fill="#E8E4DF"/>
+    <path d="M160 340 L290 100 L290 580 Z" fill="#E8E4DF"/>
   </g>
 
-  <!-- Launch badge -->
-  <rect x="88" y="80" width="180" height="28" rx="3" fill="#141210" stroke="#1e1c18" stroke-width="1"/>
-  <rect x="100" y="90" width="8" height="8" rx="1" fill="#DA552F"/>
-  <text x="116" y="99" font-family="'DM Mono', monospace" font-size="10" fill="#7a7570" letter-spacing="0.8">LAUNCHING NOW</text>
+  <!-- Subtle angled lines echoing chevron -->
+  <line x1="1050" y1="0" x2="980" y2="760" stroke="#E8E4DF" stroke-opacity="0.025" stroke-width="1"/>
+  <line x1="1150" y1="0" x2="1080" y2="760" stroke="#E8E4DF" stroke-opacity="0.015" stroke-width="1"/>
 
-  <!-- Logo mark -->
-  <g transform="translate(88, 132)">
-    <path d="M0 24 L10 4 L10 44 Z" fill="#E8E4DF" opacity="0.12"/>
-    <path d="M6 24 L14 8 L14 40 Z" fill="#E8E4DF" opacity="0.35"/>
-    <path d="M12 24 L20 12 L20 36 Z" fill="#E8E4DF"/>
-    <circle cx="6" cy="24" r="1.5" fill="#E8E4DF"/>
+  <!-- Logo mark + wordmark centered top -->
+  <g transform="translate(535, 60)">
+    <path d="M0 20 L8.5 3 L8.5 37 Z" fill="#E8E4DF" opacity="0.12"/>
+    <path d="M5 20 L12 7 L12 33 Z" fill="#E8E4DF" opacity="0.35"/>
+    <path d="M10 20 L17 10 L17 30 Z" fill="#E8E4DF"/>
+    <circle cx="5" cy="20" r="1.2" fill="#E8E4DF"/>
+    <text x="26" y="27" font-family="'DM Sans', sans-serif" font-size="20" font-weight="700" fill="#E8E4DF" letter-spacing="-0.8">HawkLeads</text>
   </g>
-  <!-- Wordmark -->
-  <text x="138" y="163" font-family="'DM Sans', sans-serif" font-size="28" font-weight="700" fill="#E8E4DF" letter-spacing="-1.2">HawkLeads</text>
 
-  <!-- Headline -->
-  <text font-family="'DM Sans', sans-serif" font-size="58" font-weight="700" fill="#E8E4DF" letter-spacing="-2.5">
-    <tspan x="88" y="260">The smart widget that</tspan>
-    <tspan x="88" y="322">scores your leads</tspan>
-  </text>
-  <text x="88" y="384" font-family="'DM Sans', sans-serif" font-size="58" font-weight="700" font-style="italic" fill="#DA552F" letter-spacing="-2.5">before you see them.</text>
+  <!-- ═══════ HERO: Center-dominant layout ═══════ -->
 
-  <!-- Subheadline -->
-  <text font-family="'DM Sans', sans-serif" font-size="17" fill="#7a7570" letter-spacing="0">
-    <tspan x="88" y="432">Embed on any site. Visitors answer qualifying questions.</tspan>
-    <tspan x="88" y="458">Every lead gets a three-dimensional score and lands in</tspan>
-    <tspan x="88" y="484">your inbox ranked by who to call first.</tspan>
+  <!-- Main headline — massive, centered -->
+  <text text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" fill="#E8E4DF" letter-spacing="-3.5">
+    <tspan x="635" y="230" font-size="76">Your best leads</tspan>
+    <tspan x="635" y="316" font-size="76">are slipping away.</tspan>
   </text>
 
-  <!-- CTA Button -->
-  <rect x="88" y="520" width="200" height="48" rx="4" fill="#E8E4DF"/>
-  <text x="132" y="550" font-family="'DM Sans', sans-serif" font-size="15" font-weight="600" fill="#0A0A0A" letter-spacing="-0.2">Start Free Trial</text>
-  <path d="M260 544 l8 0 M264 540 l4 4 l-4 4" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-
-  <!-- Secondary CTA -->
-  <text x="312" y="550" font-family="'DM Sans', sans-serif" font-size="14" font-weight="500" fill="#7a7570">View demo</text>
-  <line x1="312" y1="556" x2="380" y2="556" stroke="#1e1c18" stroke-width="1"/>
-
-  <!-- Feature chips -->
-  <!-- Chip 1 -->
-  <rect x="88" y="600" width="265" height="32" fill="#141210" stroke="none"/>
-  <rect x="88" y="600" width="2" height="32" fill="#1e1c18"/>
-  <text x="100" y="621" font-family="'DM Mono', monospace" font-size="10" letter-spacing="0.3">
-    <tspan fill="#E8E4DF" font-weight="500">3D Scoring</tspan>
-    <tspan fill="#4a4540"> — form + behavior + intent</tspan>
+  <!-- Accent subline -->
+  <text x="635" y="380" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="32" font-weight="700" font-style="italic" fill="#DA552F" letter-spacing="-1">
+    Catch them before your competitor does.
   </text>
 
-  <!-- Chip 2 -->
-  <rect x="363" y="600" width="195" height="32" fill="#141210" stroke="none"/>
-  <rect x="363" y="600" width="2" height="32" fill="#1e1c18"/>
-  <text x="375" y="621" font-family="'DM Mono', monospace" font-size="10" letter-spacing="0.3">
-    <tspan fill="#E8E4DF" font-weight="500">6 Routing Strategies</tspan>
+  <!-- One-line value prop -->
+  <text x="635" y="428" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="16" fill="#7a7570" letter-spacing="0">
+    Score every lead in three dimensions. Route hot ones to your closers in seconds.
   </text>
 
-  <!-- Chip 3 -->
-  <rect x="568" y="600" width="160" height="32" fill="#141210" stroke="none"/>
-  <rect x="568" y="600" width="2" height="32" fill="#1e1c18"/>
-  <text x="580" y="621" font-family="'DM Mono', monospace" font-size="10" letter-spacing="0.3">
-    <tspan fill="#E8E4DF" font-weight="500">Drip Sequences</tspan>
-  </text>
+  <!-- CTA button — centered -->
+  <rect x="520" y="468" width="230" height="52" rx="4" fill="#E8E4DF"/>
+  <text x="635" y="500" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="16" font-weight="700" fill="#0A0A0A" letter-spacing="-0.3">Start Free Trial</text>
 
-  <!-- Chip 4 -->
-  <rect x="738" y="600" width="170" height="32" fill="#141210" stroke="none"/>
-  <rect x="738" y="600" width="2" height="32" fill="#1e1c18"/>
-  <text x="750" y="621" font-family="'DM Mono', monospace" font-size="10" letter-spacing="0.3">
-    <tspan fill="#E8E4DF" font-weight="500">Webhooks + API</tspan>
-  </text>
+  <text x="635" y="542" text-anchor="middle" font-family="'DM Mono', monospace" font-size="11" fill="#4a4540">No credit card. 14-day trial. Cancel anytime.</text>
 
-  <!-- Right side: Pipeline flow -->
-  <!-- Scoring visual -->
-  <g transform="translate(900, 100)">
-    <!-- Card background -->
-    <rect x="0" y="0" width="300" height="540" fill="#141210" stroke="#1e1c18" stroke-width="1" rx="2"/>
+  <!-- ═══════ BOTTOM: Visual proof strip ═══════ -->
 
-    <!-- Card header -->
-    <text x="24" y="36" font-family="'DM Mono', monospace" font-size="9" fill="#7a7570" letter-spacing="1.5">HOW IT WORKS</text>
-    <line x1="24" y1="48" x2="276" y2="48" stroke="#1e1c18" stroke-width="1"/>
+  <!-- Divider line -->
+  <line x1="88" y1="580" x2="1182" y2="580" stroke="#1e1c18" stroke-width="1"/>
 
-    <!-- Step 1 -->
-    <text x="24" y="80" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB" letter-spacing="1">01</text>
-    <text x="48" y="80" font-family="'DM Sans', sans-serif" font-size="15" font-weight="700" fill="#E8E4DF" letter-spacing="-0.3">Capture</text>
-    <text x="24" y="100" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">2-5 qualifying questions per widget</text>
-    <text x="24" y="116" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">Score weights -50 to +50 per answer</text>
-    <text x="24" y="132" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">Bot protection: honeypot + JS challenge</text>
+  <!-- Three visual proof blocks -->
 
-    <!-- Connector -->
-    <line x1="150" y1="148" x2="150" y2="168" stroke="#1e1c18" stroke-width="1"/>
-    <polygon points="146,168 150,176 154,168" fill="#1e1c18"/>
-
-    <!-- Step 2 -->
-    <text x="24" y="200" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB" letter-spacing="1">02</text>
-    <text x="48" y="200" font-family="'DM Sans', sans-serif" font-size="15" font-weight="700" fill="#E8E4DF" letter-spacing="-0.3">Score</text>
-
+  <!-- Block 1: Score visualization -->
+  <g transform="translate(88, 608)">
+    <text x="0" y="14" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB" letter-spacing="1.5">SCORE</text>
     <!-- Score bars -->
-    <text x="24" y="224" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540">Form</text>
-    <rect x="80" y="216" width="140" height="4" fill="#1e1c18" rx="0"/>
-    <rect x="80" y="216" width="98" height="4" fill="#2563EB" rx="0"/>
-    <text x="234" y="224" font-family="'DM Mono', monospace" font-size="10" fill="#7a7570">60%</text>
+    <rect x="0" y="28" width="280" height="3" fill="#1e1c18"/>
+    <rect x="0" y="28" width="168" height="3" fill="#2563EB"/>
+    <text x="180" y="34" font-family="'DM Mono', monospace" font-size="9" fill="#4a4540">Form 60%</text>
 
-    <text x="24" y="246" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540">Behavior</text>
-    <rect x="80" y="238" width="140" height="4" fill="#1e1c18" rx="0"/>
-    <rect x="80" y="238" width="56" height="4" fill="#16A34A" rx="0"/>
-    <text x="234" y="246" font-family="'DM Mono', monospace" font-size="10" fill="#7a7570">20%</text>
+    <rect x="0" y="42" width="280" height="3" fill="#1e1c18"/>
+    <rect x="0" y="42" width="56" height="3" fill="#16A34A"/>
+    <text x="68" y="48" font-family="'DM Mono', monospace" font-size="9" fill="#4a4540">Behavior 20%</text>
 
-    <text x="24" y="268" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540">Intent</text>
-    <rect x="80" y="260" width="140" height="4" fill="#1e1c18" rx="0"/>
-    <rect x="80" y="260" width="56" height="4" fill="#CA8A04" rx="0"/>
-    <text x="234" y="268" font-family="'DM Mono', monospace" font-size="10" fill="#7a7570">20%</text>
+    <rect x="0" y="56" width="280" height="3" fill="#1e1c18"/>
+    <rect x="0" y="56" width="56" height="3" fill="#CA8A04"/>
+    <text x="68" y="62" font-family="'DM Mono', monospace" font-size="9" fill="#4a4540">Intent 20%</text>
 
-    <!-- Connector -->
-    <line x1="150" y1="286" x2="150" y2="306" stroke="#1e1c18" stroke-width="1"/>
-    <polygon points="146,306 150,314 154,306" fill="#1e1c18"/>
+    <!-- Composite -->
+    <rect x="0" y="78" width="280" height="5" fill="#1e1c18"/>
+    <rect x="0" y="78" width="216" height="5" fill="#E8E4DF"/>
+    <text x="228" y="85" font-family="'DM Mono', monospace" font-size="10" fill="#E8E4DF" font-weight="500">77</text>
 
-    <!-- Step 3 -->
-    <text x="24" y="340" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB" letter-spacing="1">03</text>
-    <text x="48" y="340" font-family="'DM Sans', sans-serif" font-size="15" font-weight="700" fill="#E8E4DF" letter-spacing="-0.3">Prioritize</text>
+    <!-- Tier -->
+    <rect x="0" y="100" width="40" height="18" fill="none" stroke="#DC2626" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="8" y="113" font-family="'DM Mono', monospace" font-size="9" fill="#DC2626">HOT</text>
 
-    <!-- Tier boxes -->
-    <rect x="24" y="356" width="76" height="36" fill="none" stroke="#DC2626" stroke-width="1" stroke-opacity="0.3"/>
-    <text x="38" y="370" font-family="'DM Mono', monospace" font-size="10" fill="#DC2626" letter-spacing="0.5">HOT</text>
-    <text x="38" y="384" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">70-100</text>
+    <rect x="50" y="100" width="52" height="18" fill="none" stroke="#CA8A04" stroke-width="1" stroke-opacity="0.2"/>
+    <text x="56" y="113" font-family="'DM Mono', monospace" font-size="9" fill="#4a4540">WARM</text>
 
-    <rect x="112" y="356" width="76" height="36" fill="none" stroke="#CA8A04" stroke-width="1" stroke-opacity="0.3"/>
-    <text x="122" y="370" font-family="'DM Mono', monospace" font-size="10" fill="#CA8A04" letter-spacing="0.5">WARM</text>
-    <text x="122" y="384" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">40-69</text>
+    <rect x="112" y="100" width="48" height="18" fill="none" stroke="#E8E4DF" stroke-width="1" stroke-opacity="0.06"/>
+    <text x="118" y="113" font-family="'DM Mono', monospace" font-size="9" fill="#4a4540">COLD</text>
+  </g>
 
-    <rect x="200" y="356" width="76" height="36" fill="none" stroke="#E8E4DF" stroke-width="1" stroke-opacity="0.1"/>
-    <text x="212" y="370" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540" letter-spacing="0.5">COLD</text>
-    <text x="212" y="384" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">0-39</text>
+  <!-- Block 2: Route visualization -->
+  <g transform="translate(480, 608)">
+    <text x="0" y="14" font-family="'DM Mono', monospace" font-size="9" fill="#16A34A" letter-spacing="1.5">ROUTE</text>
 
-    <!-- Connector -->
-    <line x1="150" y1="408" x2="150" y2="428" stroke="#1e1c18" stroke-width="1"/>
-    <polygon points="146,428 150,436 154,428" fill="#1e1c18"/>
+    <!-- Flow: Lead → Engine → Rep -->
+    <rect x="0" y="30" width="80" height="32" fill="#141210" stroke="#1e1c18" stroke-width="1"/>
+    <text x="12" y="44" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">New Lead</text>
+    <text x="12" y="56" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Score: 77</text>
 
-    <!-- Step 4 -->
-    <text x="24" y="460" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB" letter-spacing="1">04</text>
-    <text x="48" y="460" font-family="'DM Sans', sans-serif" font-size="15" font-weight="700" fill="#E8E4DF" letter-spacing="-0.3">Automate</text>
-    <text x="24" y="482" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">Route to right team member</text>
-    <text x="24" y="498" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">Fire email + Slack + webhooks</text>
-    <text x="24" y="514" font-family="'DM Sans', sans-serif" font-size="12" fill="#4a4540">Enroll in drip sequence by tier</text>
+    <line x1="88" y1="46" x2="112" y2="46" stroke="#1e1c18" stroke-width="1"/>
+    <polygon points="112,43 118,46 112,49" fill="#1e1c18"/>
+
+    <rect x="124" y="30" width="80" height="32" fill="#141210" stroke="#2563EB" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="136" y="44" font-family="'DM Mono', monospace" font-size="9" fill="#2563EB">Rules</text>
+    <text x="136" y="56" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">6 strategies</text>
+
+    <line x1="212" y1="46" x2="236" y2="46" stroke="#1e1c18" stroke-width="1"/>
+    <polygon points="236,43 242,46 236,49" fill="#16A34A"/>
+
+    <rect x="248" y="30" width="80" height="32" fill="#141210" stroke="#16A34A" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="260" y="44" font-family="'DM Mono', monospace" font-size="9" fill="#16A34A">Alex K.</text>
+    <text x="260" y="56" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Assigned</text>
+
+    <!-- Strategy labels -->
+    <text x="0" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Round-Robin</text>
+    <text x="72" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Skill</text>
+    <text x="104" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Geographic</text>
+    <text x="180" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Value</text>
+    <text x="220" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Availability</text>
+    <text x="296" y="86" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Direct</text>
+
+    <!-- Drip timeline -->
+    <text x="0" y="112" font-family="'DM Mono', monospace" font-size="9" fill="#CA8A04" letter-spacing="1.5">NURTURE</text>
+
+    <line x1="0" y1="124" x2="328" y2="124" stroke="#1e1c18" stroke-width="1"/>
+    <circle cx="0" cy="124" r="3" fill="#2563EB"/>
+    <circle cx="82" cy="124" r="3" fill="#16A34A"/>
+    <circle cx="164" cy="124" r="3" fill="#16A34A"/>
+    <circle cx="246" cy="124" r="3" fill="#16A34A"/>
+    <circle cx="328" cy="124" r="3" fill="#CA8A04"/>
+
+    <text x="0" y="140" font-family="'DM Mono', monospace" font-size="7" fill="#4a4540">Submit</text>
+    <text x="68" y="140" font-family="'DM Mono', monospace" font-size="7" fill="#4a4540">Email 1</text>
+    <text x="150" y="140" font-family="'DM Mono', monospace" font-size="7" fill="#4a4540">Email 2</text>
+    <text x="232" y="140" font-family="'DM Mono', monospace" font-size="7" fill="#4a4540">Email 3</text>
+    <text x="312" y="140" font-family="'DM Mono', monospace" font-size="7" fill="#4a4540">Pause</text>
+  </g>
+
+  <!-- Block 3: Webhook + connect -->
+  <g transform="translate(900, 608)">
+    <text x="0" y="14" font-family="'DM Mono', monospace" font-size="9" fill="#DA552F" letter-spacing="1.5">CONNECT</text>
+
+    <!-- Webhook events -->
+    <g transform="translate(0, 26)">
+      <rect x="0" y="0" width="4" height="4" fill="#16A34A"/>
+      <text x="12" y="8" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">submission.created</text>
+
+      <rect x="0" y="16" width="4" height="4" fill="#16A34A"/>
+      <text x="12" y="24" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">lead.qualified</text>
+
+      <rect x="0" y="32" width="4" height="4" fill="#16A34A"/>
+      <text x="12" y="40" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">lead.converted</text>
+
+      <rect x="0" y="48" width="4" height="4" fill="#16A34A"/>
+      <text x="12" y="56" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">lead.score_changed</text>
+
+      <rect x="0" y="64" width="4" height="4" fill="#16A34A"/>
+      <text x="12" y="72" font-family="'DM Mono', monospace" font-size="9" fill="#E8E4DF">submission.updated</text>
+    </g>
+
+    <!-- HMAC badge -->
+    <rect x="0" y="124" width="280" height="20" fill="#141210" stroke="#1e1c18" stroke-width="1"/>
+    <text x="10" y="138" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540">Signed with </text>
+    <text x="80" y="138" font-family="'DM Mono', monospace" font-size="8" fill="#16A34A" font-weight="500">HMAC-SHA256</text>
+    <text x="168" y="138" font-family="'DM Mono', monospace" font-size="8" fill="#4a4540"> + delivery logs + auto-retry</text>
   </g>
 
   <!-- Bottom bar -->
-  <line x1="0" y1="700" x2="1270" y2="700" stroke="#1e1c18" stroke-width="1"/>
-  <text x="88" y="730" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540" letter-spacing="1">HAWKLEADS.IO</text>
-  <text x="1182" y="730" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540" letter-spacing="0.5">14-day free trial</text>
+  <line x1="0" y1="728" x2="1270" y2="728" stroke="#1e1c18" stroke-width="1"/>
+  <text x="88" y="748" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540" letter-spacing="1.5">HAWKLEADS.IO</text>
 
-  <!-- Accent line at very top -->
-  <rect x="0" y="0" width="1270" height="3" fill="#DA552F"/>
+  <text x="635" y="748" text-anchor="middle" font-family="'DM Mono', monospace" font-size="10" fill="#4a4540">$99 / $149 / $249 per month</text>
+
+  <text x="1182" y="748" text-anchor="end" font-family="'DM Mono', monospace" font-size="10" fill="#DA552F" letter-spacing="0.5">LIVE NOW</text>
 </svg>

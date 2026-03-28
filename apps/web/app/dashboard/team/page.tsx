@@ -7,9 +7,11 @@ import type { FormEvent } from 'react';
 
 interface TeamMember {
   readonly id: string;
-  readonly user_id: string;
+  readonly user_id: string | null;
   readonly role: 'owner' | 'admin' | 'viewer';
   readonly invited_email: string | null;
+  readonly email: string | null;
+  readonly full_name: string | null;
   readonly accepted_at: string | null;
   readonly created_at: string;
 }
@@ -19,19 +21,9 @@ interface MemberSummary {
   readonly territoriesCount: number;
 }
 
-const SETTINGS_NAV = [
-  { href: '/dashboard/settings', label: 'Account' },
-  { href: '/dashboard/settings/team', label: 'Team' },
-  { href: '/dashboard/settings/billing', label: 'Billing' },
-  { href: '/dashboard/settings/notifications', label: 'Notifications' },
-  { href: '/dashboard/settings/api', label: 'API' },
-  { href: '/dashboard/settings/routing', label: 'Routing' },
-  { href: '/dashboard/settings/scoring', label: 'Scoring' },
-] as const;
-
 const ROLES = ['admin', 'viewer'] as const;
 
-export default function TeamSettingsPage(): React.ReactElement {
+export default function TeamPage(): React.ReactElement {
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [memberSummaries, setMemberSummaries] = useState<Record<string, MemberSummary>>({});
   const [loading, setLoading] = useState(true);
@@ -39,38 +31,27 @@ export default function TeamSettingsPage(): React.ReactElement {
   const [inviteRole, setInviteRole] = useState<'admin' | 'viewer'>('viewer');
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [inviteSuccess, setInviteSuccess] = useState(false);
 
   useEffect(() => {
     async function loadTeam(): Promise<void> {
       try {
+        const response = await fetch('/api/v1/members');
+        if (!response.ok) {
+          setLoading(false);
+          return;
+        }
+        const result = await response.json() as { data: TeamMember[] };
+        const teamMembers = result.data ?? [];
+        setMembers(teamMembers);
+
+        // Fetch skills and territories counts for each member
         const { createBrowserClient } = await import('@supabase/ssr');
         const supabase = createBrowserClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
         );
 
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data: memberData } = await supabase
-          .from('members')
-          .select('account_id')
-          .eq('user_id', user.id)
-          .limit(1)
-          .single();
-
-        if (!memberData) return;
-
-        const { data } = await supabase
-          .from('members')
-          .select('id, user_id, role, invited_email, accepted_at, created_at')
-          .eq('account_id', memberData.account_id)
-          .order('created_at', { ascending: true });
-
-        const teamMembers = (data as TeamMember[] | null) ?? [];
-        setMembers(teamMembers);
-
-        // Fetch skills and territories counts for each member
         const summaries: Record<string, MemberSummary> = {};
         for (const m of teamMembers) {
           const [skillsResult, territoriesResult] = await Promise.all([
@@ -98,49 +79,24 @@ export default function TeamSettingsPage(): React.ReactElement {
     void loadTeam();
   }, []);
 
-  const [inviteSuccess, setInviteSuccess] = useState(false);
-
   async function handleInvite(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setError(null);
     setInviting(true);
 
     try {
-      const { createBrowserClient } = await import('@supabase/ssr');
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError('You must be logged in.');
-        return;
-      }
-
-      const { data: memberData } = await supabase
-        .from('members')
-        .select('account_id')
-        .eq('user_id', user.id)
-        .limit(1)
-        .single();
-
-      if (!memberData) {
-        setError('Account not found.');
-        return;
-      }
-
-      const { error: insertError } = await supabase
-        .from('members')
-        .insert({
-          account_id: memberData.account_id,
-          user_id: crypto.randomUUID(),
+      const response = await fetch('/api/v1/members', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: inviteEmail.trim().toLowerCase(),
           role: inviteRole,
-          invited_email: inviteEmail.trim().toLowerCase(),
-        });
+        }),
+      });
 
-      if (insertError) {
-        setError(insertError.message);
+      if (!response.ok) {
+        const result = await response.json() as { error: string };
+        setError(result.error);
         return;
       }
 
@@ -149,13 +105,11 @@ export default function TeamSettingsPage(): React.ReactElement {
       setTimeout(() => setInviteSuccess(false), 3000);
 
       // Reload members
-      const { data } = await supabase
-        .from('members')
-        .select('id, user_id, role, invited_email, accepted_at, created_at')
-        .eq('account_id', memberData.account_id)
-        .order('created_at', { ascending: true });
-
-      setMembers((data as TeamMember[]) ?? []);
+      const listResponse = await fetch('/api/v1/members');
+      if (listResponse.ok) {
+        const listResult = await listResponse.json() as { data: TeamMember[] };
+        setMembers(listResult.data ?? []);
+      }
     } catch {
       setError('Failed to send invitation.');
     } finally {
@@ -198,25 +152,11 @@ export default function TeamSettingsPage(): React.ReactElement {
 
   return (
     <div>
-      <h1 className="page-heading">Settings</h1>
+      <h1 className="page-heading">Team</h1>
 
-      <nav className="mt-4 flex gap-1 border-b border-border mb-6">
-        {SETTINGS_NAV.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`px-4 py-2.5 text-sm font-body transition-colors duration-fast -mb-px ${
-              item.href === '/dashboard/settings/team'
-                ? 'text-ink font-medium border-b-2 border-ink'
-                : 'text-stone hover:text-ink border-b-2 border-transparent'
-            }`}
-          >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      <h2 className="font-display text-lg font-semibold text-ink">Team Members</h2>
+      <p className="mt-1 text-sm text-stone font-body mb-6">
+        Manage your team members, roles, and invitations.
+      </p>
 
       {error !== null && (
         <div className="mt-4 p-3 rounded-sm bg-danger-light text-danger text-sm border border-danger/20">
@@ -258,6 +198,32 @@ export default function TeamSettingsPage(): React.ReactElement {
           ) : 'Invite'}
         </button>
       </form>
+
+      {/* Help Guide */}
+      <div className="mt-6 border border-border rounded-md p-4 bg-surface-alt">
+        <h3 className="text-sm font-medium text-ink mb-2">How team profiles work with lead routing</h3>
+        <ul className="text-xs text-stone space-y-1.5 font-body list-none">
+          <li className="flex items-start gap-2">
+            <span className="text-signal font-medium shrink-0">Skills</span>
+            <span>Assign skill tags (e.g. "sales", "technical") to members. Skill-based routing matches incoming leads to members whose tags overlap with the rule.</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-signal font-medium shrink-0">Territories</span>
+            <span>Assign 2-letter ISO country codes (e.g. US, GB, DE) to members. Geographic routing sends leads to the member whose territory matches the visitor's country.</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-signal font-medium shrink-0">Availability</span>
+            <span>Set each member's status (online/offline/busy), max active leads, and auto-offline timeout. Availability routing picks the online member with the fewest active leads.</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-signal font-medium shrink-0">Round-Robin</span>
+            <span>Add members to a pool in your routing rule. Leads are distributed evenly, respecting each member's capacity limits.</span>
+          </li>
+        </ul>
+        <p className="text-xs text-stone mt-2 font-body">
+          Click a member's name to configure their skills, territories, and availability. Then create routing rules in Settings &gt; Routing.
+        </p>
+      </div>
 
       {/* Member List */}
       <div className="mt-6">
@@ -308,12 +274,17 @@ export default function TeamSettingsPage(): React.ReactElement {
                   const summary = memberSummaries[member.id];
                   return (
                     <tr key={member.id} className="table-row">
-                      <td className="py-3 px-4 font-medium text-ink">
+                      <td className="py-3 px-4">
                         <Link
-                          href={`/dashboard/settings/team/${member.id}`}
+                          href={`/dashboard/team/${member.id}`}
                           className="text-ink hover:text-signal transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-ink/30 rounded-sm"
                         >
-                          {member.invited_email ?? member.user_id.slice(0, 8)}
+                          <div className="font-medium">
+                            {member.full_name ?? member.email ?? member.invited_email ?? member.id.slice(0, 8)}
+                          </div>
+                          {member.full_name && member.email ? (
+                            <div className="text-xs text-stone font-normal">{member.email}</div>
+                          ) : null}
                         </Link>
                       </td>
                       <td className="py-3 px-4">

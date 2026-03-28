@@ -82,6 +82,15 @@ export function authLimit(): Ratelimit {
   );
 }
 
+/** Rate limiter for forgot-password requests — 5 requests per 15 minutes per IP. */
+export function forgotPasswordLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.forgot_password.prefix,
+    RATE_LIMITS.forgot_password.tokens,
+    RATE_LIMITS.forgot_password.window
+  );
+}
+
 /** Rate limiter for API key requests — 60 requests per minute per key. */
 export function apiLimit(): Ratelimit {
   return createRateLimiter(

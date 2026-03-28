@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { safeRedirectUrl } from '@/lib/safe-redirect';
+import { createAdminClient } from '@/lib/supabase/admin';
 import type { Database } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -74,6 +75,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     case 'email_change':
       redirectPath = '/settings?tab=profile&emailChanged=true';
       break;
+    case 'login':
     case 'signup':
     case 'email': {
       // Check if user already has an account
@@ -89,7 +91,37 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           .limit(1)
           .maybeSingle();
 
-        redirectPath = member ? '/dashboard' : '/onboarding';
+        if (member) {
+          redirectPath = '/dashboard';
+        } else if (user.email) {
+          // Check for a pending invite matching this email
+          const admin = createAdminClient();
+          const { data: pendingInvite } = await admin
+            .from('members')
+            .select('id')
+            .eq('invited_email', user.email)
+            .is('user_id', null)
+            .is('accepted_at', null)
+            .limit(1)
+            .maybeSingle();
+
+          if (pendingInvite) {
+            // Claim the invite: link user and mark accepted
+            await admin
+              .from('members')
+              .update({
+                user_id: user.id,
+                accepted_at: new Date().toISOString(),
+              })
+              .eq('id', pendingInvite.id);
+
+            redirectPath = '/dashboard';
+          } else {
+            redirectPath = '/onboarding';
+          }
+        } else {
+          redirectPath = '/onboarding';
+        }
       } else {
         redirectPath = next;
       }

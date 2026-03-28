@@ -347,6 +347,11 @@ export const RATE_LIMITS = {
     window: '1 m' as const,
     prefix: 'rl:auth',
   },
+  forgot_password: {
+    tokens: 5,
+    window: '15 m' as const,
+    prefix: 'rl:forgot_pw',
+  },
   api: {
     tokens: 120,
     window: '1 m' as const,
@@ -376,6 +381,16 @@ export const RATE_LIMITS = {
     tokens: 5,
     window: '1 m' as const,
     prefix: 'rl:shared_analytics_pw',
+  },
+  webhooks_create: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:webhooks_create',
+  },
+  members_invite: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:members_invite',
   },
 } as const;
 
