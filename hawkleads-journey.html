@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='64' height='64' rx='14' fill='%230A0A0A'/><path d='M12 32 L24 10 L24 54 Z' fill='%23E8E4DF' opacity='.12'/><path d='M20 32 L30 14 L30 50 Z' fill='%23E8E4DF' opacity='.35'/><path d='M28 32 L36 18 L36 46 Z' fill='%23E8E4DF'/><circle cx='18' cy='32' r='2' fill='%23E8E4DF'/></svg>">
+<title>HawkLeads</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=DM+Mono:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --ink:#0A0A0A;--cream:#E8E4DF;--stone:#4a4540;--mid:#7a7570;
+    --warm:#141210;--wb:#1e1c18;
+    --accent:#DA552F;
+    --blue:#2563EB;--green:#16A34A;--amber:#CA8A04;--red:#DC2626;
+    --surface:#F2F0EC;--border:#ccc8c2;
+    --f:'DM Sans',sans-serif;--m:'DM Mono',monospace;
+  }
+  body{background:var(--ink);font-family:var(--f);padding:48px;display:flex;flex-direction:column;align-items:center;gap:0;}
+  .info{color:var(--cream);text-align:center;margin-bottom:36px;}
+  .info h1{font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;}
+  .info p{font-size:12px;color:var(--mid);font-family:var(--m);}
+  .panel{width:1270px;height:760px;position:relative;overflow:hidden;}
+
+  /* ============ PANEL 1 ============ */
+  .p1{background:var(--ink);}
+  /* Angled line decoration */
+  .p1::before{content:'';position:absolute;top:0;right:180px;width:1px;height:100%;background:linear-gradient(180deg,transparent 0%,rgba(228,224,223,0.04) 30%,rgba(228,224,223,0.04) 70%,transparent 100%);transform:skewX(-8deg);}
+  .p1::after{content:'';position:absolute;top:0;right:340px;width:1px;height:100%;background:linear-gradient(180deg,transparent 0%,rgba(228,224,223,0.025) 20%,rgba(228,224,223,0.025) 80%,transparent 100%);transform:skewX(-8deg);}
+  .p1 .line3{position:absolute;top:0;right:500px;width:1px;height:100%;background:linear-gradient(180deg,transparent 0%,rgba(228,224,223,0.015) 10%,rgba(228,224,223,0.015) 90%,transparent 100%);transform:skewX(-8deg);}
+
+  .p1 .c{position:relative;z-index:1;height:100%;display:flex;align-items:center;padding:0 88px;}
+  .p1 .left{max-width:620px;}
+
+  .p1 .badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;}
+  .p1 .badge-line{width:24px;height:2px;background:var(--accent);}
+  .p1 .badge-text{font-family:var(--m);font-size:11px;color:var(--mid);letter-spacing:0.8px;}
+
+  .p1 .logo-row{display:flex;align-items:center;gap:14px;margin-bottom:40px;}
+  .p1 .logo-row svg{width:48px;height:48px;}
+  .p1 .logo-row span{font-size:28px;font-weight:700;color:var(--cream);letter-spacing:-1.2px;}
+
+  .p1 h1{font-size:60px;font-weight:700;color:var(--cream);letter-spacing:-3px;line-height:1.02;margin-bottom:24px;}
+  .p1 h1 em{font-style:italic;color:var(--accent);}
+  .p1 .sub{font-size:17px;color:var(--mid);line-height:1.7;margin-bottom:40px;max-width:520px;}
+
+  .p1 .cta-row{display:flex;align-items:center;gap:12px;margin-bottom:48px;}
+  .p1 .cta-fill{background:var(--cream);color:var(--ink);font-size:15px;font-weight:600;padding:14px 32px;border-radius:4px;display:inline-flex;align-items:center;gap:8px;letter-spacing:-0.2px;}
+  .p1 .cta-line{color:var(--mid);font-size:14px;font-weight:500;padding:14px 24px;border-bottom:1px solid var(--wb);display:inline-flex;align-items:center;gap:6px;}
+
+  .p1 .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .p1 .chip{font-family:var(--m);font-size:10px;padding:6px 14px;border-left:2px solid var(--wb);color:var(--mid);letter-spacing:0.3px;background:var(--warm);}
+  .p1 .chip strong{color:var(--cream);}
+
+  /* Right: large mark */
+  .p1 .mark{position:absolute;right:40px;top:50%;transform:translateY(-50%);opacity:0.03;}
+  .p1 .mark svg{width:480px;height:480px;}
+
+  /* ============ PANEL 2 ============ */
+  .p2{background:var(--surface);}
+  .p2 .c{height:100%;padding:64px 88px;display:flex;flex-direction:column;}
+  .p2 .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:48px;}
+  .p2 .label{font-family:var(--m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);}
+  .p2 h2{font-size:42px;font-weight:700;color:var(--ink);letter-spacing:-2px;line-height:1;}
+
+  .p2 .stages{display:flex;gap:0;flex:1;}
+  .p2 .stage{flex:1;padding:32px 28px;border-left:1px solid var(--border);position:relative;}
+  .p2 .stage:first-child{border-left:none;padding-left:0;}
+  .p2 .sn{font-family:var(--m);font-size:80px;font-weight:700;color:var(--ink);opacity:0.04;line-height:1;letter-spacing:-4px;margin-bottom:-20px;}
+  .p2 .st{font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  .p2 .sh{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-0.8px;margin-bottom:8px;line-height:1.15;}
+  .p2 .sd{font-size:13px;color:var(--stone);line-height:1.6;margin-bottom:20px;}
+  .p2 .dets{display:flex;flex-direction:column;gap:8px;}
+  .p2 .det{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--stone);line-height:1.4;}
+  .p2 .det-mark{width:12px;height:1px;margin-top:8px;flex-shrink:0;}
+  .p2 .det-mark.bl{background:var(--blue);}.p2 .det-mark.gr{background:var(--green);}.p2 .det-mark.am{background:var(--amber);}.p2 .det-mark.dk{background:var(--ink);opacity:0.15;}
+
+  /* Formula strip */
+  .p2 .formula{margin-top:auto;padding:20px 32px;background:var(--ink);display:flex;align-items:center;justify-content:center;gap:20px;}
+  .p2 .fm{text-align:center;}
+  .p2 .fm .fv{font-size:18px;font-weight:700;letter-spacing:-0.3px;}
+  .p2 .fm .fv.bl{color:var(--blue);}.p2 .fm .fv.gr{color:var(--green);}.p2 .fm .fv.am{color:var(--amber);}.p2 .fm .fv.cr{color:var(--cream);}
+  .p2 .fm .fl{font-family:var(--m);font-size:9px;color:var(--mid);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+  .p2 .fop{font-size:14px;color:var(--mid);font-weight:300;}
+
+  /* ============ PANEL 3 ============ */
+  .p3{background:var(--ink);}
+  .p3 .c{height:100%;padding:56px 88px;display:flex;flex-direction:column;}
+  .p3 .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:40px;}
+  .p3 .label{font-family:var(--m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);}
+  .p3 h2{font-size:42px;font-weight:700;color:var(--cream);letter-spacing:-2px;line-height:1;}
+
+  .p3 .cols{display:flex;gap:1px;flex:1;background:var(--wb);}
+  .p3 .col{flex:1;background:var(--ink);padding:28px;}
+  .p3 .col-h{font-family:var(--m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--wb);}
+  .p3 .col-h.r{color:var(--blue);}.p3 .col-h.d{color:var(--green);}
+
+  .p3 .strats{display:flex;flex-direction:column;gap:0;}
+  .p3 .st{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(228,224,223,0.03);}
+  .p3 .st:last-child{border-bottom:none;}
+  .p3 .st-line{width:16px;height:2px;flex-shrink:0;}
+  .p3 .st-line.l1{background:var(--blue);}.p3 .st-line.l2{background:var(--green);}.p3 .st-line.l3{background:var(--amber);}.p3 .st-line.l4{background:var(--red);}.p3 .st-line.l5{background:var(--cream);opacity:0.15;}.p3 .st-line.l6{background:var(--cream);opacity:0.15;}
+  .p3 .st-name{font-size:14px;font-weight:600;color:var(--cream);min-width:100px;}
+  .p3 .st-desc{font-size:12px;color:var(--mid);}
+
+  .p3 .tl{display:flex;flex-direction:column;gap:0;}
+  .p3 .te{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid rgba(228,224,223,0.03);}
+  .p3 .te:last-child{border-bottom:none;}
+  .p3 .te-time{font-family:var(--m);font-size:11px;color:var(--blue);width:56px;flex-shrink:0;padding-top:2px;}
+  .p3 .te-body{}
+  .p3 .te-title{font-size:14px;font-weight:600;color:var(--cream);margin-bottom:1px;}
+  .p3 .te-desc{font-size:12px;color:var(--mid);line-height:1.4;}
+
+  .p3 .foot{display:flex;gap:1px;margin-top:auto;background:var(--wb);}
+  .p3 .fs{flex:1;background:var(--ink);padding:16px 20px;text-align:center;}
+  .p3 .fs-val{font-size:20px;font-weight:700;color:var(--cream);letter-spacing:-0.5px;}
+  .p3 .fs-label{font-family:var(--m);font-size:9px;color:var(--mid);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+  /* ============ PANEL 4 ============ */
+  .p4{background:var(--surface);}
+  .p4 .c{height:100%;padding:56px 88px;display:flex;flex-direction:column;}
+  .p4 .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:40px;}
+  .p4 .label{font-family:var(--m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);}
+  .p4 h2{font-size:42px;font-weight:700;color:var(--ink);letter-spacing:-2px;line-height:1;}
+
+  .p4 .cols{display:flex;gap:24px;flex:1;}
+  .p4 .col{flex:1;display:flex;flex-direction:column;}
+
+  /* Webhook card */
+  .p4 .wh{background:var(--ink);padding:32px;flex:1;display:flex;flex-direction:column;}
+  .p4 .wh-label{font-family:var(--m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:16px;}
+  .p4 .wh-h{font-size:22px;font-weight:700;color:var(--cream);letter-spacing:-0.5px;margin-bottom:8px;line-height:1.2;}
+  .p4 .wh-p{font-size:13px;color:var(--mid);line-height:1.5;margin-bottom:24px;}
+  .p4 .evs{display:flex;flex-direction:column;gap:0;margin-bottom:auto;}
+  .p4 .ev{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--wb);font-family:var(--m);font-size:12px;color:var(--cream);}
+  .p4 .ev:last-child{border-bottom:none;}
+  .p4 .ev-line{width:8px;height:2px;background:var(--green);flex-shrink:0;}
+  .p4 .sig{font-family:var(--m);font-size:11px;color:var(--mid);margin-top:24px;padding-top:16px;border-top:1px solid var(--wb);}
+  .p4 .sig strong{color:var(--green);}
+
+  /* A/B card */
+  .p4 .ab{border:1px solid var(--border);padding:32px;flex:1;display:flex;flex-direction:column;background:#fff;}
+  .p4 .ab-label{font-family:var(--m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:16px;}
+  .p4 .ab-h{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-0.5px;margin-bottom:8px;line-height:1.2;}
+  .p4 .ab-p{font-size:13px;color:var(--stone);line-height:1.5;margin-bottom:24px;}
+  .p4 .split{display:flex;gap:1px;background:var(--border);margin-bottom:20px;}
+  .p4 .sv{flex:1;background:#fff;padding:16px;}
+  .p4 .sv-tag{font-family:var(--m);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+  .p4 .sv-tag.a{color:var(--blue);}.p4 .sv-tag.b{color:var(--amber);}
+  .p4 .sv-q{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .p4 .sv-opts{font-size:12px;color:var(--stone);line-height:1.9;}
+  .p4 .win{display:flex;align-items:center;gap:12px;padding:16px;border-left:3px solid var(--green);background:rgba(22,163,74,0.03);margin-top:auto;}
+  .p4 .win-text{font-size:13px;color:var(--ink);line-height:1.4;}.p4 .win-text strong{font-weight:600;}
+
+  /* ============ PANEL 5 ============ */
+  .p5{background:var(--ink);}
+  .p5 .c{height:100%;padding:56px 88px;display:flex;flex-direction:column;}
+  .p5 .top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:40px;}
+  .p5 .label{font-family:var(--m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);}
+  .p5 h2{font-size:42px;font-weight:700;color:var(--cream);letter-spacing:-2px;line-height:1;}
+  .p5 .sub{font-size:14px;color:var(--mid);max-width:480px;line-height:1.6;}
+
+  .p5 .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--wb);margin-bottom:20px;}
+  .p5 .gc{background:var(--ink);padding:24px;}
+  .p5 .gc-label{font-family:var(--m);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+  .p5 .gc-val{font-size:32px;font-weight:700;color:var(--cream);letter-spacing:-1.5px;margin-bottom:4px;line-height:1;}
+  .p5 .gc-desc{font-size:12px;color:var(--mid);line-height:1.3;}
+
+  .p5 .feats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--wb);margin-bottom:20px;}
+  .p5 .fg{background:var(--ink);display:flex;align-items:center;gap:8px;padding:12px 16px;font-size:12px;color:var(--cream);}
+  .p5 .fg-line{width:8px;height:2px;background:var(--green);flex-shrink:0;}
+
+  .p5 .pricing{display:flex;gap:1px;background:var(--wb);margin-top:auto;}
+  .p5 .pr{flex:1;background:var(--ink);padding:20px;text-align:center;}
+  .p5 .pr-name{font-family:var(--m);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:6px;}
+  .p5 .pr-price{font-size:32px;font-weight:700;color:var(--cream);letter-spacing:-1.5px;line-height:1;}
+  .p5 .pr.feat .pr-price{color:var(--accent);}
+  .p5 .pr-per{font-size:12px;color:var(--mid);margin-top:2px;}
+
+  /* ============ PANEL 6 ============ */
+  .p6{background:var(--surface);}
+  .p6::before{content:'';position:absolute;top:0;left:200px;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--border),transparent);transform:skewX(8deg);}
+  .p6::after{content:'';position:absolute;top:0;left:360px;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(204,200,194,0.4),transparent);transform:skewX(8deg);}
+  .p6 .c{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 120px;}
+  .p6 .logo{width:72px;height:72px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:32px;}
+  .p6 .logo svg{width:40px;height:40px;}
+  .p6 h2{font-size:52px;font-weight:700;color:var(--ink);letter-spacing:-2.5px;line-height:1.02;margin-bottom:16px;}
+  .p6 h2 em{font-style:italic;color:var(--accent);}
+  .p6 .sub{font-size:16px;color:var(--stone);line-height:1.6;max-width:440px;margin-bottom:36px;}
+  .p6 .ctas{display:flex;gap:12px;margin-bottom:20px;}
+  .p6 .cta-p{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--cream);font-size:15px;font-weight:600;padding:14px 32px;border-radius:4px;text-decoration:none;letter-spacing:-0.2px;}
+  .p6 .cta-s{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:500;padding:14px 24px;text-decoration:none;border-bottom:1px solid var(--border);}
+  .p6 .note{font-family:var(--m);font-size:11px;color:var(--mid);letter-spacing:0.3px;}
+  .p6 .footer{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-family:var(--m);font-size:10px;color:var(--mid);letter-spacing:1px;}
+</style>
+</head>
+<body>
+  <div class="info">
+    <h1>HawkLeads</h1>
+    <p>6 panels &middot; 1270 &times; 760px &middot; PNG / APNG</p>
+  </div>
+
+  <!-- 1 -->
+  <div class="panel p1" id="panel-1">
+    <div class="line3"></div>
+    <div class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M6 24 L16 6 L16 42 Z" fill="#E8E4DF"/><path d="M12 24 L20 10 L20 38 Z" fill="#E8E4DF"/><path d="M18 24 L26 12 L26 36 Z" fill="#E8E4DF"/></svg></div>
+    <div class="c">
+      <div class="left">
+        <div class="badge"><div class="badge-line"></div><div class="badge-text">LAUNCHING NOW</div></div>
+        <div class="logo-row">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M6 24 L16 6 L16 42 Z" fill="#E8E4DF" opacity=".12"/><path d="M12 24 L20 10 L20 38 Z" fill="#E8E4DF" opacity=".35"/><path d="M18 24 L26 12 L26 36 Z" fill="#E8E4DF"/><circle cx="10" cy="24" r="1.5" fill="#E8E4DF"/></svg>
+          <span>HawkLeads</span>
+        </div>
+        <h1>The smart widget that<br/>scores your leads <em>before<br/>you see them.</em></h1>
+        <p class="sub">Embed on any site. Visitors answer qualifying questions. Every lead gets a three-dimensional score and lands in your inbox ranked by who to call first.</p>
+        <div class="cta-row">
+          <div class="cta-fill">Start Free Trial <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="cta-line">View demo</div>
+        </div>
+        <div class="chips">
+          <div class="chip"><strong>3D Scoring</strong> &mdash; form + behavior + intent</div>
+          <div class="chip"><strong>6 Routing Strategies</strong></div>
+          <div class="chip"><strong>Drip Sequences</strong></div>
+          <div class="chip"><strong>Webhooks + API</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="panel p2" id="panel-2">
+    <div class="c">
+      <div class="top">
+        <h2>Capture. Score. Prioritize.</h2>
+        <div class="label">How It Works</div>
+      </div>
+      <div class="stages">
+        <div class="stage">
+          <div class="sn">01</div>
+          <div class="st">Capture</div>
+          <div class="sh">Smart Widget</div>
+          <div class="sd">2-5 custom questions. Each answer weighted -50 to +50. Shadow DOM sandboxed. Bot protection built in.</div>
+          <div class="dets">
+            <div class="det"><div class="det-mark bl"></div>Score weights per answer option</div>
+            <div class="det"><div class="det-mark bl"></div>Attention grabbers: scroll, exit-intent, pulse</div>
+            <div class="det"><div class="det-mark bl"></div>Honeypot + 2s timing + SHA-256 challenge</div>
+            <div class="det"><div class="det-mark bl"></div>Full brand control: colors, copy, position</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="sn">02</div>
+          <div class="st">Score</div>
+          <div class="sh">Three Dimensions</div>
+          <div class="sd">Every lead scored on form answers, on-site behavior, and intent signals. Composite score 0-100.</div>
+          <div class="dets">
+            <div class="det"><div class="det-mark bl"></div>Form score: 60% weight (your questions)</div>
+            <div class="det"><div class="det-mark gr"></div>Behavioral: pages viewed, time, scroll depth</div>
+            <div class="det"><div class="det-mark am"></div>Intent: pricing views, return visits, high-intent pages</div>
+            <div class="det"><div class="det-mark dk"></div>Score decay keeps stale leads from clogging inbox</div>
+          </div>
+        </div>
+        <div class="stage">
+          <div class="sn">03</div>
+          <div class="st">Prioritize</div>
+          <div class="sh">Tier Assignment</div>
+          <div class="sd">Hot, Warm, or Cold. Assigned instantly. Your team sees who to call first. Custom thresholds.</div>
+          <div class="dets">
+            <div class="det"><div class="det-mark" style="background:var(--red)"></div>Hot: score 70-100</div>
+            <div class="det"><div class="det-mark am"></div>Warm: score 40-69</div>
+            <div class="det"><div class="det-mark dk"></div>Cold: score 0-39</div>
+            <div class="det"><div class="det-mark dk"></div>Tier-specific confirmation messages in widget</div>
+          </div>
+        </div>
+      </div>
+      <div class="formula">
+        <div class="fm"><div class="fv bl">Form</div><div class="fl">60%</div></div>
+        <div class="fop">+</div>
+        <div class="fm"><div class="fv gr">Behavior</div><div class="fl">20%</div></div>
+        <div class="fop">+</div>
+        <div class="fm"><div class="fv am">Intent</div><div class="fl">20%</div></div>
+        <div class="fop">=</div>
+        <div class="fm"><div class="fv cr" style="font-size:22px;">Composite</div><div class="fl">0 &ndash; 100</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="panel p3" id="panel-3">
+    <div class="c">
+      <div class="top">
+        <h2>Route. Notify. Follow Up.</h2>
+        <div class="label">After the Score</div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <div class="col-h r">Lead Routing &mdash; 6 Strategies</div>
+          <div class="strats">
+            <div class="st"><div class="st-line l1"></div><div class="st-name">Round-Robin</div><div class="st-desc">Even distribution with optional weights</div></div>
+            <div class="st"><div class="st-line l2"></div><div class="st-name">Skill-Based</div><div class="st-desc">Match member skills to lead needs</div></div>
+            <div class="st"><div class="st-line l3"></div><div class="st-name">Geographic</div><div class="st-desc">Route by visitor country and region</div></div>
+            <div class="st"><div class="st-line l4"></div><div class="st-name">Value-Based</div><div class="st-desc">Hot leads to your closers</div></div>
+            <div class="st"><div class="st-line l5"></div><div class="st-name">Availability</div><div class="st-desc">Online members with capacity tracking</div></div>
+            <div class="st"><div class="st-line l6"></div><div class="st-name">Direct</div><div class="st-desc">Fixed assignment to one person</div></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-h d">Drip Sequences &mdash; Per Tier</div>
+          <div class="tl">
+            <div class="te"><div class="te-time">T + 0</div><div class="te-body"><div class="te-title">Lead Submits</div><div class="te-desc">Scored, tiered, enrolled in matching drip sequence.</div></div></div>
+            <div class="te"><div class="te-time">T + 24h</div><div class="te-body"><div class="te-title">Email 1: Introduction</div><div class="te-desc">Personalized with {{visitor_name}}, {{lead_score}}, and 4 more variables.</div></div></div>
+            <div class="te"><div class="te-time">T + 72h</div><div class="te-body"><div class="te-title">Email 2: Follow-Up</div><div class="te-desc">Configurable delay and copy per step.</div></div></div>
+            <div class="te"><div class="te-time">T + 1wk</div><div class="te-body"><div class="te-title">Email 3: Last Touch</div><div class="te-desc">Final follow-up. Custom content per sequence.</div></div></div>
+            <div class="te"><div class="te-time" style="color:var(--amber)">Pause</div><div class="te-body"><div class="te-title">Lead Replied or Converted</div><div class="te-desc">Sequence stops when status changes. No more emails.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <div class="fs"><div class="fs-val">Up to 50</div><div class="fs-label">Routing Rules</div></div>
+        <div class="fs"><div class="fs-val">Up to 10</div><div class="fs-label">Drip Sequences</div></div>
+        <div class="fs"><div class="fs-val">Per-Widget</div><div class="fs-label">Or Account-Wide</div></div>
+        <div class="fs"><div class="fs-val">Per-Tier</div><div class="fs-label">Hot / Warm / Cold</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="panel p4" id="panel-4">
+    <div class="c">
+      <div class="top">
+        <h2>Push Data Out. Test What Works.</h2>
+        <div class="label">Extend &amp; Optimize</div>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <div class="wh">
+            <div class="wh-label">Webhooks</div>
+            <div class="wh-h">Push every lead into your stack</div>
+            <div class="wh-p">Fire the second a lead submits or changes status. Delivery logs and auto-disable on consecutive failures.</div>
+            <div class="evs">
+              <div class="ev"><div class="ev-line"></div>submission.created</div>
+              <div class="ev"><div class="ev-line"></div>submission.updated</div>
+              <div class="ev"><div class="ev-line"></div>lead.qualified</div>
+              <div class="ev"><div class="ev-line"></div>lead.converted</div>
+              <div class="ev"><div class="ev-line"></div>lead.score_changed</div>
+            </div>
+            <div class="sig">Signed with <strong>HMAC-SHA256</strong> &middot; Up to 20 endpoints</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="ab">
+            <div class="ab-label">A/B Testing</div>
+            <div class="ab-h">Stop guessing. Test your widget.</div>
+            <div class="ab-p">Split traffic on any step. Measure conversion rate and average score. Statistical significance built in.</div>
+            <div class="split">
+              <div class="sv"><div class="sv-tag a">Variant A</div><div class="sv-q">What service do you need?</div><div class="sv-opts">Marketing Strategy<br/>Web Development<br/>Brand Identity</div></div>
+              <div class="sv"><div class="sv-tag b">Variant B</div><div class="sv-q">What's your biggest challenge?</div><div class="sv-opts">Getting more leads<br/>Closing faster<br/>Scaling operations</div></div>
+            </div>
+            <div class="win">
+              <div class="win-text"><strong>Variant B wins.</strong> Higher conversion, better lead quality. p = 0.023 (statistically significant at p &lt; 0.05).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="panel p5" id="panel-5">
+    <div class="c">
+      <div class="top">
+        <div>
+          <h2>One Dashboard. All Your Clients.</h2>
+          <div class="sub" style="margin-top:8px;">Multi-client management, shared analytics, unlimited leads. Everything an agency needs.</div>
+        </div>
+        <div class="label">Built for Agencies</div>
+      </div>
+      <div class="grid">
+        <div class="gc"><div class="gc-label">Widgets</div><div class="gc-val">25</div><div class="gc-desc">Deploy across all client sites.</div></div>
+        <div class="gc"><div class="gc-label">Team Members</div><div class="gc-val">25</div><div class="gc-desc">Owner, admin, or viewer roles.</div></div>
+        <div class="gc"><div class="gc-label">Leads / Month</div><div class="gc-val">Unlimited</div><div class="gc-desc">No caps on submissions.</div></div>
+        <div class="gc"><div class="gc-label">Routing Rules</div><div class="gc-val">50</div><div class="gc-desc">Per-widget or account-wide.</div></div>
+        <div class="gc"><div class="gc-label">Webhooks</div><div class="gc-val">20</div><div class="gc-desc">Push to any endpoint.</div></div>
+        <div class="gc"><div class="gc-label">Shared Analytics</div><div class="gc-val">25</div><div class="gc-desc">Password-protected client links.</div></div>
+      </div>
+      <div class="feats">
+        <div class="fg"><div class="fg-line"></div>Multi-client accounts</div>
+        <div class="fg"><div class="fg-line"></div>Shared analytics links</div>
+        <div class="fg"><div class="fg-line"></div>Custom branding per widget</div>
+        <div class="fg"><div class="fg-line"></div>A/B testing (up to 10)</div>
+        <div class="fg"><div class="fg-line"></div>Drip sequences (up to 10)</div>
+        <div class="fg"><div class="fg-line"></div>Priority support</div>
+      </div>
+      <div class="pricing">
+        <div class="pr"><div class="pr-name">Starter</div><div class="pr-price">$99</div><div class="pr-per">/month</div></div>
+        <div class="pr feat"><div class="pr-name">Pro</div><div class="pr-price">$149</div><div class="pr-per">/month</div></div>
+        <div class="pr"><div class="pr-name">Agency</div><div class="pr-price">$249</div><div class="pr-per">/month</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="panel p6" id="panel-6">
+    <div class="c">
+      <div class="logo"><svg viewBox="0 0 48 48" fill="none"><path d="M6 24 L16 6 L16 42 Z" fill="#E8E4DF" opacity=".12"/><path d="M12 24 L20 10 L20 38 Z" fill="#E8E4DF" opacity=".35"/><path d="M18 24 L26 12 L26 36 Z" fill="#E8E4DF"/><circle cx="10" cy="24" r="1.5" fill="#E8E4DF"/></svg></div>
+      <h2>Start qualifying your<br/>leads <em>today.</em></h2>
+      <p class="sub">One script tag. Three-dimensional scoring. Auto routing. Drip follow-ups. Stop chasing cold leads.</p>
+      <div class="ctas">
+        <a class="cta-p" href="#">Start Free Trial <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="cta-s" href="#">See Pricing</a>
+      </div>
+      <p class="note">14-day free trial. No credit card required.</p>
+      <div class="footer">HAWKLEADS.IO</div>
+    </div>
+  </div>
+
+  <!-- DL -->
+  <div style="margin-top:48px;text-align:center;padding:24px;">
+    <button id="downloadAll" style="background:var(--warm);color:var(--cream);border:1px solid var(--wb);padding:12px 24px;border-radius:4px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f);margin-right:10px;">Download All 6 as PNG</button>
+    <button id="downloadApng" style="background:transparent;color:var(--cream);border:1px solid var(--wb);padding:12px 24px;border-radius:4px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f);">Download as APNG</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const T=6;
+    document.getElementById('downloadAll').addEventListener('click',async function(){this.textContent='Capturing...';this.disabled=true;for(let i=1;i<=T;i++){const p=document.getElementById('panel-'+i);const c=await html2canvas(p,{width:1270,height:760,scale:2,useCORS:true,backgroundColor:null});const a=document.createElement('a');a.download='hawkleads-panel-'+i+'.png';a.href=c.toDataURL('image/png');a.click();await new Promise(r=>setTimeout(r,600));}this.textContent='Download All 6 as PNG';this.disabled=false;});
+    document.getElementById('downloadApng').addEventListener('click',async function(){this.textContent='Capturing...';this.disabled=true;const frames=[];for(let i=1;i<=T;i++){const p=document.getElementById('panel-'+i);const c=await html2canvas(p,{width:1270,height:760,scale:1,useCORS:true,backgroundColor:null});frames.push(c);}this.textContent='Building APNG...';const pngs=[];for(const c of frames){const b=await new Promise(r=>c.toBlob(r,'image/png'));pngs.push(new Uint8Array(await b.arrayBuffer()));}function findChunks(d){const c=[];let o=8;while(o<d.length){const l=(d[o]<<24)|(d[o+1]<<16)|(d[o+2]<<8)|d[o+3];const t=String.fromCharCode(d[o+4],d[o+5],d[o+6],d[o+7]);c.push({type:t,offset:o,length:l,data:d.slice(o+8,o+8+l)});o+=12+l;}return c;}function crc32(d){let c=0xFFFFFFFF;const t=new Uint32Array(256);for(let i=0;i<256;i++){let v=i;for(let j=0;j<8;j++)v=(v&1)?(0xEDB88320^(v>>>1)):(v>>>1);t[i]=v;}for(let i=0;i<d.length;i++)c=t[(c^d[i])&0xFF]^(c>>>8);return(c^0xFFFFFFFF)>>>0;}function makeChunk(type,data){const tb=new Uint8Array([...type].map(c=>c.charCodeAt(0)));const len=new Uint8Array(4);new DataView(len.buffer).setUint32(0,data.length);const ci=new Uint8Array(tb.length+data.length);ci.set(tb);ci.set(data,tb.length);const cv=crc32(ci);const cb=new Uint8Array(4);new DataView(cb.buffer).setUint32(0,cv);const r=new Uint8Array(4+4+data.length+4);r.set(len,0);r.set(tb,4);r.set(data,8);r.set(cb,8+data.length);return r;}const fc=findChunks(pngs[0]);const ihdr=fc.find(c=>c.type==='IHDR');const sig=new Uint8Array([137,80,78,71,13,10,26,10]);const ihdrC=pngs[0].slice(ihdr.offset,ihdr.offset+12+ihdr.length);const ad=new Uint8Array(8);const av=new DataView(ad.buffer);av.setUint32(0,T);av.setUint32(4,0);const actlC=makeChunk('acTL',ad);const allF=[];let seq=0;for(let i=0;i<pngs.length;i++){const ch=findChunks(pngs[i]);const idats=ch.filter(c=>c.type==='IDAT');const fd=new Uint8Array(26);const fv=new DataView(fd.buffer);fv.setUint32(0,seq++);fv.setUint32(4,1270);fv.setUint32(8,760);fv.setUint32(12,0);fv.setUint32(16,0);fv.setUint16(20,3000);fv.setUint16(22,1000);fd[24]=0;fd[25]=0;allF.push(makeChunk('fcTL',fd));for(const id of idats){if(i===0){allF.push(pngs[0].slice(id.offset,id.offset+12+id.length));}else{const dd=new Uint8Array(4+id.data.length);new DataView(dd.buffer).setUint32(0,seq++);dd.set(id.data,4);allF.push(makeChunk('fdAT',dd));}}}const iendC=makeChunk('IEND',new Uint8Array(0));let tot=sig.length+ihdrC.length+actlC.length;for(const c of allF)tot+=c.length;tot+=iendC.length;const apng=new Uint8Array(tot);let pos=0;apng.set(sig,pos);pos+=sig.length;apng.set(ihdrC,pos);pos+=ihdrC.length;apng.set(actlC,pos);pos+=actlC.length;for(const c of allF){apng.set(c,pos);pos+=c.length;}apng.set(iendC,pos);const blob=new Blob([apng],{type:'image/apng'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.download='hawkleads-customer-journey.apng';link.href=url;link.click();URL.revokeObjectURL(url);this.textContent='Download as APNG';this.disabled=false;});
+  </script>
+</body>
+</html>

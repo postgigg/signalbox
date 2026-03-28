@@ -24,16 +24,17 @@ export function Logo({ size = 'md', dark = false, className = '' }: LogoProps) {
       aria-label="HawkLeads"
     >
       <svg
-        viewBox="0 0 64 64"
+        viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         width={icon}
         height={icon}
         className={color}
       >
-        <path d="M12 8L22 56" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
-        <path d="M26 4L40 60" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
-        <path d="M44 12L50 52" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+        <path d="M6 24 L16 6 L16 42 Z" fill="currentColor" opacity=".12" />
+        <path d="M12 24 L20 10 L20 38 Z" fill="currentColor" opacity=".35" />
+        <path d="M18 24 L26 12 L26 36 Z" fill="currentColor" />
+        <circle cx="10" cy="24" r="1.5" fill="currentColor" />
       </svg>
       <span className={`font-body font-bold tracking-tight ${text} ${color}`}>
         HawkLeads
