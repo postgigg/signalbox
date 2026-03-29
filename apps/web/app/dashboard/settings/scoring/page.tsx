@@ -43,7 +43,7 @@ function parseScoringConfig(raw: unknown): ScoringConfig {
   if (typeof raw === 'object' && raw !== null) {
     const obj = raw as Record<string, unknown>;
     // Support old format: sum behavioralWeight + intentWeight into engagementWeight
-    let engagementWeight = DEFAULT_SCORING_CONFIG.engagementWeight;
+    let engagementWeight: number = DEFAULT_SCORING_CONFIG.engagementWeight;
     if (typeof obj.engagementWeight === 'number') {
       engagementWeight = obj.engagementWeight;
     } else if (typeof obj.behavioralWeight === 'number' && typeof obj.intentWeight === 'number') {
