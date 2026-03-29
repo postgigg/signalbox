@@ -121,7 +121,7 @@ export type Database = {
         Row: {
           id: string;
           account_id: string;
-          user_id: string;
+          user_id: string | null;
           role: 'owner' | 'admin' | 'viewer';
           invited_email: string | null;
           invited_at: string | null;
@@ -131,7 +131,7 @@ export type Database = {
         Insert: {
           id?: string;
           account_id: string;
-          user_id: string;
+          user_id?: string | null;
           role?: 'owner' | 'admin' | 'viewer';
           invited_email?: string | null;
           invited_at?: string | null;
@@ -141,7 +141,7 @@ export type Database = {
         Update: {
           id?: string;
           account_id?: string;
-          user_id?: string;
+          user_id?: string | null;
           role?: 'owner' | 'admin' | 'viewer';
           invited_email?: string | null;
           invited_at?: string | null;
