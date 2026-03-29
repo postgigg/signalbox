@@ -146,7 +146,8 @@ export default function TermsPage(): React.ReactElement {
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
             <li>Collect personal information from individuals under the age of 13 (or the applicable age of consent in your jurisdiction)</li>
             <li>Send unsolicited commercial communications (spam) using data collected through the widget</li>
-            <li>Collect sensitive personal data (health, financial, biometric, racial/ethnic data) without explicit consent and appropriate safeguards</li>
+            <li>Collect sensitive personal data (financial, biometric, racial/ethnic data) without explicit consent and appropriate safeguards</li>
+            <li>Use the service for processing protected health information (PHI) or any purpose requiring HIPAA compliance</li>
             <li>Engage in phishing, social engineering, or deceptive practices</li>
             <li>Violate any applicable local, state, national, or international law or regulation</li>
             <li>Interfere with or disrupt the service, servers, or networks connected to the service</li>

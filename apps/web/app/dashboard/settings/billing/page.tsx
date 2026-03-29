@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { useDashboard } from '@/lib/dashboard-context';
+import { DemoPlanSwitcher } from '@/components/dashboard/DemoPlanSwitcher';
+
 const SETTINGS_NAV = [
   { href: '/dashboard/settings', label: 'Account' },
   { href: '/dashboard/settings/billing', label: 'Billing' },
@@ -35,7 +38,7 @@ const UPGRADE_OPTIONS: Record<string, readonly string[]> = {
 
 export default function BillingSettingsPage(): React.ReactElement {
   const searchParams = useSearchParams();
-  const [plan, setPlan] = useState('trial');
+  const { accountPlan: plan, setAccountPlan: setPlan } = useDashboard();
   const [subscriptionStatus, setSubscriptionStatus] = useState('trialing');
   const [trialEndsAt, setTrialEndsAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,8 +82,8 @@ export default function BillingSettingsPage(): React.ReactElement {
 
         if (account) {
           setPlan(account.plan);
-          setSubscriptionStatus(account.subscription_status);
-          setTrialEndsAt(account.trial_ends_at);
+          setSubscriptionStatus(account.subscription_status ?? 'trialing');
+          setTrialEndsAt(account.trial_ends_at ?? null);
         }
       } catch {
         // Failed to load billing
@@ -112,6 +115,8 @@ export default function BillingSettingsPage(): React.ReactElement {
           </Link>
         ))}
       </nav>
+
+      <DemoPlanSwitcher />
 
       {checkoutSuccess && (
         <div className="mb-6 p-3 rounded-sm bg-success-light text-success text-sm border border-success/20">

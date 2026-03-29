@@ -7,7 +7,6 @@ const INDUSTRIES = [
   'All',
   'Home Services',
   'Legal',
-  'Medical',
   'Agency',
   'Hospitality',
   'Consulting',
@@ -47,18 +46,6 @@ const TEMPLATES: readonly TemplateCard[] = [
       'What type of legal matter?',
       'How urgent is this?',
       'How would you prefer to consult?',
-    ],
-  },
-  {
-    name: 'Medical Practice Intake',
-    industry: 'Medical',
-    steps: 4,
-    description: 'Screen new patients by service needed, insurance status, patient type, and scheduling preference.',
-    questions: [
-      'What service are you interested in?',
-      'Do you have insurance?',
-      'Are you a new or existing patient?',
-      'When are you available?',
     ],
   },
   {

@@ -118,6 +118,22 @@ export const HELP_TIPS = {
     conversionFunnel:
       'How visitors move through the widget: open it, complete each step, then submit the contact form.',
   },
+  routing: {
+    pageGuide:
+      'Routing rules auto-assign leads from this widget to specific team members. Rules are evaluated in priority order: the first match wins.',
+    matchType:
+      'Score Tier matches leads by their hot/warm/cold score. Flow Answer matches leads who picked a specific option in a specific step.',
+    tier:
+      'Hot: highest-intent leads above the hot threshold. Warm: between warm and hot. Cold: below warm. Set thresholds in Settings > Scoring.',
+    priority:
+      'When multiple rules match the same lead, the one with the highest priority wins. Use 0 for default, higher numbers for exceptions.',
+    assignTo:
+      'The team member who will be assigned this lead. They will see the lead in their Leads view and receive a notification.',
+    stepId:
+      'The ID of the flow step to match against, e.g. step_1. Find step IDs in the Flow Builder.',
+    optionId:
+      'The ID of the specific answer option, e.g. opt_1. Leads who picked this option on the matching step will be routed.',
+  },
   widgetOverview: {
     usage:
       'Submissions received out of your plan limit. The widget stops accepting submissions at the limit until next billing cycle.',

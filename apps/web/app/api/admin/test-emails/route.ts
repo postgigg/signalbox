@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { sendEmail } from '@/lib/email/client';
 import {
@@ -27,7 +27,16 @@ interface TestResult {
   error: string | null;
 }
 
-export async function POST(): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  // Admin-only: verify cron secret or authenticated admin
+  const adminSecret = process.env.ADMIN_SECRET;
+  const authHeader = request.headers.get('authorization');
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+
+  if (!adminSecret || bearerToken !== adminSecret) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
   const results: TestResult[] = [];
 

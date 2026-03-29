@@ -199,9 +199,19 @@ export default function PrivacyPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">5.2 Widget</h3>
           <p>
-            The HawkLeads widget does not set any cookies, use local storage, or employ any persistent tracking
-            mechanisms. The widget does not load any third-party scripts. End User interactions are recorded
-            only as server-side events (widget opens, step completions, submissions).
+            The HawkLeads widget sets a single, first-party cookie (<code className="text-xs bg-surface-alt px-1 py-0.5 rounded">sb_v</code>)
+            to track anonymous session behavior such as pages viewed, scroll depth, and return visits. This cookie:
+          </p>
+          <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
+            <li>Contains a randomly generated visitor ID (no personally identifiable information)</li>
+            <li>Expires after 90 days</li>
+            <li>Is set with SameSite=Lax and is scoped to the Customer's domain</li>
+            <li>Is not shared with any third parties</li>
+            <li>Is used solely to improve lead scoring accuracy for the website operator</li>
+          </ul>
+          <p className="mt-2">
+            The widget does not load any third-party scripts, advertising trackers, or analytics services.
+            End User interactions are recorded only as server-side events (widget opens, step completions, submissions).
           </p>
         </section>
 
@@ -269,20 +279,42 @@ export default function PrivacyPage(): React.ReactElement {
 
         {/* 8 */}
         <section>
-          <h2 className="font-display text-lg font-semibold text-ink mb-2">8. Children's Privacy</h2>
+          <h2 className="font-display text-lg font-semibold text-ink mb-2">8. Children's Privacy (COPPA)</h2>
           <p>
-            HawkLeads is not directed to individuals under the age of 13 (or the applicable age of consent in
-            your jurisdiction). We do not knowingly collect personal information from children. Customers are
-            prohibited from using HawkLeads to collect data from minors. If we learn that we have collected
-            personal information from a child, we will take immediate steps to delete that information.
+            HawkLeads complies with the Children's Online Privacy Protection Act (COPPA). Our service is not
+            directed to individuals under the age of 13 (or the applicable age of digital consent in your
+            jurisdiction, such as 16 in certain EU member states under GDPR).
+          </p>
+          <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
+            <li>We do not knowingly collect, use, or disclose personal information from children under 13</li>
+            <li>Customers are strictly prohibited from using HawkLeads to collect data from minors</li>
+            <li>Customers must not deploy the widget on websites directed at children</li>
+            <li>If we learn that we have inadvertently collected personal information from a child, we will delete it within 48 hours of discovery</li>
+          </ul>
+          <p className="mt-2">
             If you believe a child has provided personal information through a HawkLeads widget, contact us
-            at support@hawkleads.io.
+            immediately at support@hawkleads.io and we will take prompt action.
           </p>
         </section>
 
-        {/* 9 */}
+        {/* 8.1 */}
         <section>
-          <h2 className="font-display text-lg font-semibold text-ink mb-2">9. Changes to This Policy</h2>
+          <h2 className="font-display text-lg font-semibold text-ink mb-2">9. Healthcare and Regulated Industries</h2>
+          <p>
+            HawkLeads is not designed for, and must not be used to collect, store, or process protected health
+            information (PHI) as defined by the Health Insurance Portability and Accountability Act (HIPAA).
+            HawkLeads is not HIPAA compliant and does not sign Business Associate Agreements (BAAs).
+          </p>
+          <p className="mt-2">
+            Customers operating in the healthcare industry or other regulated sectors must ensure that their use
+            of HawkLeads does not involve the collection or processing of regulated data categories. It is the
+            Customer's responsibility to ensure compliance with applicable industry-specific regulations.
+          </p>
+        </section>
+
+        {/* 10 */}
+        <section>
+          <h2 className="font-display text-lg font-semibold text-ink mb-2">10. Changes to This Policy</h2>
           <p>
             We may update this Privacy Policy from time to time. Material changes will be communicated via
             email to registered Customers at least 30 days before they take effect. The "Effective date" at
@@ -291,9 +323,9 @@ export default function PrivacyPage(): React.ReactElement {
           </p>
         </section>
 
-        {/* 10 */}
+        {/* 11 */}
         <section>
-          <h2 className="font-display text-lg font-semibold text-ink mb-2">10. Contact Us</h2>
+          <h2 className="font-display text-lg font-semibold text-ink mb-2">11. Contact Us</h2>
           <p>
             For any questions or concerns about this Privacy Policy, your data, or to exercise your rights, contact us at:
           </p>

@@ -68,7 +68,7 @@ function parseScoringConfig(raw: Json): ScoringConfig | null {
   };
 }
 
-function verifyCronSecret(request: NextRequest): boolean {
+async function verifyCronSecret(request: NextRequest): Promise<boolean> {
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret) return false;
 
@@ -78,7 +78,16 @@ function verifyCronSecret(request: NextRequest): boolean {
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') return false;
 
-  return parts[1] === cronSecret;
+  const provided = parts[1];
+  if (!provided || provided.length !== cronSecret.length) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(cronSecret);
+  try {
+    const { timingSafeEqual } = await import('crypto');
+    return timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }
 
 async function fetchDecayEnabledAccounts(
@@ -235,7 +244,7 @@ async function processDecayBatch(
 export async function POST(
   request: NextRequest,
 ): Promise<NextResponse> {
-  if (!verifyCronSecret(request)) {
+  if (!(await verifyCronSecret(request))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

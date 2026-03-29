@@ -73,7 +73,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     query = query.eq('category', category);
   }
   if (search) {
-    query = query.or(`subject.ilike.%${search}%,requester_email.ilike.%${search}%`);
+    const sanitizedSearch = search.replace(/[.,()\\;*{}[\]%_]/g, '');
+    query = query.or(`subject.ilike.%${sanitizedSearch}%,requester_email.ilike.%${sanitizedSearch}%`);
   }
 
   const { data: tickets, error: queryError, count } = await query;

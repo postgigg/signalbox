@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { PRIORITY_SUPPORT_EMAIL } from '@/lib/constants';
+import { PRIORITY_SUPPORT_EMAIL, PLAN_NAV_ITEMS } from '@/lib/constants';
+import { DashboardContext, getIsDemo } from '@/lib/dashboard-context';
 import { Logo } from '@/components/shared/Logo';
 import { OnboardingOverlay } from '@/components/dashboard/OnboardingOverlay';
 
@@ -116,6 +117,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [accountId, setAccountId] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [inboxUnreadCount, setInboxUnreadCount] = useState(0);
@@ -141,6 +143,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
           .single();
 
         if (!memberData) return;
+        setAccountId(memberData.account_id);
 
         const { data: accountData } = await supabase
           .from('accounts')
@@ -203,13 +206,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
   }
 
   const isAdmin = ADMIN_EMAILS.includes(userEmail);
+  const isDemo = getIsDemo(accountId);
+  const planNavLabels = PLAN_NAV_ITEMS[accountPlan] ?? PLAN_NAV_ITEMS['trial'];
   const visibleNavItems = NAV_ITEMS.filter((item) => {
-    if (item.agencyOnly === true && accountPlan !== 'agency') return false;
     if (item.adminOnly === true && !isAdmin) return false;
+    if (planNavLabels && !planNavLabels.includes(item.label)) return false;
     return true;
   });
 
+  const dashboardCtx = useMemo(() => ({
+    accountId,
+    accountPlan,
+    isDemo,
+    setAccountPlan,
+  }), [accountId, accountPlan, isDemo]);
+
   return (
+    <DashboardContext.Provider value={dashboardCtx}>
     <div className="min-h-screen bg-paper">
       <meta name="robots" content="noindex, nofollow" />
 
@@ -326,5 +339,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps): Rea
         </div>
       </main>
     </div>
+    </DashboardContext.Provider>
   );
 }

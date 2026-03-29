@@ -4,8 +4,15 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 const BAR_COUNT = 48;
 const FFT_SIZE = 256;
+const FIXED_BEAT_DROPS = [11.9] as const;
+const END_DROP_OFFSET = 0.04; // 40ms before song ends
 
-export function AnthemPlayer(): React.ReactElement {
+interface AnthemPlayerProps {
+  readonly onBeatDrop?: () => void;
+}
+
+export function AnthemPlayer({ onBeatDrop }: AnthemPlayerProps): React.ReactElement {
+  const beatsFiredRef = useRef<Set<number>>(new Set());
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -203,6 +210,26 @@ export function AnthemPlayer(): React.ReactElement {
     function onTimeUpdate(): void {
       if (!audio) return;
       setProgress(audio.currentTime);
+
+      // Build drop times: fixed marks + dynamic end mark
+      const endDrop = audio.duration > END_DROP_OFFSET + 1 ? audio.duration - END_DROP_OFFSET : null;
+      const dropTimes = endDrop !== null ? [...FIXED_BEAT_DROPS, endDrop] : [...FIXED_BEAT_DROPS];
+
+      for (const dropTime of dropTimes) {
+        if (
+          !beatsFiredRef.current.has(dropTime) &&
+          audio.currentTime >= dropTime &&
+          audio.currentTime < dropTime + 1
+        ) {
+          beatsFiredRef.current.add(dropTime);
+          onBeatDrop?.();
+        }
+
+        // Reset if user seeks backward past a drop point
+        if (audio.currentTime < dropTime - 0.5) {
+          beatsFiredRef.current.delete(dropTime);
+        }
+      }
     }
     function onDurationChange(): void {
       if (!audio || Number.isNaN(audio.duration)) return;
@@ -285,14 +312,15 @@ export function AnthemPlayer(): React.ReactElement {
 
         <div className="relative z-10 flex flex-col items-center">
           <svg
-            viewBox="0 0 64 64"
+            viewBox="0 0 48 48"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="w-14 h-14 text-white"
           >
-            <path d="M12 8L22 56" stroke="currentColor" strokeWidth="6" strokeLinecap="round" />
-            <path d="M26 4L40 60" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
-            <path d="M44 12L50 52" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+            <path d="M6 24 L16 6 L16 42 Z" fill="currentColor" opacity=".12" />
+            <path d="M12 24 L20 10 L20 38 Z" fill="currentColor" opacity=".35" />
+            <path d="M18 24 L26 12 L26 36 Z" fill="currentColor" />
+            <circle cx="10" cy="24" r="1.5" fill="currentColor" />
           </svg>
           <span className="mt-2 font-body font-bold text-white text-lg tracking-tight">
             HawkLeads

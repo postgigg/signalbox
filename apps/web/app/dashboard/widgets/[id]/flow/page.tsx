@@ -7,6 +7,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { HelpTip } from '@/components/shared/HelpTip';
 import { PageGuide } from '@/components/shared/PageGuide';
 import { HELP_TIPS } from '@/lib/help-content';
+import { DEMO_ACCOUNT_ID } from '@/lib/constants';
 
 interface FlowOption {
   id: string;
@@ -69,7 +70,7 @@ export default function FlowBuilderPage(): React.ReactElement {
             .eq('user_id', user.id)
             .limit(1)
             .single();
-          if (member?.account_id === 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4') {
+          if (member?.account_id === DEMO_ACCOUNT_ID) {
             setIsDemo(true);
           }
         }

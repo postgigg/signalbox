@@ -302,6 +302,76 @@ export default function AccountSettingsPage(): React.ReactElement {
         </form>
       )}
 
+      {/* Data & Privacy */}
+      {!loading && (
+        <div className="mt-10 max-w-prose">
+          <h2 className="font-display text-lg font-semibold text-ink">Data and Privacy</h2>
+          <div className="mt-3 card space-y-4">
+            <div>
+              <p className="text-sm text-ink font-medium font-body">Export Your Data</p>
+              <p className="text-sm text-stone mt-1">
+                Download all your account data including leads, widgets, flows, and settings in JSON format.
+              </p>
+              <button
+                type="button"
+                className="btn-ghost text-sm mt-2"
+                onClick={() => {
+                  void (async () => {
+                    try {
+                      const res = await fetch('/api/v1/account/export', { method: 'POST' });
+                      if (!res.ok) return;
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'hawkleads-data-export.json';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    } catch {
+                      // Export failed
+                    }
+                  })();
+                }}
+              >
+                Export Data
+              </button>
+            </div>
+            <div className="border-t border-border pt-4">
+              <p className="text-sm text-danger font-medium font-body">Delete Account</p>
+              <p className="text-sm text-stone mt-1">
+                Permanently delete your account and all associated data. This action cannot be undone.
+              </p>
+              <button
+                type="button"
+                className="mt-2 px-4 py-2 text-sm rounded-md border border-danger text-danger hover:bg-danger-light transition-colors duration-fast"
+                onClick={() => {
+                  void (async () => {
+                    const confirmed = confirm(
+                      'Are you sure you want to permanently delete your account? All your data including leads, widgets, and team members will be deleted. This cannot be undone.'
+                    );
+                    if (!confirmed) return;
+                    const doubleConfirm = confirm(
+                      'This is your last chance. Type "delete" in the next prompt won\'t work here, so please confirm: permanently delete everything?'
+                    );
+                    if (!doubleConfirm) return;
+                    try {
+                      const res = await fetch('/api/v1/account', { method: 'DELETE' });
+                      if (res.ok) {
+                        window.location.href = '/?deleted=1';
+                      }
+                    } catch {
+                      // Delete failed
+                    }
+                  })();
+                }}
+              >
+                Delete My Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Support */}
       {!loading && (
         <div className="mt-10 max-w-prose">

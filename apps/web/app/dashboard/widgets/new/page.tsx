@@ -9,7 +9,6 @@ import type { FormEvent } from 'react';
 const TEMPLATES = [
   { id: 'home_services', name: 'Home Services', steps: 4, description: 'Service type, timeline, property size, budget' },
   { id: 'legal', name: 'Legal', steps: 3, description: 'Case type, urgency, consultation preference' },
-  { id: 'medical', name: 'Medical', steps: 4, description: 'Service, insurance, new patient, availability' },
   { id: 'agency', name: 'Agency', steps: 4, description: 'Service, budget, timeline, company size' },
   { id: 'real_estate', name: 'Real Estate', steps: 4, description: 'Buy/sell, property type, price range, timeline' },
   { id: 'consulting', name: 'Consulting', steps: 3, description: 'Service area, company size, engagement type' },

@@ -281,7 +281,6 @@ export const INDUSTRIES = [
   'Agency',
   'Consulting',
   'Real Estate',
-  'Healthcare',
   'Finance',
   'Education',
   'Legal',
@@ -596,6 +595,23 @@ export const PAGINATION_MAX_PAGE_SIZE = 100;
 export const SUPPORT_EMAIL = 'support@hawkleads.io';
 export const PRIORITY_SUPPORT_EMAIL = 'priority@hawkleads.io';
 export const NO_REPLY_EMAIL = 'noreply@hawkleads.io';
+
+// ---------------------------------------------------------------------------
+// Demo account
+// ---------------------------------------------------------------------------
+
+export const DEMO_ACCOUNT_ID = 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4';
+
+// ---------------------------------------------------------------------------
+// Plan-based nav visibility
+// ---------------------------------------------------------------------------
+
+export const PLAN_NAV_ITEMS: Record<string, readonly string[]> = {
+  trial: ['Overview', 'Leads', 'Team', 'Widgets', 'Analytics', 'Integrations', 'Settings'],
+  starter: ['Overview', 'Leads', 'Team', 'Widgets', 'Analytics', 'Integrations', 'Settings'],
+  pro: ['Overview', 'Team', 'Widgets', 'Analytics', 'Settings'],
+  agency: ['Overview', 'Clients', 'Settings'],
+};
 
 export const APP_NAME = 'HawkLeads';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';

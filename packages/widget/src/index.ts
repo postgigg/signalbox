@@ -490,7 +490,14 @@ class HawkLeadsWidget {
   }
 
   private handleCtaClick(url: string): void {
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Validate URL protocol to prevent javascript: and data: injection
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      // Invalid URL, ignore
+    }
   }
 
   // ── Render Current View ──────────────────────────────────────────────
@@ -530,7 +537,17 @@ class HawkLeadsWidget {
       return;
     }
 
-    const apiUrl = config.apiUrl || DEFAULT_API_URL;
+    let apiUrl = DEFAULT_API_URL;
+    if (config.apiUrl) {
+      try {
+        const parsed = new URL(config.apiUrl);
+        if (parsed.protocol === 'https:') {
+          apiUrl = config.apiUrl;
+        }
+      } catch {
+        // Invalid URL, use default
+      }
+    }
     const widget = new HawkLeadsWidget(config.key, apiUrl);
     widget.start();
   }

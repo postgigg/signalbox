@@ -65,7 +65,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   if (search) {
-    query = query.or(`from_email.ilike.%${search}%,from_name.ilike.%${search}%,subject.ilike.%${search}%`);
+    const sanitizedSearch = search.replace(/[.,()\\;*{}[\]%_]/g, '');
+    query = query.or(`from_email.ilike.%${sanitizedSearch}%,from_name.ilike.%${sanitizedSearch}%,subject.ilike.%${sanitizedSearch}%`);
   }
 
   const { data: emails, error: queryError, count } = await query;

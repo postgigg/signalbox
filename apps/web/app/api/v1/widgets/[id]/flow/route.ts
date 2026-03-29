@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { authenticateRequest, requireRole } from '@/lib/auth';
 import { validateFlowSteps } from '@/lib/scoring';
+import { DEMO_ACCOUNT_ID } from '@/lib/constants';
 import type { Json } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -81,7 +82,6 @@ export async function PUT(
   if (roleError) return roleError;
 
   // Demo account is read-only
-  const DEMO_ACCOUNT_ID = 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4';
   if (account.id === DEMO_ACCOUNT_ID) {
     return NextResponse.json({ error: 'Demo account: flow editing is disabled' }, { status: 403 });
   }

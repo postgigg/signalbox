@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { authenticateRequest, requireRole } from '@/lib/auth';
-import { TRIAL_DURATION_DAYS } from '@/lib/constants';
+import { TRIAL_DURATION_DAYS, DEMO_ACCOUNT_ID } from '@/lib/constants';
 import type { Json } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -312,4 +312,48 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   }
 
   return NextResponse.json({ data: updated });
+}
+
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
+  const authResult = await authenticateRequest(request);
+  if ('error' in authResult) return authResult.error;
+  const { member, account } = authResult.ctx;
+
+  // Only owners can delete accounts
+  const roleError = requireRole(member, ['owner']);
+  if (roleError) return roleError;
+
+  // Block demo account deletion
+  if (account.id === DEMO_ACCOUNT_ID) {
+    return NextResponse.json({ error: 'Demo account cannot be deleted' }, { status: 403 });
+  }
+
+  const admin = createAdminClient();
+
+  // Soft delete: set deleted_at timestamp
+  const { error: deleteError } = await admin
+    .from('accounts')
+    .update({ deleted_at: new Date().toISOString() })
+    .eq('id', account.id);
+
+  if (deleteError) {
+    return NextResponse.json(
+      { error: 'Failed to delete account' },
+      { status: 500 },
+    );
+  }
+
+  // Deactivate all widgets
+  await admin
+    .from('widgets')
+    .update({ is_active: false })
+    .eq('account_id', account.id);
+
+  // Deactivate all API keys
+  await admin
+    .from('api_keys')
+    .update({ is_active: false })
+    .eq('account_id', account.id);
+
+  return NextResponse.json({ success: true });
 }

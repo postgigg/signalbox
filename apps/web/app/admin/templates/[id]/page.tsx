@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 
 const INDUSTRIES = [
-  'home_services', 'legal', 'medical', 'agency', 'hospitality',
+  'home_services', 'legal', 'agency', 'hospitality',
   'consulting', 'real_estate', 'financial', 'fitness', 'education', 'other',
 ] as const;
 

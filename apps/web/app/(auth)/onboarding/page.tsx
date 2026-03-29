@@ -10,7 +10,6 @@ const STEP_LABELS = ['Account', 'Template', 'Widget'] as const;
 const ONBOARDING_TEMPLATES = [
   { id: 'home_services', name: 'Home Services', description: 'HVAC, plumbing, roofing, landscaping' },
   { id: 'legal', name: 'Legal', description: 'Law firms, attorneys, legal services' },
-  { id: 'medical', name: 'Medical', description: 'Clinics, dental, dermatology, therapy' },
   { id: 'agency', name: 'Agency', description: 'Marketing, design, development agencies' },
   { id: 'real_estate', name: 'Real Estate', description: 'Agents, brokers, property managers' },
   { id: 'consulting', name: 'Consulting', description: 'Business, IT, management consulting' },

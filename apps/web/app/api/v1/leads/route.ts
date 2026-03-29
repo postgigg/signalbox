@@ -83,7 +83,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   if (search) {
     // Sanitize PostgREST special characters to prevent filter injection
-    const sanitized = search.replace(/[.,()\\]/g, '');
+    const sanitized = search.replace(/[.,()\\;*{}[\]%_]/g, '');
     query = query.or(
       `visitor_name.ilike.%${sanitized}%,visitor_email.ilike.%${sanitized}%`,
     );
