@@ -571,6 +571,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         let assigneeEmail: string | null = memberResult.data.invited_email;
         let assigneeName = 'Team Member';
 
+        if (!memberResult.data.user_id) return;
         const { data: authUser } = await admin.auth.admin.getUserById(memberResult.data.user_id);
         if (authUser?.user?.email) {
           assigneeEmail = authUser.user.email;
