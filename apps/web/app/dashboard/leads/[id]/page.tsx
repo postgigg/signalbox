@@ -97,8 +97,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
   }
 
   const hasScoreBreakdown = submission.form_score !== undefined
-    || submission.behavioral_score !== undefined
-    || submission.intent_score !== undefined;
+    || submission.behavioral_score !== undefined;
 
   const rawAnswers: unknown[] = Array.isArray(submission.answers) ? submission.answers : [];
   const answers: AnswerEntry[] = rawAnswers.filter(
@@ -190,8 +189,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
           {hasScoreBreakdown && (
             <ScoreBreakdown
               formScore={submission.form_score}
-              behavioralScore={submission.behavioral_score}
-              intentScore={submission.intent_score}
+              engagementScore={submission.behavioral_score}
               decayPenalty={submission.decay_penalty}
               behavioralInsights={behavioralInsights}
               scoreHistory={scoreHistory}

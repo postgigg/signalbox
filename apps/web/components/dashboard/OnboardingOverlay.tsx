@@ -24,9 +24,9 @@ const STEPS: readonly OnboardingStep[] = [
     subtitle: 'Smart lead capture, built for conversion.',
     body: 'HawkLeads helps you qualify visitors before they hit your inbox. Embed a smart widget on your site, score leads automatically, and focus your time on the ones that matter.',
     tips: [
-      'Your 14-day trial includes all features.',
+      'Your 30-day trial includes all features.',
       'No credit card required to get started.',
-      'Set up your first widget in under 5 minutes.',
+      'Set up your first widget in under 2 minutes.',
     ],
     navHint: '',
   },

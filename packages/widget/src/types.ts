@@ -148,6 +148,7 @@ export interface SubmitPayload {
   abVariant?: 'a' | 'b';
   behavioralData?: BehavioralSessionData;
   visitorFingerprint?: string;
+  trackingBlocked?: boolean;
 }
 
 export interface SubmitResponse {

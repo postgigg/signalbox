@@ -209,6 +209,9 @@ export default function LeadsPage(): React.ReactElement {
           />
         </div>
       </div>
+      <p className="mt-2 text-xs text-stone">
+        Every submission is here. Scoring sorts them by priority. Nothing is deleted or hidden.
+      </p>
 
       {/* Table inside card */}
       <div className="mt-4 bg-surface border border-border rounded-md overflow-hidden">

@@ -15,8 +15,7 @@ const ENGAGEMENT_STATUSES = ['contacted', 'qualified', 'converted'] as const;
 export interface DecayOnReadParams {
   readonly leadScore: number;
   readonly formScore: number;
-  readonly behavioralScore: number;
-  readonly intentScore: number;
+  readonly engagementScore: number;
   readonly lastEngagementAt: string;
   readonly scoringConfig: ScoringConfig;
   readonly hotThreshold: number;
@@ -67,12 +66,10 @@ export function applyDecayOnRead(params: DecayOnReadParams): DecayOnReadResult {
 
   const result: CompositeScoreResult = calculateCompositeScore({
     formScore: params.formScore,
-    behavioralScore: params.behavioralScore,
-    intentScore: params.intentScore,
+    engagementScore: params.engagementScore,
     decayPenalty,
     formWeight: scoringConfig.formWeight,
-    behavioralWeight: scoringConfig.behavioralWeight,
-    intentWeight: scoringConfig.intentWeight,
+    engagementWeight: scoringConfig.engagementWeight,
     hotThreshold: params.hotThreshold,
     warmThreshold: params.warmThreshold,
   });

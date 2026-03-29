@@ -54,7 +54,7 @@ export default function LandingPage(): React.ReactElement {
               </a>
             </div>
             <p className="mt-3 text-sm text-stone-light">
-              14 days free. No credit card.
+              30 days free. No credit card.
             </p>
           </div>
           <div className="hidden lg:block">
@@ -77,6 +77,9 @@ export default function LandingPage(): React.ReactElement {
             <p className="mt-4 text-base text-stone leading-relaxed max-w-[460px]">
               A 30-second tappable flow on your site. Not a form. Visitors tell you their
               budget, timeline, and service needs. You get a score and a call list.
+            </p>
+            <p className="mt-2 text-sm text-ink font-medium">
+              You will get fewer submissions. Every one of them will be worth your time.
             </p>
             <p className="mt-3 text-sm text-stone-light">
               Your receptionist stops guessing. Your sales team stops wasting hours on $200 jobs.
@@ -106,7 +109,7 @@ export default function LandingPage(): React.ReactElement {
               Simple pricing.
             </h2>
             <p className="mt-3 text-base text-stone">
-              14-day free trial on every plan. No credit card required.
+              30-day free trial on every plan. No credit card required.
             </p>
             <PricingToggle
               isAnnual={isAnnual}
@@ -272,13 +275,13 @@ export default function LandingPage(): React.ReactElement {
                   <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  5-minute setup
+                  2-minute setup
                 </span>
                 <span className="flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  14-day free trial
+                  30-day free trial
                 </span>
                 <span className="flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

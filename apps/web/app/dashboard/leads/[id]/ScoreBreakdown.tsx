@@ -26,8 +26,7 @@ interface BehavioralInsights {
 
 interface ScoreBreakdownProps {
   readonly formScore: number;
-  readonly behavioralScore: number;
-  readonly intentScore: number;
+  readonly engagementScore: number;
   readonly decayPenalty: number;
   readonly behavioralInsights: BehavioralInsights | null;
   readonly scoreHistory: ScoreHistoryEntry[];
@@ -62,8 +61,7 @@ function formatDuration(seconds: number): string {
 
 export function ScoreBreakdown({
   formScore,
-  behavioralScore,
-  intentScore,
+  engagementScore,
   decayPenalty,
   behavioralInsights,
   scoreHistory,
@@ -78,8 +76,12 @@ export function ScoreBreakdown({
         </h2>
         <div className="space-y-4">
           <ScoreBar label="Form Answers" value={formScore} color="bg-blue-500" bgColor="bg-blue-100" />
-          <ScoreBar label="Behavioral" value={behavioralScore} color="bg-green-500" bgColor="bg-green-100" />
-          <ScoreBar label="Intent Signals" value={intentScore} color="bg-amber-500" bgColor="bg-amber-100" />
+          <ScoreBar label="Engagement" value={engagementScore} color="bg-green-500" bgColor="bg-green-100" />
+          {engagementScore === 0 && (
+            <p className="text-xs text-stone mt-2">
+              Score based on form answers only. On-site engagement data was not available for this visitor.
+            </p>
+          )}
         </div>
 
         {decayPenalty > 0 && (

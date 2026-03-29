@@ -2,7 +2,7 @@
  * Hand-crafted SVG illustrations with CSS animations for the eight
  * "What you get" features. Each depicts the literal feature.
  *
- * 1. Lead scoring — a semicircular gauge that sweeps to 87, with tier labels
+ * 1. Lead scoring — two-bar breakdown (form + engagement) with composite score
  * 2. Instant alerts — an email notification card sliding up with lead details
  * 3. Conversion analytics — a funnel with shrinking bars and a drop-off marker
  * 4. Custom branding — a widget shell with color swatches that swap in
@@ -25,57 +25,49 @@ export function LeadScoringIllustration(): React.ReactElement {
       >
         {/* Card frame */}
         <rect x="16" y="8" width="248" height="124" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-        <text x="28" y="24" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Three-dimensional scoring</text>
+        <text x="28" y="22" fontSize="8" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Lead Score Breakdown</text>
 
         {/* ── Dimension 1: Form Score ── */}
         <g className="feat-score-dim-1">
-          <text x="28" y="40" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Form</text>
-          <text x="56" y="40" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">answers + weights</text>
-          <rect x="28" y="44" width="130" height="7" rx="3.5" fill="#F1F5F9" />
-          <rect x="28" y="44" width="107" height="7" rx="3.5" fill="#2563EB" className="feat-score-bar-form" />
-          <text x="162" y="50" fontSize="8" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="700">82</text>
-          <rect x="184" y="42" width="32" height="12" rx="3" fill="#EFF6FF" />
-          <text x="191" y="51" fontSize="6" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="500">x 0.6</text>
+          <text x="28" y="38" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">What They Told You</text>
+          <rect x="28" y="42" width="130" height="7" rx="3.5" fill="#F1F5F9" />
+          <rect x="28" y="42" width="107" height="7" rx="3.5" fill="#2563EB" className="feat-score-bar-form" />
+          <text x="162" y="48" fontSize="8" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="700">82</text>
+          <rect x="184" y="40" width="32" height="12" rx="3" fill="#EFF6FF" />
+          <text x="191" y="49" fontSize="6" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="500">x 0.7</text>
         </g>
 
-        {/* ── Dimension 2: Behavioral Score ── */}
+        {/* ── Dimension 2: Engagement Score ── */}
         <g className="feat-score-dim-2">
-          <text x="28" y="64" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Behavioral</text>
-          <text x="76" y="64" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">pages, time, scroll</text>
-          <rect x="28" y="68" width="130" height="7" rx="3.5" fill="#F1F5F9" />
-          <rect x="28" y="68" width="92" height="7" rx="3.5" fill="#16A34A" className="feat-score-bar-behav" />
-          <text x="162" y="74" fontSize="8" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="700">71</text>
-          <rect x="184" y="66" width="32" height="12" rx="3" fill="#F0FDF4" />
-          <text x="191" y="75" fontSize="6" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="500">x 0.2</text>
+          <text x="28" y="68" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">What They Did</text>
+          <rect x="28" y="72" width="130" height="7" rx="3.5" fill="#F1F5F9" />
+          <rect x="28" y="72" width="92" height="7" rx="3.5" fill="#16A34A" className="feat-score-bar-engmt" />
+          <text x="162" y="78" fontSize="8" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="700">71</text>
+          <rect x="184" y="70" width="32" height="12" rx="3" fill="#F0FDF4" />
+          <text x="191" y="79" fontSize="6" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="500">x 0.3</text>
         </g>
 
-        {/* ── Dimension 3: Intent Score ── */}
-        <g className="feat-score-dim-3">
-          <text x="28" y="88" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Intent</text>
-          <text x="54" y="88" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">pricing views, returns</text>
-          <rect x="28" y="92" width="130" height="7" rx="3.5" fill="#F1F5F9" />
-          <rect x="28" y="92" width="88" height="7" rx="3.5" fill="#CA8A04" className="feat-score-bar-intent" />
-          <text x="162" y="98" fontSize="8" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="700">68</text>
-          <rect x="184" y="90" width="32" height="12" rx="3" fill="#FEFCE8" />
-          <text x="191" y="99" fontSize="6" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="500">x 0.2</text>
-        </g>
+        {/* Divider */}
+        <line x1="28" y1="90" x2="236" y2="90" stroke="#E2E8F0" strokeWidth="1" />
 
         {/* ── Composite Score ── */}
         <g className="feat-score-composite">
-          <rect x="28" y="110" width="188" height="18" rx="5" fill="#0F172A" />
-          <text x="38" y="122" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">Composite</text>
-          <text x="100" y="123" fontSize="11" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="700">77</text>
-          <rect x="122" y="113" width="24" height="12" rx="6" fill="#DC2626" />
-          <text x="127" y="122" fontSize="6" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600">Hot</text>
-          <text x="156" y="122" fontSize="5.5" fontFamily="var(--font-mono)" fill="#94A3B8">(49+14+14)</text>
+          <rect x="28" y="96" width="188" height="18" rx="5" fill="#0F172A" />
+          <text x="38" y="108" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">Composite</text>
+          <text x="100" y="109" fontSize="11" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="700">79</text>
+          <rect x="122" y="99" width="24" height="12" rx="6" fill="#DC2626" />
+          <text x="127" y="108" fontSize="6" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600">Hot</text>
+          <text x="156" y="108" fontSize="5.5" fontFamily="var(--font-mono)" fill="#94A3B8">(57 + 21)</text>
         </g>
 
-        {/* Decay indicator */}
-        <g className="feat-score-decay">
-          <rect x="222" y="38" width="18" height="66" rx="3" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="0.5" />
-          <text x="225" y="52" fontSize="4.5" fontFamily="var(--font-mono)" fill="#94A3B8" style={{ writingMode: 'vertical-rl' as React.CSSProperties['writingMode'] }}>DECAY</text>
-          <rect x="226" y="68" width="10" height="32" rx="2" fill="#F1F5F9" />
-          <rect x="226" y="90" width="10" height="10" rx="2" fill="#DC2626" opacity="0.2" className="feat-score-decay-fill" />
+        {/* Tier legend */}
+        <g>
+          <rect x="28" y="120" width="8" height="6" rx="3" fill="#DC2626" />
+          <text x="40" y="125" fontSize="5" fontFamily="var(--font-body)" fill="#94A3B8">Hot 70+</text>
+          <rect x="80" y="120" width="8" height="6" rx="3" fill="#CA8A04" />
+          <text x="92" y="125" fontSize="5" fontFamily="var(--font-body)" fill="#94A3B8">Warm 40+</text>
+          <rect x="140" y="120" width="8" height="6" rx="3" fill="#94A3B8" />
+          <text x="152" y="125" fontSize="5" fontFamily="var(--font-body)" fill="#94A3B8">Cold 0-39</text>
         </g>
       </svg>
     </div>

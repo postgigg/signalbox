@@ -1,4 +1,4 @@
-import { BEHAVIORAL_THRESHOLDS, INTENT_THRESHOLDS } from '@/lib/scoring-constants';
+import { ENGAGEMENT_THRESHOLDS } from '@/lib/scoring-constants';
 
 import type { Json } from '@/lib/supabase/types';
 
@@ -249,12 +249,10 @@ export interface BehavioralSessionData {
 
 export interface CompositeScoreParams {
   readonly formScore: number;
-  readonly behavioralScore: number;
-  readonly intentScore: number;
+  readonly engagementScore: number;
   readonly decayPenalty: number;
   readonly formWeight: number;
-  readonly behavioralWeight: number;
-  readonly intentWeight: number;
+  readonly engagementWeight: number;
   readonly hotThreshold: number;
   readonly warmThreshold: number;
 }
@@ -264,12 +262,10 @@ export interface CompositeScoreResult {
   readonly leadTier: LeadTier;
   readonly dimensions: {
     readonly form: number;
-    readonly behavioral: number;
-    readonly intent: number;
+    readonly engagement: number;
     readonly decay: number;
     readonly formWeighted: number;
-    readonly behavioralWeighted: number;
-    readonly intentWeighted: number;
+    readonly engagementWeighted: number;
   };
 }
 
@@ -299,102 +295,49 @@ export function determineTier(
 }
 
 /**
- * Calculates a behavioral engagement score (0-100) from session data.
- * Normalizes each metric against configured thresholds and applies weights.
+ * Calculates an engagement score (0-100) from session data.
+ * Combines behavioral signals (pages, time, scroll) with intent signals
+ * (pricing views, return visits) into a single engagement dimension.
  */
-export function calculateBehavioralScore(
-  sessionData: BehavioralSessionData,
-): number {
-  const thresholds = BEHAVIORAL_THRESHOLDS;
-
-  const pagesNorm = normalizeMetric(
-    sessionData.pagesViewed,
-    thresholds.pagesViewed.min,
-    thresholds.pagesViewed.max,
-  );
-  const timeNorm = normalizeMetric(
-    sessionData.timeOnSiteSeconds,
-    thresholds.timeOnSiteSeconds.min,
-    thresholds.timeOnSiteSeconds.max,
-  );
-  const scrollNorm = normalizeMetric(
-    sessionData.maxScrollDepth,
-    thresholds.maxScrollDepth.min,
-    thresholds.maxScrollDepth.max,
-  );
-  const widgetNorm = normalizeMetric(
-    sessionData.widgetOpens,
-    thresholds.widgetOpens.min,
-    thresholds.widgetOpens.max,
-  );
-  const sessionNorm = normalizeMetric(
-    sessionData.sessionNumber,
-    thresholds.sessionCount.min,
-    thresholds.sessionCount.max,
-  );
-
-  const weighted =
-    pagesNorm * thresholds.pagesViewed.weight +
-    timeNorm * thresholds.timeOnSiteSeconds.weight +
-    scrollNorm * thresholds.maxScrollDepth.weight +
-    widgetNorm * thresholds.widgetOpens.weight +
-    sessionNorm * thresholds.sessionCount.weight;
-
-  return Math.round(weighted * 100);
-}
-
-/**
- * Calculates an intent signal score (0-100) from session data and return visits.
- * Normalizes intent metrics against configured thresholds and applies weights.
- */
-export function calculateIntentScore(
+export function calculateEngagementScore(
   sessionData: BehavioralSessionData,
   returnVisitCount: number,
 ): number {
-  const thresholds = INTENT_THRESHOLDS;
+  const t = ENGAGEMENT_THRESHOLDS;
 
-  const pricingNorm = normalizeMetric(
-    sessionData.pricingPageViews,
-    thresholds.pricingPageViews.min,
-    thresholds.pricingPageViews.max,
-  );
-  const highIntentNorm = normalizeMetric(
-    sessionData.highIntentPageViews,
-    thresholds.highIntentPageViews.min,
-    thresholds.highIntentPageViews.max,
-  );
-  const returnNorm = normalizeMetric(
-    returnVisitCount,
-    thresholds.returnVisitCount.min,
-    thresholds.returnVisitCount.max,
-  );
-  const timeOnHighIntentNorm = normalizeMetric(
-    0,
-    thresholds.timeOnHighIntentPages.min,
-    thresholds.timeOnHighIntentPages.max,
-  );
+  const pagesNorm = normalizeMetric(sessionData.pagesViewed, t.pagesViewed.min, t.pagesViewed.max);
+  const timeNorm = normalizeMetric(sessionData.timeOnSiteSeconds, t.timeOnSiteSeconds.min, t.timeOnSiteSeconds.max);
+  const scrollNorm = normalizeMetric(sessionData.maxScrollDepth, t.maxScrollDepth.min, t.maxScrollDepth.max);
+  const widgetNorm = normalizeMetric(sessionData.widgetOpens, t.widgetOpens.min, t.widgetOpens.max);
+  const sessionNorm = normalizeMetric(sessionData.sessionNumber, t.sessionCount.min, t.sessionCount.max);
+  const pricingNorm = normalizeMetric(sessionData.pricingPageViews, t.pricingPageViews.min, t.pricingPageViews.max);
+  const highIntentNorm = normalizeMetric(sessionData.highIntentPageViews, t.highIntentPageViews.min, t.highIntentPageViews.max);
+  const returnNorm = normalizeMetric(returnVisitCount, t.returnVisitCount.min, t.returnVisitCount.max);
 
   const weighted =
-    pricingNorm * thresholds.pricingPageViews.weight +
-    highIntentNorm * thresholds.highIntentPageViews.weight +
-    returnNorm * thresholds.returnVisitCount.weight +
-    timeOnHighIntentNorm * thresholds.timeOnHighIntentPages.weight;
+    pagesNorm * t.pagesViewed.weight +
+    timeNorm * t.timeOnSiteSeconds.weight +
+    scrollNorm * t.maxScrollDepth.weight +
+    widgetNorm * t.widgetOpens.weight +
+    sessionNorm * t.sessionCount.weight +
+    pricingNorm * t.pricingPageViews.weight +
+    highIntentNorm * t.highIntentPageViews.weight +
+    returnNorm * t.returnVisitCount.weight;
 
   return Math.round(weighted * 100);
 }
 
 /**
- * Calculates a composite lead score from form, behavioral, and intent dimensions.
+ * Calculates a composite lead score from form and engagement dimensions.
  * Applies decay penalty and determines the final tier.
  */
 export function calculateCompositeScore(
   params: CompositeScoreParams,
 ): CompositeScoreResult {
   const formWeighted = params.formWeight * params.formScore;
-  const behavioralWeighted = params.behavioralWeight * params.behavioralScore;
-  const intentWeighted = params.intentWeight * params.intentScore;
+  const engagementWeighted = params.engagementWeight * params.engagementScore;
 
-  const raw = formWeighted + behavioralWeighted + intentWeighted - params.decayPenalty;
+  const raw = formWeighted + engagementWeighted - params.decayPenalty;
   const leadScore = Math.max(0, Math.min(100, Math.round(raw)));
 
   const leadTier = determineTier(
@@ -408,12 +351,10 @@ export function calculateCompositeScore(
     leadTier,
     dimensions: {
       form: params.formScore,
-      behavioral: params.behavioralScore,
-      intent: params.intentScore,
+      engagement: params.engagementScore,
       decay: params.decayPenalty,
       formWeighted: Math.round(formWeighted),
-      behavioralWeighted: Math.round(behavioralWeighted),
-      intentWeighted: Math.round(intentWeighted),
+      engagementWeighted: Math.round(engagementWeighted),
     },
   };
 }

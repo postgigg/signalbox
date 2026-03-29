@@ -49,7 +49,7 @@ const FEATURES = [
 const STEPS = [
   {
     title: 'Install on client sites',
-    body: 'Two lines of JavaScript per site. 5 minutes. Works on WordPress, Shopify, Webflow, Squarespace, and plain HTML.',
+    body: 'Two lines of JavaScript per site. 2 minutes. Works on WordPress, Shopify, Webflow, Squarespace, and plain HTML.',
   },
   {
     title: 'Leads get scored automatically',
@@ -91,7 +91,7 @@ export default function AgencyPage(): React.ReactElement {
               </Link>
             </div>
             <p className="mt-3 text-sm text-stone-light">
-              14 days free. 25 widgets. Unlimited submissions. No credit card.
+              30 days free. 25 widgets. Unlimited submissions. No credit card.
             </p>
           </div>
           <div className="hidden lg:block animate-slide-right">
@@ -243,7 +243,7 @@ export default function AgencyPage(): React.ReactElement {
               <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              14-day free trial
+              30-day free trial
             </span>
             <span className="flex items-center gap-1.5">
               <svg className="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

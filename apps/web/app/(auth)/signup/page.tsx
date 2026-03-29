@@ -127,7 +127,7 @@ function SignupForm(): React.ReactElement {
         Create your HawkLeads account
       </h1>
       <p className="mt-2 text-sm text-stone">
-        14-day free trial. No credit card required.
+        30-day free trial. No credit card required.
       </p>
 
       {error !== null && (

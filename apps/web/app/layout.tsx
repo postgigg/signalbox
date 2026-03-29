@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: '%s | HawkLeads',
   },
   description:
-    'HawkLeads is an embeddable lead qualification widget that scores website visitors in real time. Replace your contact form with a guided qualifying flow. Know who to call first. 14-day free trial.',
+    'HawkLeads is an embeddable lead qualification widget that scores website visitors in real time. Replace your contact form with a guided qualifying flow. Know who to call first. 30-day free trial.',
   keywords: [
     'lead scoring',
     'lead qualification',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     siteName: 'HawkLeads',
     title: 'HawkLeads — Score Every Lead Before You Pick Up the Phone',
     description:
-      'An embeddable widget that qualifies website visitors through scored questionnaires. Get a prioritized call list. Close more deals. 14-day free trial.',
+      'An embeddable widget that qualifies website visitors through scored questionnaires. Get a prioritized call list. Close more deals. 30-day free trial.',
     images: [
       {
         url: '/og-image.svg',

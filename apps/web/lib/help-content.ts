@@ -78,15 +78,13 @@ export const HELP_TIPS = {
   },
   scoring: {
     pageGuide:
-      'Lead scores combine three signals: form answers, on-site behavior, and purchase intent. Adjust the weights to prioritize what matters most for your business. Changes apply to new submissions only.',
+      'Lead scores combine two signals: form answers and on-site engagement. Adjust the weights to prioritize what matters most for your business. Changes apply to new submissions only.',
     dimensionWeights:
-      'Weights control how the final score is calculated. For example, 60% Form / 20% Behavioral / 20% Intent means form answers have three times more influence than each behavioral signal.',
+      'Weights control how the final score is calculated. For example, 70% Form / 30% Engagement means form answers have about twice the influence of on-site behavior.',
     formWeight:
       'Score from the qualifying questions in your flow. Higher weight means the answers visitors choose matter more.',
-    behavioralWeight:
-      'Based on pages viewed, time on site, scroll depth, and return visits. Captures engagement even before the form is filled out.',
-    intentWeight:
-      'Tracks visits to high-value pages like pricing or demo. Repeat visitors and pricing page views signal stronger purchase intent.',
+    engagementWeight:
+      'Based on pages viewed, time on site, scroll depth, pricing page visits, and return visits. Captures engagement signals from visitor behavior on your site.',
     decay:
       'Scores naturally lose points over time when a lead goes quiet. This keeps your hottest leads at the top. Decay stops once the maximum deduction is reached.',
     decayRate:

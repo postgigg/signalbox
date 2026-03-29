@@ -24,7 +24,6 @@ interface DecayableSubmission {
   lead_tier: string;
   form_score: number;
   behavioral_score: number;
-  intent_score: number;
   last_engagement_at: string;
 }
 
@@ -44,12 +43,20 @@ function parseScoringConfig(raw: Json): ScoringConfig | null {
 
   if (
     typeof obj['formWeight'] !== 'number' ||
-    typeof obj['behavioralWeight'] !== 'number' ||
-    typeof obj['intentWeight'] !== 'number' ||
     typeof obj['decayRatePerWeek'] !== 'number' ||
     typeof obj['decayMax'] !== 'number' ||
     typeof obj['decayEnabled'] !== 'boolean'
   ) {
+    return null;
+  }
+
+  // Support both old format (behavioralWeight + intentWeight) and new format (engagementWeight)
+  let engagementWeight: number;
+  if (typeof obj['engagementWeight'] === 'number') {
+    engagementWeight = obj['engagementWeight'];
+  } else if (typeof obj['behavioralWeight'] === 'number' && typeof obj['intentWeight'] === 'number') {
+    engagementWeight = obj['behavioralWeight'] + obj['intentWeight'];
+  } else {
     return null;
   }
 
@@ -59,8 +66,7 @@ function parseScoringConfig(raw: Json): ScoringConfig | null {
 
   return {
     formWeight: obj['formWeight'],
-    behavioralWeight: obj['behavioralWeight'],
-    intentWeight: obj['intentWeight'],
+    engagementWeight,
     decayRatePerWeek: obj['decayRatePerWeek'],
     decayMax: obj['decayMax'],
     decayEnabled: obj['decayEnabled'],
@@ -123,7 +129,7 @@ async function processAccountDecay(
   while (hasMore) {
     const { data: submissions, error: fetchError } = await admin
       .from('submissions')
-      .select('id, account_id, lead_score, lead_tier, form_score, behavioral_score, intent_score, last_engagement_at')
+      .select('id, account_id, lead_score, lead_tier, form_score, behavioral_score, last_engagement_at')
       .eq('account_id', account.id)
       .lt('last_engagement_at', cutoff)
       .gt('lead_score', 0)
@@ -171,12 +177,10 @@ async function processDecayBatch(
 
     const result = calculateCompositeScore({
       formScore: sub.form_score,
-      behavioralScore: sub.behavioral_score,
-      intentScore: sub.intent_score,
+      engagementScore: sub.behavioral_score,
       decayPenalty: penalty,
       formWeight: config.formWeight,
-      behavioralWeight: config.behavioralWeight,
-      intentWeight: config.intentWeight,
+      engagementWeight: config.engagementWeight,
       hotThreshold: account.hot_lead_threshold,
       warmThreshold: account.warm_lead_threshold,
     });

@@ -61,6 +61,7 @@ export class BehaviorTracker {
   private highIntentPageViews: number = 0;
   private highIntentPatterns: string[];
   private scrollHandler: (() => void) | null = null;
+  private trackingBlocked: boolean = false;
 
   constructor(
     highIntentPatterns: string[] = ['/pricing', '/demo', '/contact', '/compare']
@@ -83,6 +84,10 @@ export class BehaviorTracker {
       `${this.fingerprint}:${this.sessionNumber}`,
       COOKIE_EXPIRY_DAYS
     );
+
+    // Detect if cookies/storage are blocked
+    const cookieCheck = getCookie(COOKIE_NAME);
+    this.trackingBlocked = cookieCheck === null;
 
     this.trackCurrentPage();
     this.startScrollTracking();
@@ -158,6 +163,10 @@ export class BehaviorTracker {
 
   getFingerprint(): string {
     return this.fingerprint;
+  }
+
+  isTrackingBlocked(): boolean {
+    return this.trackingBlocked;
   }
 
   getSessionData(): BehavioralSessionData {

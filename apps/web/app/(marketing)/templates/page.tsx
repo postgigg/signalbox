@@ -238,7 +238,7 @@ export default function TemplatesPage(): React.ReactElement {
       <section className="bg-ink py-20 px-6">
         <div className="max-w-content mx-auto text-center">
           <h2 className="font-display text-4xl font-semibold text-white">
-            Pick a template and go live in 5 minutes.
+            Pick a template and go live in 2 minutes.
           </h2>
           <div className="mt-8">
             <Link
@@ -249,7 +249,7 @@ export default function TemplatesPage(): React.ReactElement {
             </Link>
           </div>
           <p className="mt-4 text-sm text-stone-light">
-            14 days free. No credit card. Cancel anytime.
+            30 days free. No credit card. Cancel anytime.
           </p>
         </div>
       </section>

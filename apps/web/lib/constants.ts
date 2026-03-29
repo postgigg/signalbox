@@ -39,7 +39,7 @@ export const PLANS: Record<string, PlanConfig> = {
   trial: {
     id: 'trial',
     name: 'Trial',
-    description: 'Free 14-day trial with full features',
+    description: 'Free 30-day trial with full features',
     priceMonthly: 0,
     priceYearly: 0,
     stripePriceIdMonthly: '',
@@ -478,7 +478,7 @@ export const DEFAULT_WIDGET_THEME = {
 // Misc constants
 // ---------------------------------------------------------------------------
 
-export const TRIAL_DURATION_DAYS = 14;
+export const TRIAL_DURATION_DAYS = 30;
 
 export const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -562,9 +562,8 @@ export type RoutingStrategyValue = (typeof ROUTING_STRATEGIES)[number]['value'];
 // ---------------------------------------------------------------------------
 
 export const DEFAULT_SCORING_CONFIG = {
-  formWeight: 0.60,
-  behavioralWeight: 0.20,
-  intentWeight: 0.20,
+  formWeight: 0.70,
+  engagementWeight: 0.30,
   decayRatePerWeek: 5,
   decayMax: 30,
   decayEnabled: true,
@@ -573,8 +572,7 @@ export const DEFAULT_SCORING_CONFIG = {
 
 export interface ScoringConfig {
   formWeight: number;
-  behavioralWeight: number;
-  intentWeight: number;
+  engagementWeight: number;
   decayRatePerWeek: number;
   decayMax: number;
   decayEnabled: boolean;
@@ -582,9 +580,8 @@ export interface ScoringConfig {
 }
 
 export const SCORING_DIMENSIONS = [
-  { key: 'form', label: 'Form Answers', description: 'Score from qualifying questions' },
-  { key: 'behavioral', label: 'Behavioral', description: 'Pages viewed, time on site, scroll depth' },
-  { key: 'intent', label: 'Intent Signals', description: 'Pricing page visits, return visits' },
+  { key: 'form', label: 'What They Told You', description: 'Score from qualifying questions: budget, timeline, service type' },
+  { key: 'engagement', label: 'What They Did On Your Site', description: 'Pages viewed, time spent, scroll depth, pricing page visits, return visits' },
 ] as const;
 
 export const API_KEY_PREFIX = 'sb_live_';

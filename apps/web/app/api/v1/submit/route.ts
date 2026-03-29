@@ -7,8 +7,7 @@ import { getClientIp, getCountry } from '@/lib/ip';
 import { parseDeviceType } from '@/lib/device';
 import {
   calculateLeadScore,
-  calculateBehavioralScore,
-  calculateIntentScore,
+  calculateEngagementScore,
   calculateCompositeScore,
   denormalizeAnswers,
   parseFlowSteps,
@@ -64,6 +63,7 @@ const submitSchema = z.object({
   abVariant: z.enum(['a', 'b']).optional(),
   behavioralData: behavioralDataSchema.optional(),
   visitorFingerprint: z.string().max(64).optional(),
+  trackingBlocked: z.boolean().optional(),
 }).strict();
 
 type SubmitPayload = z.infer<typeof submitSchema>;
@@ -259,29 +259,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     account.warm_lead_threshold,
   );
 
-  // 12b. Calculate composite score with behavioral + intent dimensions
+  // 12b. Calculate composite score with engagement dimension
   const planLimits = getPlanLimits(account.plan as Plan);
-  const scoringConfig: ScoringConfig = planLimits.predictiveScoring
+  const trackingBlocked = payload.trackingBlocked === true;
+  const useEngagement = planLimits.predictiveScoring && !trackingBlocked;
+  const scoringConfig: ScoringConfig = useEngagement
     ? { ...DEFAULT_SCORING_CONFIG, ...(account.scoring_config as Partial<ScoringConfig>) }
-    : { ...DEFAULT_SCORING_CONFIG, behavioralWeight: 0, intentWeight: 0, formWeight: 1.0 };
+    : { ...DEFAULT_SCORING_CONFIG, engagementWeight: 0, formWeight: 1.0 };
 
-  let behavioralScore = 0;
-  let intentScore = 0;
+  let engagementScore = 0;
   const sessionData: BehavioralSessionData | null = payload.behavioralData ?? null;
 
-  if (sessionData && planLimits.predictiveScoring) {
-    behavioralScore = calculateBehavioralScore(sessionData);
-    intentScore = calculateIntentScore(sessionData, sessionData.sessionNumber);
+  if (sessionData && useEngagement) {
+    engagementScore = calculateEngagementScore(sessionData, sessionData.sessionNumber);
   }
+  const scoringMode: 'full' | 'form_only' = useEngagement && sessionData !== null ? 'full' : 'form_only';
 
   const composite = calculateCompositeScore({
     formScore,
-    behavioralScore,
-    intentScore,
+    engagementScore,
     decayPenalty: 0,
     formWeight: scoringConfig.formWeight,
-    behavioralWeight: scoringConfig.behavioralWeight,
-    intentWeight: scoringConfig.intentWeight,
+    engagementWeight: scoringConfig.engagementWeight,
     hotThreshold: account.hot_lead_threshold,
     warmThreshold: account.warm_lead_threshold,
   });
@@ -335,9 +334,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       lead_score: leadScore,
       lead_tier: leadTier,
       form_score: formScore,
-      behavioral_score: behavioralScore,
-      intent_score: intentScore,
-      score_dimensions: composite.dimensions as unknown as Record<string, number>,
+      behavioral_score: engagementScore,
+      intent_score: 0,
+      score_dimensions: { ...composite.dimensions, scoringMode } as unknown as Record<string, number>,
       visitor_fingerprint: payload.visitorFingerprint ?? null,
       routing_strategy: routingStrategy,
       source_url: payload.sourceUrl ?? null,

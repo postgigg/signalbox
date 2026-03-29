@@ -41,7 +41,7 @@ const PRICING_FAQ = [
   {
     question: 'What happens when my trial ends?',
     answer:
-      'At the end of your 14-day trial, you can choose a paid plan. If you do not, your widget will stop accepting new submissions and display a fallback contact message instead. Your data is retained for 90 days.',
+      'At the end of your 30-day trial, you can choose a paid plan. If you do not, your widget will stop accepting new submissions and display a fallback contact message instead. Your data is retained for 90 days.',
   },
   {
     question: 'Do you offer refunds?',
@@ -51,7 +51,7 @@ const PRICING_FAQ = [
   {
     question: 'Is there a free plan?',
     answer:
-      'There is no permanent free plan. The 14-day trial includes full access to Starter plan features with a 50-submission limit. After the trial, you need to choose a paid plan to continue.',
+      'There is no permanent free plan. The 30-day trial includes full access to Starter plan features with a 50-submission limit. After the trial, you need to choose a paid plan to continue.',
   },
   {
     question: 'Can I get a custom plan for higher volume?',
@@ -172,7 +172,7 @@ export default function PricingPage(): React.ReactElement {
             Simple, honest pricing.
           </h1>
           <p className="mt-4 text-lg text-stone max-w-prose mx-auto">
-            Every plan includes a 14-day free trial. No credit card required. Cancel
+            Every plan includes a 30-day free trial. No credit card required. Cancel
             anytime.
           </p>
 
@@ -380,10 +380,10 @@ export default function PricingPage(): React.ReactElement {
             <div className="px-6 py-6 sm:px-8 sm:py-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <h3 className="font-display text-xl font-semibold text-ink">
-                  5 hot leads in 14 days, or 6 months of Pro free.
+                  5 hot leads in 30 days, or 6 months of Pro free.
                 </h3>
                 <p className="mt-2 text-sm text-stone leading-relaxed max-w-[480px]">
-                  If we do not surface at least 5 hot-tier leads in your first 14 days
+                  If we do not surface at least 5 hot-tier leads in your first 30 days
                   on a paid plan, we extend your subscription by 6 months of Pro at no charge.
                   $894 in savings. No forms, no approval process, automatic.
                 </p>
@@ -395,7 +395,7 @@ export default function PricingPage(): React.ReactElement {
                 </div>
                 <div className="w-px h-10 bg-border" />
                 <div>
-                  <span className="font-display text-3xl font-bold text-ink">14</span>
+                  <span className="font-display text-3xl font-bold text-ink">30</span>
                   <p className="text-[10px] text-stone uppercase tracking-wide mt-0.5">Days</p>
                 </div>
                 <div className="w-px h-10 bg-border" />
@@ -538,7 +538,7 @@ export default function PricingPage(): React.ReactElement {
             </Link>
           </div>
           <p className="mt-4 text-sm text-stone-light">
-            14 days free. No credit card. Cancel anytime.
+            30 days free. No credit card. Cancel anytime.
           </p>
         </div>
       </section>

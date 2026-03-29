@@ -335,6 +335,47 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
+      {/* ── Fewer Leads, Better Revenue ── */}
+      <section className="py-20 px-6">
+        <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          <div className="animate-on-enter">
+            <h2 className="font-display text-3xl font-semibold text-ink">
+              Yes, you will get fewer submissions.
+            </h2>
+            <p className="mt-4 text-base text-stone leading-relaxed">
+              Adding qualifying questions means some visitors will drop off. That is the point.
+              The ones who finish are telling you their budget, their timeline, and what they need.
+              The ones who leave were never going to buy.
+            </p>
+            <p className="mt-3 text-base text-stone leading-relaxed">
+              Businesses using HawkLeads typically see 20-30% fewer total submissions but 2-3x more
+              qualified conversations. The math: 40 random leads and 6 closes becomes 30 qualified
+              leads and 8 closes. Fewer forms, more revenue.
+            </p>
+          </div>
+          <div className="animate-slide-right">
+            <div className="border border-border rounded-md overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3.5 text-sm border-b border-border">
+                <span className="text-stone">Total submissions</span>
+                <span className="text-ink font-medium font-mono">-25%</span>
+              </div>
+              <div className="flex items-center justify-between px-5 py-3.5 text-sm border-b border-border">
+                <span className="text-stone">Qualified conversations</span>
+                <span className="text-ink font-medium font-mono">+2-3x</span>
+              </div>
+              <div className="flex items-center justify-between px-5 py-3.5 text-sm border-b border-border">
+                <span className="text-stone">Time spent on unqualified calls</span>
+                <span className="text-ink font-medium font-mono">-75%</span>
+              </div>
+              <div className="flex items-center justify-between px-5 py-3.5 text-sm bg-ink">
+                <span className="text-white font-medium">Net closed deals</span>
+                <span className="text-white font-display text-xl font-bold">+33%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="py-24 px-6 bg-ink">
         <div className="max-w-prose mx-auto text-center animate-on-enter">
@@ -343,7 +384,7 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
           </h2>
           <p className="mt-4 text-base text-stone-light leading-relaxed">
             Speed wins deals. Context closes them. HawkLeads gives you both.
-            Start scoring your leads in under five minutes.
+            Start scoring your leads in under two minutes.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -360,7 +401,7 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
             </Link>
           </div>
           <p className="mt-4 text-sm text-stone-light">
-            14 days free. No credit card. Cancel anytime.
+            30 days free. No credit card. Cancel anytime.
           </p>
         </div>
       </section>

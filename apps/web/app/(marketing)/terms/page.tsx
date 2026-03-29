@@ -78,7 +78,7 @@ export default function TermsPage(): React.ReactElement {
             HawkLeads offers the following subscription plans:
           </p>
           <ul className="mt-2 list-disc list-inside space-y-1 ml-2">
-            <li><span className="font-medium text-ink">Trial:</span> 14-day free trial with access to Starter-level features and a 50-submission limit. No credit card required.</li>
+            <li><span className="font-medium text-ink">Trial:</span> 30-day free trial with access to Starter-level features and a 50-submission limit. No credit card required.</li>
             <li><span className="font-medium text-ink">Starter ($99/month):</span> 1 widget, 500 submissions/month, 3 team members, webhook integrations.</li>
             <li><span className="font-medium text-ink">Pro ($149/month):</span> 5 widgets, 2,000 submissions/month, 10 team members, API access, webhooks, custom branding, lead routing rules, A/B testing.</li>
             <li><span className="font-medium text-ink">Agency ($249/month):</span> 25 widgets, unlimited submissions, 25 team members, full API and webhook access, shared analytics links, priority support, white-label options.</li>
@@ -99,7 +99,7 @@ export default function TermsPage(): React.ReactElement {
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">4.3 Free Trial</h3>
           <p>
-            New accounts receive a 14-day free trial with no credit card required. At the end of the trial period,
+            New accounts receive a 30-day free trial with no credit card required. At the end of the trial period,
             if you have not selected a paid plan, your widgets will stop accepting new submissions and display a
             fallback contact message. Your data will be retained for 90 days after trial expiration, during which
             you can activate a paid plan to regain full access. After 90 days, data from inactive trial accounts
@@ -120,12 +120,12 @@ export default function TermsPage(): React.ReactElement {
             through the end of the current billing period. We do not provide partial refunds for unused time within
             a billing period. In exceptional circumstances (e.g., billing errors, extended service outages exceeding
             24 hours), we may issue credits or refunds at our sole discretion. To request a review, contact
-            support@hawkleads.io within 14 days of the charge in question.
+            support@hawkleads.io within 30 days of the charge in question.
           </p>
 
           <h3 className="font-body text-sm font-semibold text-ink mt-4 mb-1">4.6 Failed Payments</h3>
           <p>
-            If a payment fails, we will attempt to collect the payment up to 3 additional times over a 14-day period.
+            If a payment fails, we will attempt to collect the payment up to 3 additional times over a 30-day period.
             During this time, your account will be marked as "past due" but service will continue. If payment is not
             received after all retry attempts, your account will be downgraded to an inactive state and widgets will
             stop accepting submissions. Service is restored immediately upon successful payment.

@@ -16,7 +16,7 @@ export function HowItWorks(): React.ReactElement {
     <section id="how-it-works" className="py-24 px-6 bg-surface-alt border-y border-border">
       <div className="max-w-content mx-auto">
         <h2 className="font-display text-3xl font-semibold text-ink">
-          Three steps. Five minutes.
+          Three steps. Two minutes.
         </h2>
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
           {STEPS.map((step, index) => {

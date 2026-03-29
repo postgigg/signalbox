@@ -197,7 +197,7 @@ export function renderWelcome(
     <div style="text-align:center;margin:24px 0;">
       <a class="btn" href="${dashboardUrl}">Go to Dashboard</a>
     </div>
-    <p>Your 14-day free trial is now active. You have full access to all features.</p>
+    <p>Your 30-day free trial is now active. You have full access to all features.</p>
     <p>Questions? Just reply to this email or contact us at <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a>.</p>
   `);
 
@@ -213,7 +213,7 @@ Get started:
 
 Go to dashboard: ${dashboardUrl}
 
-Your 14-day free trial is now active.
+Your 30-day free trial is now active.
 
 Questions? Reply to this email or contact ${SUPPORT_EMAIL}.`;
 

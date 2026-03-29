@@ -22,18 +22,16 @@ const SETTINGS_NAV = [
   { href: '/dashboard/settings/scoring', label: 'Scoring' },
 ] as const;
 
-const DIMENSION_KEYS = ['form', 'behavioral', 'intent'] as const;
+const DIMENSION_KEYS = ['form', 'engagement'] as const;
 
 const DIMENSION_COLORS: Record<string, string> = {
   form: 'bg-blue-500',
-  behavioral: 'bg-green-500',
-  intent: 'bg-amber-500',
+  engagement: 'bg-green-500',
 };
 
 const DIMENSION_HELP: Record<string, string> = {
   form: HELP_TIPS.scoring.formWeight,
-  behavioral: HELP_TIPS.scoring.behavioralWeight,
-  intent: HELP_TIPS.scoring.intentWeight,
+  engagement: HELP_TIPS.scoring.engagementWeight,
 };
 
 interface AccountData {
@@ -44,10 +42,16 @@ interface AccountData {
 function parseScoringConfig(raw: unknown): ScoringConfig {
   if (typeof raw === 'object' && raw !== null) {
     const obj = raw as Record<string, unknown>;
+    // Support old format: sum behavioralWeight + intentWeight into engagementWeight
+    let engagementWeight = DEFAULT_SCORING_CONFIG.engagementWeight;
+    if (typeof obj.engagementWeight === 'number') {
+      engagementWeight = obj.engagementWeight;
+    } else if (typeof obj.behavioralWeight === 'number' && typeof obj.intentWeight === 'number') {
+      engagementWeight = obj.behavioralWeight + obj.intentWeight;
+    }
     return {
       formWeight: typeof obj.formWeight === 'number' ? obj.formWeight : DEFAULT_SCORING_CONFIG.formWeight,
-      behavioralWeight: typeof obj.behavioralWeight === 'number' ? obj.behavioralWeight : DEFAULT_SCORING_CONFIG.behavioralWeight,
-      intentWeight: typeof obj.intentWeight === 'number' ? obj.intentWeight : DEFAULT_SCORING_CONFIG.intentWeight,
+      engagementWeight,
       decayRatePerWeek: typeof obj.decayRatePerWeek === 'number' ? obj.decayRatePerWeek : DEFAULT_SCORING_CONFIG.decayRatePerWeek,
       decayMax: typeof obj.decayMax === 'number' ? obj.decayMax : DEFAULT_SCORING_CONFIG.decayMax,
       decayEnabled: typeof obj.decayEnabled === 'boolean' ? obj.decayEnabled : DEFAULT_SCORING_CONFIG.decayEnabled,
@@ -56,8 +60,7 @@ function parseScoringConfig(raw: unknown): ScoringConfig {
   }
   return {
     formWeight: DEFAULT_SCORING_CONFIG.formWeight,
-    behavioralWeight: DEFAULT_SCORING_CONFIG.behavioralWeight,
-    intentWeight: DEFAULT_SCORING_CONFIG.intentWeight,
+    engagementWeight: DEFAULT_SCORING_CONFIG.engagementWeight,
     decayRatePerWeek: DEFAULT_SCORING_CONFIG.decayRatePerWeek,
     decayMax: DEFAULT_SCORING_CONFIG.decayMax,
     decayEnabled: DEFAULT_SCORING_CONFIG.decayEnabled,
@@ -129,45 +132,21 @@ export default function ScoringSettingsPage(): React.ReactElement {
       const newValue = clampWeight(rawValue);
       const remaining = clampWeight(1 - newValue);
 
-      const otherKeys = DIMENSION_KEYS.filter((k) => k !== changedKey);
       const weightKey = (k: typeof DIMENSION_KEYS[number]): keyof ScoringConfig => {
         const map: Record<string, keyof ScoringConfig> = {
           form: 'formWeight',
-          behavioral: 'behavioralWeight',
-          intent: 'intentWeight',
+          engagement: 'engagementWeight',
         };
         return map[k] ?? 'formWeight';
       };
 
-      const otherSum = otherKeys.reduce((sum, k) => sum + (prev[weightKey(k)] as number), 0);
+      const otherKey = DIMENSION_KEYS.find((k) => k !== changedKey);
 
       const updated: Record<string, number | boolean | readonly string[]> = { ...prev };
       updated[weightKey(changedKey)] = newValue;
 
-      if (otherSum === 0) {
-        const half = clampWeight(remaining / 2);
-        const firstKey = otherKeys[0];
-        const secondKey = otherKeys[1];
-        if (firstKey !== undefined) {
-          updated[weightKey(firstKey)] = half;
-        }
-        if (secondKey !== undefined) {
-          updated[weightKey(secondKey)] = clampWeight(remaining - half);
-        }
-      } else {
-        for (const k of otherKeys) {
-          const proportion = (prev[weightKey(k)] as number) / otherSum;
-          updated[weightKey(k)] = clampWeight(remaining * proportion);
-        }
-        // Fix rounding: ensure sum is exactly 1.0
-        const currentSum = DIMENSION_KEYS.reduce((s, k) => s + (updated[weightKey(k)] as number), 0);
-        const diff = clampWeight(1 - currentSum);
-        if (diff !== 0) {
-          const lastOther = otherKeys[otherKeys.length - 1];
-          if (lastOther !== undefined) {
-            updated[weightKey(lastOther)] = clampWeight((updated[weightKey(lastOther)] as number) + diff);
-          }
-        }
+      if (otherKey !== undefined) {
+        updated[weightKey(otherKey)] = remaining;
       }
 
       return updated as unknown as ScoringConfig;
@@ -246,7 +225,7 @@ export default function ScoringSettingsPage(): React.ReactElement {
 
       <h2 className="font-display text-lg font-semibold text-ink">Scoring Configuration</h2>
       <p className="mt-1 text-sm text-stone font-body">
-        Adjust how lead scores are calculated across form answers, behavioral signals, and intent data.
+        Adjust how lead scores are calculated across form answers and on-site engagement signals.
       </p>
 
       <PageGuide storageKey="scoring-config" title="How scoring works">
@@ -343,17 +322,12 @@ export default function ScoringSettingsPage(): React.ReactElement {
               />
               <div
                 className="bg-green-500 transition-all duration-150"
-                style={{ width: `${Math.round(config.behavioralWeight * 100)}%` }}
-              />
-              <div
-                className="bg-amber-500 transition-all duration-150"
-                style={{ width: `${Math.round(config.intentWeight * 100)}%` }}
+                style={{ width: `${Math.round(config.engagementWeight * 100)}%` }}
               />
             </div>
             <div className="mt-1 flex justify-between text-xs text-stone">
               <span>Form {Math.round(config.formWeight * 100)}%</span>
-              <span>Behavioral {Math.round(config.behavioralWeight * 100)}%</span>
-              <span>Intent {Math.round(config.intentWeight * 100)}%</span>
+              <span>Engagement {Math.round(config.engagementWeight * 100)}%</span>
             </div>
           </div>
 

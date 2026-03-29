@@ -8,7 +8,7 @@ export const STEPS = [
   {
     num: '01',
     title: 'Build your flow',
-    body: 'Pick an industry template or start blank. Add 2 to 5 qualifying questions. Assign score weights. Five minutes.',
+    body: 'Pick an industry template or start blank. Add 2 to 5 qualifying questions. Assign score weights. Two minutes.',
   },
   {
     num: '02',
@@ -24,40 +24,40 @@ export const STEPS = [
 
 export const FEATURES = [
   {
-    title: 'Three-dimensional scoring',
-    body: 'Every lead scored 0 to 100 across three dimensions: form answers, behavioral signals, and intent signals. Weighted, combined, and tiered as hot, warm, or cold automatically.',
+    title: 'Ask. Watch. Score.',
+    body: 'Every lead scored 0 to 100 across two signals: what they told you and what they did on your site. You control the weights. You see the math.',
   },
   {
-    title: 'Instant alerts',
-    body: 'Hot leads trigger an email within seconds. Score, answers, and a suggested opener. You respond in minutes, not days.',
+    title: 'Your phone rings before theirs.',
+    body: 'Hot leads trigger an email within seconds. You call while they are still on your website. Not tomorrow. Now.',
   },
   {
-    title: 'Conversion analytics',
-    body: 'Funnel visualization, drop-off rates, tier breakdowns, and submission trends. See where visitors bail.',
+    title: 'See where you are losing them.',
+    body: 'Funnel visualization shows exactly which step visitors bail on. Fix the question, recover the leads.',
   },
   {
-    title: 'Custom branding',
-    body: 'Your colors, your fonts, your button styles. The widget looks native to your site. Remove our branding on paid plans.',
+    title: 'It looks like your site, not ours.',
+    body: 'Your colors, your fonts, your button styles. Visitors never know it is a third-party tool. Remove our name on paid plans.',
   },
   {
-    title: 'Lead routing',
-    body: 'Auto-assign incoming leads to the right team member based on score tier or specific answers. No manual sorting.',
+    title: 'The right person gets the right lead.',
+    body: 'Hot leads go to your closer. Cold leads go to your admin. Routed automatically by score or answers. No manual sorting.',
   },
   {
-    title: 'A/B testing',
-    body: 'Split test different questions and options. See which wording gets more conversions with built-in statistical significance.',
+    title: 'Stop guessing which question works.',
+    body: 'Test two versions of a question. See which wording gets more qualified submissions. Data picks the winner.',
   },
   {
-    title: 'Drip sequences',
-    body: 'Auto-enroll warm and cold leads into timed email nurture. Three steps, spaced over days. Leads that get contacted or convert are paused automatically.',
+    title: 'Cold leads warm themselves up.',
+    body: 'Timed follow-up emails go out automatically. Three touchpoints over a week. Leads that convert are paused.',
   },
   {
-    title: 'Integrations',
-    body: 'Connect to any tool with webhooks. Works with Zapier, Make, and custom endpoints. Full delivery log for debugging.',
+    title: 'Your CRM updates itself.',
+    body: 'Webhook fires on every submission. Works with Zapier, Make, Salesforce, HubSpot, or any HTTP endpoint. Full delivery log.',
   },
   {
-    title: 'Shared analytics',
-    body: 'Generate password-protected, read-only analytics links for clients. They see results without accessing your dashboard.',
+    title: 'Show clients the proof.',
+    body: 'Generate a read-only dashboard link per client. Submissions, scores, tier breakdowns. Real time. No login needed.',
   },
 ] as const;
 
@@ -133,7 +133,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   {
     question: 'How do I install it?',
     answer:
-      'Two lines of JavaScript. Copy them from your dashboard and paste into your site header. Works with WordPress, Shopify, Squarespace, Wix, Webflow, and plain HTML. No developer needed. Most customers are live in under 10 minutes.',
+      'Two lines of JavaScript. Copy them from your dashboard and paste into your site header. Works with WordPress, Shopify, Squarespace, Wix, Webflow, and plain HTML. No developer needed. Most customers are live in under 2 minutes.',
   },
   {
     question: 'Will it slow down my site?',
@@ -164,6 +164,16 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
     question: 'What if I need more than 25 widgets?',
     answer:
       'Contact us at support@hawkleads.io for custom pricing. We can accommodate higher widget counts, custom SLAs, and dedicated support for enterprise needs.',
+  },
+  {
+    question: 'Will adding steps to my form reduce submissions?',
+    answer:
+      'Yes, intentionally. You will get fewer submissions, but every single one comes pre-qualified with budget, timeline, and service details. Businesses using HawkLeads typically see 20-30% fewer total submissions but 2-3x more qualified conversations. The math works: 40 random leads and 6 closes becomes 30 qualified leads and 8 closes. Fewer forms, more revenue.',
+  },
+  {
+    question: 'What if a lead scores low but turns out to be valuable?',
+    answer:
+      'Every lead is visible in your dashboard regardless of score. Scoring sorts your call list, it does not delete anyone. A lead that scores 15 is still there, just further down the list. If you spot a low-scoring lead that looks promising, one click promotes them. Over time, adjusting your score weights makes this rarer. But the safety net is always there: nothing is ever hidden or discarded.',
   },
 ] as const;
 

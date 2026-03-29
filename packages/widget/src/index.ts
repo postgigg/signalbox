@@ -413,6 +413,7 @@ class HawkLeadsWidget {
       if (this.tracker) {
         payload.behavioralData = this.tracker.getSessionData();
         payload.visitorFingerprint = this.tracker.getFingerprint();
+        payload.trackingBlocked = this.tracker.isTrackingBlocked();
       }
 
       const result = await submitForm(payload, this.apiUrl);

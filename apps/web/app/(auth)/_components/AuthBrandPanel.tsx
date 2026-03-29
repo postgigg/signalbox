@@ -29,7 +29,7 @@ const BRAND_COPY: Record<string, BrandContent> = {
   },
   '/onboarding': {
     headline: 'Let us get you set up.',
-    sub: 'Three steps. Five minutes. Your first scored lead is closer than you think.',
+    sub: 'Three steps. Two minutes. Your first scored lead is closer than you think.',
   },
 };
 
