@@ -9,6 +9,7 @@ import { Logo } from '@/components/shared/Logo';
 import type { ReactNode } from 'react';
 
 const NAV_LINKS = [
+  { href: '/why-hawkleads', label: 'Why HawkLeads' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/agency', label: 'Agencies' },
   { href: '/templates', label: 'Templates' },
