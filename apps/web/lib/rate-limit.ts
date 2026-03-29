@@ -109,6 +109,15 @@ export function globalLimit(): Ratelimit {
   );
 }
 
+/** Rate limiter for audit tool — 5 requests per 15 minutes per IP. */
+export function auditLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.audit.prefix,
+    RATE_LIMITS.audit.tokens,
+    RATE_LIMITS.audit.window
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Helper to check rate limit and build response
 // ---------------------------------------------------------------------------

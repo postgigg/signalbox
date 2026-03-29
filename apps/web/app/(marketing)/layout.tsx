@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { AuditPromoModal } from '@/components/shared/AuditPromoModal';
+import { CookieBanner } from '@/components/shared/CookieBanner';
 import { Logo } from '@/components/shared/Logo';
 
 import type { ReactNode } from 'react';
@@ -29,6 +31,7 @@ const FOOTER_COMPANY = [
 const FOOTER_LEGAL = [
   { href: '/privacy', label: 'Privacy' },
   { href: '/terms', label: 'Terms' },
+  { href: '/cookies', label: 'Cookies' },
   { href: 'mailto:support@hawkleads.io', label: 'Contact' },
 ] as const;
 
@@ -81,6 +84,19 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/audit"
+              className={`inline-flex items-center gap-1.5 text-sm font-body font-medium transition-colors duration-fast ${
+                pathname === '/audit'
+                  ? 'text-ink'
+                  : 'text-signal hover:text-signal-hover nav-audit-nudge'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+              Free Audit
+            </Link>
             <Link href="/login" className="btn-ghost text-sm">
               Log In
             </Link>
@@ -152,6 +168,21 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
                 {link.label}
               </Link>
             ))}
+
+            <Link
+              href="/audit"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-1.5 px-3 py-3 rounded-md text-sm font-body transition-colors duration-fast ${
+                pathname === '/audit'
+                  ? 'text-ink font-medium bg-surface-alt'
+                  : 'text-signal font-medium hover:bg-signal-light'
+              }`}
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+              Free Audit
+            </Link>
 
             <div className="my-3 border-t border-border" />
 
@@ -251,6 +282,9 @@ export default function MarketingLayout({ children }: MarketingLayoutProps): Rea
         }}
       />
       <script src="/widget/sb.js" async />
+
+      <CookieBanner />
+      {!pathname.startsWith('/audit') && <AuditPromoModal />}
     </div>
   );
 }

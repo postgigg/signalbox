@@ -1029,6 +1029,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      audits: {
+        Row: {
+          id: string;
+          email: string;
+          url: string;
+          domain: string;
+          scores: Json;
+          details: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          url: string;
+          domain: string;
+          scores: Json;
+          details: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          url?: string;
+          domain?: string;
+          scores?: Json;
+          details?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       admin_audit_log: {
         Row: {
           id: string;
@@ -1630,6 +1660,7 @@ export type WidgetAnalytics = Tables<'widget_analytics'>;
 export type NotificationPreference = Tables<'notification_preferences'>;
 export type PlatformMetric = Tables<'platform_metrics'>;
 export type AdminAuditLog = Tables<'admin_audit_log'>;
+export type Audit = Tables<'audits'>;
 export type PlatformSetting = Tables<'platform_settings'>;
 export type EmailTemplate = Tables<'email_templates'>;
 export type ClientAccount = Tables<'client_accounts'>;

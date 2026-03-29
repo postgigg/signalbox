@@ -391,6 +391,11 @@ export const RATE_LIMITS = {
     window: '1 m' as const,
     prefix: 'rl:members_invite',
   },
+  audit: {
+    tokens: 5,
+    window: '15 m' as const,
+    prefix: 'rl:audit',
+  },
 } as const;
 
 // ---------------------------------------------------------------------------

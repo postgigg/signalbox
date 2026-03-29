@@ -32,6 +32,7 @@ export interface SendEmailOptions {
   from?: string;
   replyTo?: string;
   tags?: Array<{ name: string; value: string }>;
+  attachments?: Array<{ filename: string; content: Buffer }>;
 }
 
 export interface SendEmailResult {
@@ -60,6 +61,7 @@ export async function sendEmail(
     if (options.text) emailPayload.text = options.text;
     if (options.replyTo) emailPayload.reply_to = options.replyTo;
     if (options.tags) emailPayload.tags = options.tags;
+    if (options.attachments) emailPayload.attachments = options.attachments;
 
     const { data, error } = await resend.emails.send(emailPayload);
 
