@@ -7,333 +7,183 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,700&family=DM+Mono:wght@400;500&display=swap');
   *{margin:0;padding:0;box-sizing:border-box;}
-  :root{--bk:#FFFFFF;--cr:#0f172a;--st:#64748b;--mid:#94a3b8;--w:#e2e8f0;--ww:#f8fafc;--ac:#DA552F;--bl:#2563EB;--gr:#16A34A;--am:#CA8A04;--rd:#DC2626;--f:'DM Sans',sans-serif;--m:'DM Mono',monospace;}
+  :root{--bk:#FFFFFF;--cr:#0f172a;--st:#64748b;--w:#e2e8f0;--ww:#f8fafc;--ac:#DA552F;--bl:#2563EB;--gr:#16A34A;--am:#CA8A04;--rd:#DC2626;--f:'DM Sans',sans-serif;--m:'DM Mono',monospace;}
   body{background:#f1f5f9;font-family:var(--f);padding:40px;display:flex;flex-direction:column;align-items:center;gap:4px;}
   .panel{width:1270px;height:760px;position:relative;overflow:hidden;background:var(--bk);}
-
-  /* Shared */
-  .mono{font-family:var(--m);}
   .accent-bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac);}
-
-  /* ══════════════════════════════════════════ */
 </style>
 </head>
 <body>
 
-<!-- ══════ PANEL 1: THE HOOK ══════ -->
-<div class="panel" id="panel-1" style="background:var(--bk);">
+<!-- ══════ PANEL 1: HOOK ══════ -->
+<div class="panel" id="panel-1">
   <div class="accent-bar"></div>
 
-  <!-- Giant mark -->
-  <svg style="position:absolute;left:50%;top:50%;transform:translate(-40%,-50%);width:600px;height:600px;opacity:0.03;" viewBox="0 0 180 180" fill="none">
+  <!-- Watermark -->
+  <svg style="position:absolute;right:-40px;top:50%;transform:translateY(-50%);width:520px;height:520px;opacity:0.025;" viewBox="0 0 180 180" fill="none">
     <path d="M20 90 L62 16 L62 164 Z" fill="#0f172a"/><path d="M42 90 L76 28 L76 152 Z" fill="#0f172a"/><path d="M64 90 L92 44 L92 136 Z" fill="#0f172a"/>
   </svg>
 
   <!-- Logo -->
-  <div style="position:absolute;top:52px;left:88px;display:flex;align-items:center;gap:10px;">
-    <svg viewBox="0 0 48 48" fill="none" style="width:28px;height:28px;"><path d="M6 24 L16 6 L16 42 Z" fill="#0f172a" opacity=".12"/><path d="M12 24 L20 10 L20 38 Z" fill="#0f172a" opacity=".35"/><path d="M18 24 L26 12 L26 36 Z" fill="#0f172a"/><circle cx="10" cy="24" r="1.5" fill="#0f172a"/></svg>
-    <span style="font-size:20px;font-weight:700;color:var(--cr);letter-spacing:-1px;">HawkLeads</span>
+  <div style="position:absolute;top:48px;left:80px;display:flex;align-items:center;gap:10px;">
+    <svg viewBox="0 0 48 48" fill="none" style="width:26px;height:26px;"><path d="M6 24 L16 6 L16 42 Z" fill="#0f172a" opacity=".12"/><path d="M12 24 L20 10 L20 38 Z" fill="#0f172a" opacity=".35"/><path d="M18 24 L26 12 L26 36 Z" fill="#0f172a"/><circle cx="10" cy="24" r="1.5" fill="#0f172a"/></svg>
+    <span style="font-size:18px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">HawkLeads</span>
   </div>
 
-  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 100px;">
-    <div style="font-size:80px;font-weight:700;color:var(--cr);letter-spacing:-4px;line-height:1.0;">Your best leads<br/>are slipping away.</div>
-    <div style="margin-top:20px;font-size:30px;font-weight:700;font-style:italic;color:var(--ac);letter-spacing:-1px;">Catch them before your competitor does.</div>
-    <div style="margin-top:18px;font-size:16px;color:var(--st);">Score every lead. Route the hot ones. Follow up on the rest. Automatically.</div>
-    <div style="margin-top:32px;background:var(--cr);color:#ffffff;font-size:16px;font-weight:700;padding:14px 40px;border-radius:4px;">Start Free Trial</div>
-    <div style="margin-top:12px;font-family:var(--m);font-size:11px;color:var(--st);">No credit card. 14 days free.</div>
+  <div style="position:absolute;top:0;bottom:0;left:80px;right:50%;display:flex;flex-direction:column;justify-content:center;">
+    <div style="font-size:72px;font-weight:700;color:var(--cr);letter-spacing:-3.5px;line-height:1.0;">Your best<br/>leads are<br/>slipping away.</div>
+    <div style="margin-top:24px;font-size:17px;color:var(--st);line-height:1.5;max-width:420px;">Every form submission is scored, prioritized, and routed to the right person on your team. Automatically.</div>
+    <div style="margin-top:32px;display:flex;align-items:center;gap:16px;">
+      <div style="background:var(--cr);color:#ffffff;font-size:15px;font-weight:700;padding:13px 36px;border-radius:6px;">Start Free Trial</div>
+      <span style="font-family:var(--m);font-size:11px;color:var(--st);">No credit card required</span>
+    </div>
   </div>
 
-  <div style="position:absolute;bottom:28px;left:88px;font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">HAWKLEADS.IO</div>
-  <div style="position:absolute;bottom:28px;right:88px;font-family:var(--m);font-size:10px;color:var(--ac);letter-spacing:0.5px;">LIVE NOW</div>
+  <div style="position:absolute;bottom:48px;left:80px;font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">HAWKLEADS.IO</div>
 </div>
 
-<!-- ══════ PANEL 2: SCORE ══════ -->
+<!-- ══════ PANEL 2: HOW IT WORKS ══════ -->
 <div class="panel" id="panel-2">
-  <div style="text-align:center;padding-top:60px;">
+  <div style="position:absolute;top:0;bottom:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 80px;">
     <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:2px;">HOW IT WORKS</div>
-    <div style="margin-top:12px;font-size:52px;font-weight:700;color:var(--cr);letter-spacing:-2.5px;">Capture. Score. Prioritize.</div>
+    <div style="margin-top:12px;font-size:48px;font-weight:700;color:var(--cr);letter-spacing:-2px;text-align:center;">Three steps. Zero guesswork.</div>
+
+    <!-- Three steps -->
+    <div style="margin-top:56px;display:flex;gap:0;width:100%;max-width:1000px;">
+
+      <!-- Step 1 -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);border-right:none;">
+        <div style="font-family:var(--m);font-size:48px;font-weight:700;color:var(--cr);opacity:0.06;line-height:1;">01</div>
+        <div style="margin-top:8px;font-size:22px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">Capture</div>
+        <div style="margin-top:12px;font-size:14px;color:var(--st);line-height:1.7;">
+          Embed a widget on your site.<br/>
+          2-5 qualifying questions.<br/>
+          Bot-protected out of the box.
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);border-right:none;">
+        <div style="font-family:var(--m);font-size:48px;font-weight:700;color:var(--cr);opacity:0.06;line-height:1;">02</div>
+        <div style="margin-top:8px;font-size:22px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">Score</div>
+        <div style="margin-top:12px;font-size:14px;color:var(--st);line-height:1.7;">
+          Every lead gets a 0-100 score.<br/>
+          Form answers, behavior, intent.<br/>
+          Hot, warm, or cold. Instantly.
+        </div>
+        <!-- Score example -->
+        <div style="margin-top:20px;display:flex;align-items:baseline;gap:8px;">
+          <span style="font-size:40px;font-weight:700;color:var(--cr);letter-spacing:-2px;">77</span>
+          <span style="font-family:var(--m);font-size:10px;color:var(--rd);font-weight:600;padding:3px 8px;background:rgba(220,38,38,0.06);border-radius:3px;">HOT</span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);">
+        <div style="font-family:var(--m);font-size:48px;font-weight:700;color:var(--cr);opacity:0.06;line-height:1;">03</div>
+        <div style="margin-top:8px;font-size:22px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">Route</div>
+        <div style="margin-top:12px;font-size:14px;color:var(--st);line-height:1.7;">
+          Hot leads go to closers.<br/>
+          Warm leads get drip emails.<br/>
+          Six routing strategies built in.
+        </div>
+        <!-- Mini flow -->
+        <div style="margin-top:20px;display:flex;align-items:center;gap:6px;">
+          <div style="font-family:var(--m);font-size:10px;color:var(--bl);padding:5px 10px;border:1px solid rgba(37,99,235,0.2);border-radius:3px;">Lead</div>
+          <svg width="16" height="8" viewBox="0 0 16 8"><path d="M0 4h12M10 1l3 3-3 3" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>
+          <div style="font-family:var(--m);font-size:10px;color:var(--gr);padding:5px 10px;border:1px solid rgba(22,163,74,0.2);border-radius:3px;">Alex K.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:40px;font-size:15px;color:var(--st);">Every lead scored in under 200ms. No manual sorting. No spreadsheets.</div>
   </div>
-
-  <!-- Three columns -->
-  <div style="display:flex;position:absolute;top:180px;left:0;right:0;bottom:100px;">
-    <!-- Col 1 -->
-    <div style="flex:1;padding:0 40px 0 88px;border-right:1px solid var(--w);">
-      <div style="font-size:100px;font-weight:700;color:var(--cr);opacity:0.03;line-height:1;margin-bottom:-16px;">01</div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1.5px;">CAPTURE</div>
-      <div style="margin-top:12px;font-size:26px;font-weight:700;color:var(--cr);letter-spacing:-0.8px;">Smart Widget</div>
-      <div style="margin-top:10px;font-size:13px;color:var(--st);line-height:1.7;">2-5 qualifying questions.<br/>Score weights -50 to +50 per answer.<br/>Shadow DOM. Bot protection built in.</div>
-
-      <!-- Mini widget -->
-      <div style="margin-top:24px;background:var(--ww);border:1px solid var(--w);padding:0;overflow:hidden;">
-        <div style="padding:10px 14px;font-size:11px;font-weight:600;color:var(--cr);">What brings you here?</div>
-        <div style="padding:8px 14px;border-top:1px solid var(--w);font-size:12px;color:var(--st);">Web Development</div>
-        <div style="padding:8px 14px;border-top:1px solid var(--w);font-size:12px;color:var(--bl);background:rgba(37,99,235,0.05);border-left:2px solid var(--bl);">Marketing Strategy <span style="font-family:var(--m);font-size:9px;float:right;margin-top:2px;">+25</span></div>
-        <div style="padding:8px 14px;border-top:1px solid var(--w);font-size:12px;color:var(--st);">Brand Design</div>
-        <div style="height:3px;background:var(--w);"><div style="width:33%;height:100%;background:var(--bl);"></div></div>
-      </div>
-    </div>
-
-    <!-- Col 2 -->
-    <div style="flex:1;padding:0 40px;border-right:1px solid var(--w);">
-      <div style="font-size:100px;font-weight:700;color:var(--cr);opacity:0.03;line-height:1;margin-bottom:-16px;">02</div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1.5px;">SCORE</div>
-      <div style="margin-top:12px;font-size:26px;font-weight:700;color:var(--cr);letter-spacing:-0.8px;">Three Dimensions</div>
-      <div style="margin-top:10px;font-size:13px;color:var(--st);line-height:1.7;">Form + Behavior + Intent.<br/>One composite. 0 to 100.</div>
-
-      <!-- Score bars -->
-      <div style="margin-top:30px;display:flex;flex-direction:column;gap:18px;">
-        <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-family:var(--m);font-size:10px;color:var(--st);width:56px;">Form</span><span style="font-family:var(--m);font-size:10px;color:var(--cr);">82</span></div><div style="height:5px;background:var(--w);"><div style="width:82%;height:100%;background:var(--bl);"></div></div></div>
-        <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-family:var(--m);font-size:10px;color:var(--st);width:56px;">Behavior</span><span style="font-family:var(--m);font-size:10px;color:var(--cr);">71</span></div><div style="height:5px;background:var(--w);"><div style="width:71%;height:100%;background:var(--gr);"></div></div></div>
-        <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-family:var(--m);font-size:10px;color:var(--st);width:56px;">Intent</span><span style="font-family:var(--m);font-size:10px;color:var(--cr);">68</span></div><div style="height:5px;background:var(--w);"><div style="width:68%;height:100%;background:var(--am);"></div></div></div>
-        <div style="border-top:1px solid var(--w);padding-top:14px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-family:var(--m);font-size:11px;color:var(--cr);font-weight:500;width:56px;">Total</span><span style="font-size:28px;font-weight:700;color:var(--cr);">77</span></div><div style="height:7px;background:var(--w);"><div style="width:77%;height:100%;background:var(--cr);"></div></div></div>
-      </div>
-
-      <div style="margin-top:20px;font-family:var(--m);font-size:9px;color:var(--st);">(Form x 0.6) + (Behavior x 0.2) + (Intent x 0.2)</div>
-    </div>
-
-    <!-- Col 3 -->
-    <div style="flex:1;padding:0 88px 0 40px;">
-      <div style="font-size:100px;font-weight:700;color:var(--cr);opacity:0.03;line-height:1;margin-bottom:-16px;">03</div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1.5px;">PRIORITIZE</div>
-      <div style="margin-top:12px;font-size:26px;font-weight:700;color:var(--cr);letter-spacing:-0.8px;">Tier Assignment</div>
-      <div style="margin-top:10px;font-size:13px;color:var(--st);line-height:1.7;">Instant. Automatic.<br/>Call the right lead first.</div>
-
-      <!-- Tier blocks -->
-      <div style="margin-top:24px;padding:20px;background:rgba(220,38,38,0.05);border:1px solid rgba(220,38,38,0.2);">
-        <div style="font-size:36px;font-weight:700;color:var(--rd);letter-spacing:-1px;">HOT</div>
-        <div style="font-family:var(--m);font-size:11px;color:var(--rd);opacity:0.5;margin-top:2px;">Score 70 — 100</div>
-        <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:4px;">Call now. This is the one.</div>
-      </div>
-      <div style="margin-top:8px;padding:16px;background:rgba(202,138,4,0.03);border:1px solid rgba(202,138,4,0.12);">
-        <div style="font-size:24px;font-weight:700;color:var(--am);">WARM</div>
-        <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:2px;">40 — 69. Nurture with drip.</div>
-      </div>
-      <div style="margin-top:8px;padding:12px;background:rgba(100,116,139,0.04);border:1px solid rgba(100,116,139,0.15);">
-        <div style="font-size:18px;font-weight:700;color:var(--st);">COLD</div>
-        <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:2px;">0 — 39. Deprioritize.</div>
-      </div>
-    </div>
-  </div>
-
-  <div style="position:absolute;bottom:0;left:0;right:0;border-top:1px solid var(--w);padding:20px 88px;text-align:center;font-size:16px;font-weight:700;color:var(--cr);letter-spacing:-0.3px;">Every lead scored in under 200ms.</div>
 </div>
 
-<!-- ══════ PANEL 3: ROUTE ══════ -->
+<!-- ══════ PANEL 3: PRICING ══════ -->
 <div class="panel" id="panel-3">
-  <div style="text-align:center;padding-top:60px;">
-    <div style="font-family:var(--m);font-size:10px;color:var(--gr);letter-spacing:2px;">AFTER THE SCORE</div>
-    <div style="margin-top:12px;font-size:52px;font-weight:700;color:var(--cr);letter-spacing:-2.5px;">Route. Notify. Follow Up.</div>
-    <div style="margin-top:10px;font-size:15px;color:var(--st);">Hot leads go to closers. Warm leads get nurtured. No spreadsheets. No manual sorting.</div>
-  </div>
-
-  <!-- Two columns -->
-  <div style="display:flex;position:absolute;top:210px;left:0;right:0;bottom:88px;">
-    <!-- Routing -->
-    <div style="flex:1;padding:0 40px 0 88px;border-right:1px solid var(--w);">
-      <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1.5px;padding-bottom:14px;border-bottom:1px solid var(--w);margin-bottom:14px;">LEAD ROUTING — 6 STRATEGIES</div>
-      <div style="display:flex;flex-direction:column;gap:0;">
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><div style="width:16px;height:2px;background:var(--bl);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Round-Robin</span><span style="font-size:12px;color:var(--st);">Even distribution with weights</span></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><div style="width:16px;height:2px;background:var(--gr);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Skill-Based</span><span style="font-size:12px;color:var(--st);">Match skills to lead needs</span></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><div style="width:16px;height:2px;background:var(--am);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Geographic</span><span style="font-size:12px;color:var(--st);">Route by visitor location</span></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><div style="width:16px;height:2px;background:var(--rd);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Value-Based</span><span style="font-size:12px;color:var(--st);">Hot leads to your closers</span></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><div style="width:16px;height:2px;background:rgba(100,116,139,0.25);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Availability</span><span style="font-size:12px;color:var(--st);">Online members with capacity</span></div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;"><div style="width:16px;height:2px;background:rgba(100,116,139,0.25);flex-shrink:0;"></div><span style="font-size:14px;font-weight:600;color:var(--cr);min-width:110px;">Direct</span><span style="font-size:12px;color:var(--st);">Fixed to one person</span></div>
-      </div>
-
-      <!-- Flow diagram -->
-      <div style="margin-top:24px;display:flex;align-items:center;gap:0;">
-        <div style="padding:10px 16px;background:var(--ww);border:1px solid var(--w);text-align:center;"><div style="font-family:var(--m);font-size:10px;color:var(--cr);">Lead In</div><div style="font-family:var(--m);font-size:8px;color:var(--st);">Score: 77</div></div>
-        <div style="width:28px;height:1px;background:var(--w);position:relative;"><div style="position:absolute;right:-3px;top:-3px;border-left:6px solid var(--w);border-top:4px solid transparent;border-bottom:4px solid transparent;"></div></div>
-        <div style="padding:10px 16px;background:var(--ww);border:1px solid rgba(37,99,235,0.2);text-align:center;"><div style="font-family:var(--m);font-size:10px;color:var(--bl);">Rules</div><div style="font-family:var(--m);font-size:8px;color:var(--st);">Match</div></div>
-        <div style="width:28px;height:1px;background:var(--w);position:relative;"><div style="position:absolute;right:-3px;top:-3px;border-left:6px solid var(--gr);border-top:4px solid transparent;border-bottom:4px solid transparent;"></div></div>
-        <div style="padding:10px 16px;background:var(--ww);border:1px solid rgba(22,163,74,0.2);text-align:center;"><div style="font-family:var(--m);font-size:10px;color:var(--gr);">Alex K.</div><div style="font-family:var(--m);font-size:8px;color:var(--st);">Assigned</div></div>
-      </div>
-    </div>
-
-    <!-- Drip -->
-    <div style="flex:1;padding:0 88px 0 40px;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--gr);letter-spacing:1.5px;padding-bottom:14px;border-bottom:1px solid var(--w);margin-bottom:14px;">DRIP SEQUENCES — PER TIER</div>
-
-      <div style="display:flex;flex-direction:column;gap:0;">
-        <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><span style="font-family:var(--m);font-size:11px;color:var(--bl);width:52px;flex-shrink:0;">T + 0</span><div><div style="font-size:14px;font-weight:600;color:var(--cr);">Lead Submits</div><div style="font-size:12px;color:var(--st);margin-top:2px;">Scored, tiered, enrolled in matching drip.</div></div></div>
-        <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><span style="font-family:var(--m);font-size:11px;color:var(--bl);width:52px;flex-shrink:0;">T+24h</span><div><div style="font-size:14px;font-weight:600;color:var(--cr);">Email 1</div><div style="font-size:12px;color:var(--st);margin-top:2px;">Personalized intro. 6 template variables.</div></div></div>
-        <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><span style="font-family:var(--m);font-size:11px;color:var(--bl);width:52px;flex-shrink:0;">T+72h</span><div><div style="font-size:14px;font-weight:600;color:var(--cr);">Email 2</div><div style="font-size:12px;color:var(--st);margin-top:2px;">Follow-up. Configurable delay and copy.</div></div></div>
-        <div style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(100,116,139,0.08);"><span style="font-family:var(--m);font-size:11px;color:var(--bl);width:52px;flex-shrink:0;">T+1wk</span><div><div style="font-size:14px;font-weight:600;color:var(--cr);">Email 3</div><div style="font-size:12px;color:var(--st);margin-top:2px;">Last touch. Custom per sequence.</div></div></div>
-        <div style="display:flex;gap:16px;padding:12px 0;"><span style="font-family:var(--m);font-size:11px;color:var(--am);width:52px;flex-shrink:0;">Pause</span><div><div style="font-size:14px;font-weight:600;color:var(--cr);">Lead Replied</div><div style="font-size:12px;color:var(--st);margin-top:2px;">Sequence stops. No more emails.</div></div></div>
-      </div>
-
-      <!-- Webhooks inline -->
-      <div style="margin-top:24px;padding-top:14px;border-top:1px solid var(--w);">
-        <div style="font-family:var(--m);font-size:10px;color:var(--ac);letter-spacing:1.5px;margin-bottom:10px;">WEBHOOKS</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          <div style="font-family:var(--m);font-size:9px;color:var(--cr);padding:4px 10px;background:var(--ww);border:1px solid var(--w);">submission.created</div>
-          <div style="font-family:var(--m);font-size:9px;color:var(--cr);padding:4px 10px;background:var(--ww);border:1px solid var(--w);">lead.qualified</div>
-          <div style="font-family:var(--m);font-size:9px;color:var(--cr);padding:4px 10px;background:var(--ww);border:1px solid var(--w);">lead.converted</div>
-          <div style="font-family:var(--m);font-size:9px;color:var(--cr);padding:4px 10px;background:var(--ww);border:1px solid var(--w);">score_changed</div>
-        </div>
-        <div style="margin-top:8px;font-family:var(--m);font-size:9px;color:var(--st);">HMAC-SHA256 signed. Delivery logs. Auto-retry.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom stats -->
-  <div style="position:absolute;bottom:0;left:0;right:0;display:flex;border-top:1px solid var(--w);">
-    <div style="flex:1;padding:16px 0;text-align:center;border-right:1px solid var(--w);"><div style="font-size:20px;font-weight:700;color:var(--cr);">Up to 50</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">ROUTING RULES</div></div>
-    <div style="flex:1;padding:16px 0;text-align:center;border-right:1px solid var(--w);"><div style="font-size:20px;font-weight:700;color:var(--cr);">Up to 10</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">DRIP SEQUENCES</div></div>
-    <div style="flex:1;padding:16px 0;text-align:center;border-right:1px solid var(--w);"><div style="font-size:20px;font-weight:700;color:var(--cr);">20</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">WEBHOOK ENDPOINTS</div></div>
-    <div style="flex:1;padding:16px 0;text-align:center;"><div style="font-size:20px;font-weight:700;color:var(--cr);">5 Events</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">ALL WIRED</div></div>
-  </div>
-</div>
-
-<!-- ══════ PANEL 4: A/B + CONNECT ══════ -->
-<div class="panel" id="panel-4">
-  <div style="text-align:center;padding-top:60px;">
-    <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:2px;">EXTEND + OPTIMIZE</div>
-    <div style="margin-top:12px;font-size:52px;font-weight:700;color:var(--cr);letter-spacing:-2.5px;">Test. Measure. Know.</div>
-  </div>
-
-  <div style="display:flex;position:absolute;top:180px;left:88px;right:88px;bottom:40px;gap:24px;">
-    <!-- A/B Testing -->
-    <div style="flex:1;background:var(--ww);border:1px solid var(--w);padding:32px;display:flex;flex-direction:column;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1.5px;">A/B TESTING</div>
-      <div style="margin-top:14px;font-size:24px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">Stop guessing which<br/>questions convert.</div>
-      <div style="margin-top:10px;font-size:13px;color:var(--st);line-height:1.6;">Split traffic on any step. Statistical significance built in.</div>
-
-      <!-- Split visual -->
-      <div style="margin-top:24px;display:flex;gap:1px;flex:1;">
-        <div style="flex:1;background:var(--bk);padding:16px;border:1px solid rgba(37,99,235,0.15);">
-          <div style="font-family:var(--m);font-size:10px;color:var(--bl);letter-spacing:1px;margin-bottom:10px;">VARIANT A</div>
-          <div style="font-size:13px;font-weight:600;color:var(--cr);margin-bottom:8px;">What service do you need?</div>
-          <div style="font-size:11px;color:var(--st);line-height:1.8;">Marketing Strategy<br/>Web Development<br/>Brand Identity</div>
-          <div style="margin-top:16px;border-top:1px solid var(--w);padding-top:12px;">
-            <div style="font-family:var(--m);font-size:9px;color:var(--st);">CONVERSION</div>
-            <div style="font-size:28px;font-weight:700;color:var(--bl);">8.2%</div>
-          </div>
-        </div>
-        <div style="flex:1;background:var(--bk);padding:16px;border:1px solid rgba(202,138,4,0.15);">
-          <div style="font-family:var(--m);font-size:10px;color:var(--am);letter-spacing:1px;margin-bottom:10px;">VARIANT B</div>
-          <div style="font-size:13px;font-weight:600;color:var(--cr);margin-bottom:8px;">What's your biggest challenge?</div>
-          <div style="font-size:11px;color:var(--st);line-height:1.8;">Getting more leads<br/>Closing faster<br/>Scaling operations</div>
-          <div style="margin-top:16px;border-top:1px solid var(--w);padding-top:12px;">
-            <div style="font-family:var(--m);font-size:9px;color:var(--st);">CONVERSION</div>
-            <div style="font-size:28px;font-weight:700;color:var(--am);">12.7%</div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:16px;padding:14px;border-left:3px solid var(--gr);background:rgba(22,163,74,0.03);">
-        <div style="font-size:13px;color:var(--cr);"><strong>Variant B wins.</strong> Higher conversion, better lead quality.</div>
-        <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:2px;">p = 0.023 (significant at p &lt; 0.05)</div>
-      </div>
-    </div>
-
-    <!-- Agency -->
-    <div style="flex:1;background:var(--ww);border:1px solid var(--w);padding:32px;display:flex;flex-direction:column;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--ac);letter-spacing:1.5px;">BUILT FOR AGENCIES</div>
-      <div style="margin-top:14px;font-size:24px;font-weight:700;color:var(--cr);letter-spacing:-0.5px;">One dashboard.<br/>All your clients.</div>
-      <div style="margin-top:10px;font-size:13px;color:var(--st);line-height:1.6;">Multi-client. Shared analytics. Unlimited leads.</div>
-
-      <!-- Stats grid -->
-      <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--w);flex:1;">
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:32px;font-weight:700;color:var(--cr);letter-spacing:-1.5px;">25</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">WIDGETS</div></div>
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:32px;font-weight:700;color:var(--cr);letter-spacing:-1.5px;">25</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">TEAM</div></div>
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:32px;font-weight:700;color:var(--cr);letter-spacing:-1.5px;">50</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">ROUTING RULES</div></div>
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:28px;font-weight:700;color:var(--cr);letter-spacing:-1px;">&#8734;</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">LEADS / MONTH</div></div>
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:32px;font-weight:700;color:var(--cr);letter-spacing:-1.5px;">25</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">SHARED LINKS</div></div>
-        <div style="background:var(--bk);padding:16px;"><div style="font-size:32px;font-weight:700;color:var(--cr);letter-spacing:-1.5px;">20</div><div style="font-family:var(--m);font-size:9px;color:var(--st);letter-spacing:1px;margin-top:2px;">WEBHOOKS</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════ PANEL 5: PRICING ══════ -->
-<div class="panel" id="panel-5">
-  <div style="text-align:center;padding-top:60px;">
+  <div style="position:absolute;top:0;bottom:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 80px;">
     <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:2px;">PRICING</div>
-    <div style="margin-top:12px;font-size:52px;font-weight:700;color:var(--cr);letter-spacing:-2.5px;">Pick your plan. Start today.</div>
+    <div style="margin-top:12px;font-size:48px;font-weight:700;color:var(--cr);letter-spacing:-2px;">Simple plans. Start free.</div>
+
+    <div style="margin-top:48px;display:flex;gap:0;width:100%;max-width:960px;">
+      <!-- Starter -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);border-right:none;display:flex;flex-direction:column;">
+        <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">STARTER</div>
+        <div style="margin-top:16px;display:flex;align-items:baseline;gap:4px;">
+          <span style="font-size:48px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$99</span>
+          <span style="font-size:14px;color:var(--st);">/mo</span>
+        </div>
+        <div style="margin-top:20px;font-size:13px;color:var(--st);line-height:2;">
+          1 widget<br/>500 leads/month<br/>3 team members<br/>Email notifications
+        </div>
+      </div>
+
+      <!-- Pro -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);border-right:none;border-top:3px solid var(--ac);display:flex;flex-direction:column;margin-top:-3px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-family:var(--m);font-size:10px;color:var(--ac);letter-spacing:1.5px;">PRO</div>
+          <span style="font-family:var(--m);font-size:9px;color:var(--ac);padding:2px 6px;border:1px solid rgba(218,85,47,0.2);border-radius:3px;">POPULAR</span>
+        </div>
+        <div style="margin-top:16px;display:flex;align-items:baseline;gap:4px;">
+          <span style="font-size:48px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$149</span>
+          <span style="font-size:14px;color:var(--st);">/mo</span>
+        </div>
+        <div style="margin-top:20px;font-size:13px;color:var(--cr);line-height:2;">
+          5 widgets<br/>2,000 leads/month<br/>10 team members<br/>Routing + A/B testing + drips
+        </div>
+      </div>
+
+      <!-- Agency -->
+      <div style="flex:1;padding:40px;border:1px solid var(--w);display:flex;flex-direction:column;">
+        <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">AGENCY</div>
+        <div style="margin-top:16px;display:flex;align-items:baseline;gap:4px;">
+          <span style="font-size:48px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$249</span>
+          <span style="font-size:14px;color:var(--st);">/mo</span>
+        </div>
+        <div style="margin-top:20px;font-size:13px;color:var(--st);line-height:2;">
+          25 widgets, unlimited leads<br/>25 team members<br/>50 routing rules<br/>Priority support
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;font-family:var(--m);font-size:11px;color:var(--st);">14-day free trial on every plan. No credit card required.</div>
   </div>
-
-  <div style="display:flex;position:absolute;top:190px;left:88px;right:88px;bottom:88px;gap:1px;background:var(--w);">
-    <!-- Starter -->
-    <div style="flex:1;background:var(--bk);padding:36px;display:flex;flex-direction:column;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">STARTER</div>
-      <div style="margin-top:16px;font-size:56px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$99</div>
-      <div style="font-size:14px;color:var(--st);">/month</div>
-      <div style="margin-top:20px;font-size:13px;color:var(--st);line-height:1.8;flex:1;">
-        1 widget<br/>500 submissions/month<br/>3 team members<br/>1 webhook<br/>Email notifications
-      </div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:auto;">Best for single-location businesses.</div>
-    </div>
-
-    <!-- Pro -->
-    <div style="flex:1;background:var(--bk);padding:36px;display:flex;flex-direction:column;border-top:3px solid var(--ac);margin-top:-3px;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--ac);letter-spacing:1.5px;">PRO</div>
-      <div style="margin-top:16px;font-size:56px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$149</div>
-      <div style="font-size:14px;color:var(--st);">/month</div>
-      <div style="margin-top:20px;font-size:13px;color:var(--cr);line-height:1.8;flex:1;">
-        5 widgets<br/>2,000 submissions/month<br/>10 team members<br/>Lead routing (15 rules)<br/>A/B testing + drip sequences<br/>API access + 5 webhooks
-      </div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--ac);margin-top:auto;">Most popular. Best for growing teams.</div>
-    </div>
-
-    <!-- Agency -->
-    <div style="flex:1;background:var(--bk);padding:36px;display:flex;flex-direction:column;">
-      <div style="font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">AGENCY</div>
-      <div style="margin-top:16px;font-size:56px;font-weight:700;color:var(--cr);letter-spacing:-2px;">$249</div>
-      <div style="font-size:14px;color:var(--st);">/month</div>
-      <div style="margin-top:20px;font-size:13px;color:var(--st);line-height:1.8;flex:1;">
-        25 widgets, unlimited leads<br/>25 team members<br/>50 routing rules<br/>20 webhooks + 25 shared links<br/>Priority support
-      </div>
-      <div style="font-family:var(--m);font-size:10px;color:var(--st);margin-top:auto;">Best for agencies managing clients.</div>
-    </div>
-  </div>
-
-  <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;font-family:var(--m);font-size:11px;color:var(--st);">14-day free trial on every plan. No credit card required.</div>
 </div>
 
-<!-- ══════ PANEL 6: CTA ══════ -->
-<div class="panel" id="panel-6">
+<!-- ══════ PANEL 4: CTA ══════ -->
+<div class="panel" id="panel-4">
   <div class="accent-bar"></div>
 
-  <!-- Giant mark -->
-  <svg style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:500px;height:500px;opacity:0.03;" viewBox="0 0 180 180" fill="none">
+  <!-- Watermark -->
+  <svg style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:480px;height:480px;opacity:0.02;" viewBox="0 0 180 180" fill="none">
     <path d="M20 90 L62 16 L62 164 Z" fill="#0f172a"/><path d="M42 90 L76 28 L76 152 Z" fill="#0f172a"/><path d="M64 90 L92 44 L92 136 Z" fill="#0f172a"/>
   </svg>
 
-  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 100px;">
-    <!-- Logo mark -->
-    <div style="width:72px;height:72px;background:var(--ww);border:1px solid var(--w);display:flex;align-items:center;justify-content:center;margin-bottom:32px;">
-      <svg viewBox="0 0 48 48" fill="none" style="width:40px;height:40px;"><path d="M6 24 L16 6 L16 42 Z" fill="#0f172a" opacity=".12"/><path d="M12 24 L20 10 L20 38 Z" fill="#0f172a" opacity=".35"/><path d="M18 24 L26 12 L26 36 Z" fill="#0f172a"/><circle cx="10" cy="24" r="1.5" fill="#0f172a"/></svg>
-    </div>
-
-    <div style="font-size:64px;font-weight:700;color:var(--cr);letter-spacing:-3px;line-height:1.02;">Every hour you wait,</div>
-    <div style="font-size:64px;font-weight:700;font-style:italic;color:var(--ac);letter-spacing:-3px;line-height:1.02;">your best lead gets colder.</div>
-
-    <div style="margin-top:24px;font-size:16px;color:var(--st);max-width:480px;line-height:1.6;">The average business takes 47 hours to respond to a web form. HawkLeads tells you who to call first, the second they submit.</div>
-
-    <div style="margin-top:36px;background:var(--cr);color:#ffffff;font-size:18px;font-weight:700;padding:16px 48px;border-radius:4px;">Start Free Trial</div>
-    <div style="margin-top:12px;font-family:var(--m);font-size:11px;color:var(--st);">No credit card. 14 days free. Cancel anytime.</div>
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 120px;">
+    <div style="font-size:64px;font-weight:700;color:var(--cr);letter-spacing:-3px;line-height:1.05;">Stop losing leads<br/>to slow follow-up.</div>
+    <div style="margin-top:24px;font-size:17px;color:var(--st);max-width:460px;line-height:1.6;">The average business takes 47 hours to respond to a form. HawkLeads tells you who to call first, the second they submit.</div>
+    <div style="margin-top:40px;background:var(--cr);color:#ffffff;font-size:17px;font-weight:700;padding:16px 48px;border-radius:6px;">Start Free Trial</div>
+    <div style="margin-top:14px;font-family:var(--m);font-size:11px;color:var(--st);">hawkleads.io</div>
   </div>
-
-  <div style="position:absolute;bottom:28px;left:0;right:0;text-align:center;font-family:var(--m);font-size:10px;color:var(--st);letter-spacing:1.5px;">HAWKLEADS.IO</div>
 </div>
 
-<!-- Download buttons -->
+<!-- Download button -->
 <div style="margin-top:32px;text-align:center;">
-  <button id="dl" style="background:#0f172a;color:#ffffff;border:none;padding:14px 32px;border-radius:4px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Download All 6 as PNG</button>
+  <button id="dl" style="background:#0f172a;color:#ffffff;border:none;padding:14px 32px;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Download All 4 as PNG</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 document.getElementById('dl').addEventListener('click',async function(){
   this.textContent='Capturing...';this.disabled=true;
-  for(let i=1;i<=6;i++){
+  for(let i=1;i<=4;i++){
     const p=document.getElementById('panel-'+i);
     const c=await html2canvas(p,{width:1270,height:760,scale:2,useCORS:true,backgroundColor:null});
     const a=document.createElement('a');a.download='hawkleads-'+i+'.png';a.href=c.toDataURL('image/png');a.click();
     await new Promise(r=>setTimeout(r,600));
   }
-  this.textContent='Download All 6 as PNG';this.disabled=false;
+  this.textContent='Download All 4 as PNG';this.disabled=false;
 });
 </script>
 </body>

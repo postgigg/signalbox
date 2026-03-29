@@ -24,8 +24,8 @@ export const STEPS = [
 
 export const FEATURES = [
   {
-    title: 'Lead scoring',
-    body: 'You instantly know if a lead is worth calling. Every submission scored 0 to 100 based on the answers they give.',
+    title: 'Three-dimensional scoring',
+    body: 'Every lead scored 0 to 100 across three dimensions: form answers, behavioral signals, and intent signals. Weighted, combined, and tiered as hot, warm, or cold automatically.',
   },
   {
     title: 'Instant alerts',

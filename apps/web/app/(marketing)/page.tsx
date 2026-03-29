@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 import { useInViewAnimations } from '@/lib/use-in-view';
 
@@ -19,7 +19,18 @@ import { PLANS, TEMPLATES_PREVIEW } from './_constants';
 
 export default function LandingPage(): React.ReactElement {
   const [isAnnual, setIsAnnual] = useState(false);
+  const ctaSectionRef = useRef<HTMLElement>(null);
   useInViewAnimations();
+
+  const handleBeatDrop = useCallback((): void => {
+    const section = ctaSectionRef.current;
+    if (!section) return;
+    section.classList.add('cta-beat-drop');
+    // Remove after animation completes so it can retrigger
+    setTimeout(() => {
+      section.classList.remove('cta-beat-drop');
+    }, 1200);
+  }, []);
 
   return (
     <div>
@@ -222,7 +233,16 @@ export default function LandingPage(): React.ReactElement {
       <TrustSignals />
 
       {/* ── Final CTA ── */}
-      <section className="bg-black py-24 px-6">
+      <section ref={ctaSectionRef} className="bg-black py-24 px-6 relative overflow-hidden">
+        {/* Beat drop overlay layers */}
+        <div className="cta-flash-overlay" />
+        <div className="cta-bolt-container">
+          <svg className="cta-bolt-svg" viewBox="0 0 1400 800" fill="none" preserveAspectRatio="none">
+            <path className="cta-bolt-path" d="M-50 380 L200 370 L280 340 L350 390 L500 360 L580 320 L650 380 L800 350 L900 310 L1000 370 L1100 340 L1200 380 L1450 360" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" fill="none" />
+            <path className="cta-bolt-path-glow" d="M-50 380 L200 370 L280 340 L350 390 L500 360 L580 320 L650 380 L800 350 L900 310 L1000 370 L1100 340 L1200 380 L1450 360" stroke="#60A5FA" strokeWidth="8" strokeLinecap="round" fill="none" opacity="0.4" />
+          </svg>
+        </div>
+        <div className="cta-shockwave" />
         <div className="max-w-content mx-auto animate-on-enter">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
@@ -271,7 +291,7 @@ export default function LandingPage(): React.ReactElement {
 
             {/* Anthem Player with logo visualizer */}
             <div className="flex items-center justify-center animate-slide-right">
-              <AnthemPlayer />
+              <AnthemPlayer onBeatDrop={handleBeatDrop} />
             </div>
           </div>
         </div>

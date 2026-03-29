@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 import type { FormEvent } from 'react';
 
@@ -32,6 +32,31 @@ export default function TeamPage(): React.ReactElement {
   const [inviting, setInviting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const helpRef = useRef<HTMLDivElement>(null);
+
+  // Close help panel on click outside or Escape
+  const handleHelpClose = useCallback((e: MouseEvent): void => {
+    if (helpRef.current && !helpRef.current.contains(e.target as Node)) {
+      setShowHelp(false);
+    }
+  }, []);
+
+  const handleHelpEscape = useCallback((e: KeyboardEvent): void => {
+    if (e.key === 'Escape') {
+      setShowHelp(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!showHelp) return;
+    document.addEventListener('mousedown', handleHelpClose);
+    document.addEventListener('keydown', handleHelpEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleHelpClose);
+      document.removeEventListener('keydown', handleHelpEscape);
+    };
+  }, [showHelp, handleHelpClose, handleHelpEscape]);
 
   useEffect(() => {
     async function loadTeam(): Promise<void> {
@@ -152,7 +177,45 @@ export default function TeamPage(): React.ReactElement {
 
   return (
     <div>
-      <h1 className="page-heading">Team</h1>
+      <div className="flex items-center gap-3">
+        <h1 className="page-heading">Team</h1>
+        <div className="relative" ref={helpRef}>
+          <button
+            type="button"
+            aria-label="Help: how team profiles work with lead routing"
+            onClick={() => setShowHelp((prev) => !prev)}
+            className="inline-flex items-center justify-center w-6 h-6 rounded-md border border-border text-stone text-xs font-body hover:border-ink hover:text-ink focus:outline-none focus:ring-2 focus:ring-signal focus:ring-offset-1 transition-colors duration-150 cursor-help"
+          >
+            ?
+          </button>
+          {showHelp && (
+            <div className="absolute left-0 top-full mt-2 z-50 w-80 border border-border rounded-md bg-white shadow-md p-4">
+              <h3 className="text-sm font-medium text-ink mb-2">How team profiles work with lead routing</h3>
+              <ul className="text-xs text-stone space-y-1.5 font-body list-none">
+                <li className="flex items-start gap-2">
+                  <span className="text-signal font-medium shrink-0">Skills</span>
+                  <span>Assign skill tags (e.g. &quot;sales&quot;, &quot;technical&quot;) to members. Skill-based routing matches incoming leads to members whose tags overlap with the rule.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-signal font-medium shrink-0">Territories</span>
+                  <span>Assign 2-letter ISO country codes (e.g. US, GB, DE) to members. Geographic routing sends leads to the member whose territory matches the visitor&apos;s country.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-signal font-medium shrink-0">Availability</span>
+                  <span>Set each member&apos;s status (online/offline/busy), max active leads, and auto-offline timeout. Availability routing picks the online member with the fewest active leads.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-signal font-medium shrink-0">Round-Robin</span>
+                  <span>Add members to a pool in your routing rule. Leads are distributed evenly, respecting each member&apos;s capacity limits.</span>
+                </li>
+              </ul>
+              <p className="text-xs text-stone mt-2 font-body">
+                Click a member&apos;s name to configure their skills, territories, and availability. Then create routing rules in Settings &gt; Routing.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
 
       <p className="mt-1 text-sm text-stone font-body mb-6">
         Manage your team members, roles, and invitations.
@@ -198,32 +261,6 @@ export default function TeamPage(): React.ReactElement {
           ) : 'Invite'}
         </button>
       </form>
-
-      {/* Help Guide */}
-      <div className="mt-6 border border-border rounded-md p-4 bg-surface-alt">
-        <h3 className="text-sm font-medium text-ink mb-2">How team profiles work with lead routing</h3>
-        <ul className="text-xs text-stone space-y-1.5 font-body list-none">
-          <li className="flex items-start gap-2">
-            <span className="text-signal font-medium shrink-0">Skills</span>
-            <span>Assign skill tags (e.g. "sales", "technical") to members. Skill-based routing matches incoming leads to members whose tags overlap with the rule.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-signal font-medium shrink-0">Territories</span>
-            <span>Assign 2-letter ISO country codes (e.g. US, GB, DE) to members. Geographic routing sends leads to the member whose territory matches the visitor's country.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-signal font-medium shrink-0">Availability</span>
-            <span>Set each member's status (online/offline/busy), max active leads, and auto-offline timeout. Availability routing picks the online member with the fewest active leads.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-signal font-medium shrink-0">Round-Robin</span>
-            <span>Add members to a pool in your routing rule. Leads are distributed evenly, respecting each member's capacity limits.</span>
-          </li>
-        </ul>
-        <p className="text-xs text-stone mt-2 font-body">
-          Click a member's name to configure their skills, territories, and availability. Then create routing rules in Settings &gt; Routing.
-        </p>
-      </div>
 
       {/* Member List */}
       <div className="mt-6">

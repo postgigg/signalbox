@@ -23,71 +23,59 @@ export function LeadScoringIllustration(): React.ReactElement {
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-auto"
       >
-        {/* Gauge background arc */}
-        <path
-          d="M56 98 A64 64 0 0 1 184 98"
-          stroke="#F1F5F9"
-          strokeWidth="10"
-          strokeLinecap="round"
-          fill="none"
-        />
+        {/* Card frame */}
+        <rect x="16" y="8" width="248" height="124" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+        <text x="28" y="24" fontSize="9" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Three-dimensional scoring</text>
 
-        {/* Gauge fill arc — sweeps in */}
-        <path
-          d="M56 98 A64 64 0 0 1 184 98"
-          stroke="#2563EB"
-          strokeWidth="10"
-          strokeLinecap="round"
-          fill="none"
-          strokeDasharray="201"
-          strokeDashoffset="201"
-          className="feat-score-arc"
-        />
-
-        {/* Needle — rotates to position */}
-        <g className="feat-score-needle" style={{ transformOrigin: '120px 98px' }}>
-          <line x1="120" y1="98" x2="120" y2="46" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="120" cy="98" r="3" fill="#0F172A" />
+        {/* ── Dimension 1: Form Score ── */}
+        <g className="feat-score-dim-1">
+          <text x="28" y="40" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Form</text>
+          <text x="56" y="40" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">answers + weights</text>
+          <rect x="28" y="44" width="130" height="7" rx="3.5" fill="#F1F5F9" />
+          <rect x="28" y="44" width="107" height="7" rx="3.5" fill="#2563EB" className="feat-score-bar-form" />
+          <text x="162" y="50" fontSize="8" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="700">82</text>
+          <rect x="184" y="42" width="32" height="12" rx="3" fill="#EFF6FF" />
+          <text x="191" y="51" fontSize="6" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="500">x 0.6</text>
         </g>
 
-        {/* Score number — below gauge, clear of needle */}
-        <g className="feat-score-number">
-          <text
-            x="120"
-            y="120"
-            fontSize="22"
-            fontFamily="var(--font-mono)"
-            fill="#0F172A"
-            fontWeight="700"
-            textAnchor="middle"
-          >
-            87
-          </text>
-          <text
-            x="120"
-            y="134"
-            fontSize="9"
-            fontFamily="var(--font-body)"
-            fill="#94A3B8"
-            textAnchor="middle"
-          >
-            out of 100
-          </text>
+        {/* ── Dimension 2: Behavioral Score ── */}
+        <g className="feat-score-dim-2">
+          <text x="28" y="64" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Behavioral</text>
+          <text x="76" y="64" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">pages, time, scroll</text>
+          <rect x="28" y="68" width="130" height="7" rx="3.5" fill="#F1F5F9" />
+          <rect x="28" y="68" width="92" height="7" rx="3.5" fill="#16A34A" className="feat-score-bar-behav" />
+          <text x="162" y="74" fontSize="8" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="700">71</text>
+          <rect x="184" y="66" width="32" height="12" rx="3" fill="#F0FDF4" />
+          <text x="191" y="75" fontSize="6" fontFamily="var(--font-mono)" fill="#16A34A" fontWeight="500">x 0.2</text>
         </g>
 
-        {/* Tier labels on the right */}
-        <g className="feat-score-tiers">
-          <rect x="200" y="22" width="64" height="22" rx="6" fill="#FEF2F2" />
-          <circle cx="212" cy="33" r="4" fill="#DC2626" />
-          <text x="220" y="37" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot 70+</text>
+        {/* ── Dimension 3: Intent Score ── */}
+        <g className="feat-score-dim-3">
+          <text x="28" y="88" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Intent</text>
+          <text x="54" y="88" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">pricing views, returns</text>
+          <rect x="28" y="92" width="130" height="7" rx="3.5" fill="#F1F5F9" />
+          <rect x="28" y="92" width="88" height="7" rx="3.5" fill="#CA8A04" className="feat-score-bar-intent" />
+          <text x="162" y="98" fontSize="8" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="700">68</text>
+          <rect x="184" y="90" width="32" height="12" rx="3" fill="#FEFCE8" />
+          <text x="191" y="99" fontSize="6" fontFamily="var(--font-mono)" fill="#CA8A04" fontWeight="500">x 0.2</text>
+        </g>
 
-          <rect x="200" y="50" width="68" height="22" rx="6" fill="#FEFCE8" />
-          <circle cx="212" cy="61" r="4" fill="#CA8A04" />
-          <text x="220" y="65" fontSize="8" fontFamily="var(--font-body)" fill="#CA8A04" fontWeight="600">Warm 40+</text>
+        {/* ── Composite Score ── */}
+        <g className="feat-score-composite">
+          <rect x="28" y="110" width="188" height="18" rx="5" fill="#0F172A" />
+          <text x="38" y="122" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">Composite</text>
+          <text x="100" y="123" fontSize="11" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="700">77</text>
+          <rect x="122" y="113" width="24" height="12" rx="6" fill="#DC2626" />
+          <text x="127" y="122" fontSize="6" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600">Hot</text>
+          <text x="156" y="122" fontSize="5.5" fontFamily="var(--font-mono)" fill="#94A3B8">(49+14+14)</text>
+        </g>
 
-          <rect x="200" y="78" width="64" height="22" rx="6" fill="#F8FAFC" />
-          <circle cx="212" cy="89" r="4" fill="#94A3B8" />
-          <text x="220" y="93" fontSize="8" fontFamily="var(--font-body)" fill="#94A3B8" fontWeight="600">Cold 0-39</text>
+        {/* Decay indicator */}
+        <g className="feat-score-decay">
+          <rect x="222" y="38" width="18" height="66" rx="3" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="0.5" />
+          <text x="225" y="52" fontSize="4.5" fontFamily="var(--font-mono)" fill="#94A3B8" style={{ writingMode: 'vertical-rl' as React.CSSProperties['writingMode'] }}>DECAY</text>
+          <rect x="226" y="68" width="10" height="32" rx="2" fill="#F1F5F9" />
+          <rect x="226" y="90" width="10" height="10" rx="2" fill="#DC2626" opacity="0.2" className="feat-score-decay-fill" />
         </g>
       </svg>
     </div>
@@ -98,72 +86,122 @@ export function InstantAlertsIllustration(): React.ReactElement {
   return (
     <div className="step-illustration" aria-hidden="true">
       <svg
-        viewBox="0 0 280 140"
+        viewBox="0 0 280 150"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="w-full h-auto"
       >
-        {/* Phone/inbox outline */}
-        <rect x="24" y="10" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
-        <rect x="24" y="10" width="120" height="24" rx="8" fill="#F8FAFC" />
-        <rect x="24" y="32" width="120" height="1" fill="#E2E8F0" />
-        <text x="36" y="26" fontSize="8" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Inbox</text>
-        <circle cx="130" cy="22" r="3" fill="#E2E8F0" />
+        {/* Phone/inbox outline — shakes on notification */}
+        <g className="feat-alert-phone">
+          <rect x="24" y="10" width="120" height="130" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+          <rect x="24" y="10" width="120" height="24" rx="8" fill="#F8FAFC" />
+          <rect x="24" y="32" width="120" height="1" fill="#E2E8F0" />
+          <text x="36" y="26" fontSize="7" fontFamily="var(--font-body)" fill="#64748B" fontWeight="500">Inbox</text>
 
-        {/* Existing email rows (static, faded) */}
-        <rect x="32" y="40" width="104" height="20" rx="3" fill="#FFFFFF" />
-        <rect x="38" y="45" width="48" height="4" rx="2" fill="#E2E8F0" />
-        <rect x="38" y="53" width="72" height="3" rx="1.5" fill="#F1F5F9" />
+          {/* Notification bell icon — swings on alert */}
+          <g className="feat-alert-bell" style={{ transformOrigin: '128px 16px' }}>
+            {/* Bell body */}
+            <path d="M124 24 c0-2.2 1.8-4 4-4 c2.2 0 4 1.8 4 4 v3 h1 c0.6 0 1 0.4 1 1 s-0.4 1-1 1 h-10 c-0.6 0-1-0.4-1-1 s0.4-1 1-1 h1 v-3z" fill="#94A3B8" />
+            {/* Clapper */}
+            <circle cx="128" cy="30" r="1.2" fill="#94A3B8" />
+          </g>
 
-        <rect x="32" y="64" width="104" height="20" rx="3" fill="#FFFFFF" />
-        <rect x="38" y="69" width="40" height="4" rx="2" fill="#E2E8F0" />
-        <rect x="38" y="77" width="64" height="3" rx="1.5" fill="#F1F5F9" />
+          {/* Notification badge on bell — pops in */}
+          <g className="feat-alert-bell-dot">
+            <circle cx="133" cy="19" r="4" fill="#DC2626" />
+            <text x="131.5" y="21" fontSize="5.5" fontFamily="var(--font-mono)" fill="#FFFFFF" fontWeight="700">1</text>
+          </g>
+          {/* Bell ping ring */}
+          <circle cx="133" cy="19" r="4" fill="none" stroke="#DC2626" strokeWidth="1" className="feat-alert-bell-ping" />
 
-        {/* New alert email — slides up from below */}
-        <g className="feat-alert-email">
-          <rect x="32" y="88" width="104" height="36" rx="4" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1" />
-          {/* Unread dot */}
-          <circle cx="41" cy="98" r="3" fill="#2563EB" />
-          {/* Subject line */}
-          <text x="48" y="100" fontSize="7" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Hot lead: Sarah M.</text>
-          {/* Preview */}
-          <text x="38" y="112" fontSize="6.5" fontFamily="var(--font-body)" fill="#64748B">Score 92 / Budget: $10k+ / Urgent</text>
-          {/* Time */}
-          <text x="112" y="100" fontSize="6" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="500">now</text>
+          {/* Existing email rows — push up when new email arrives */}
+          <g className="feat-alert-old-rows">
+            <rect x="32" y="40" width="104" height="20" rx="3" fill="#FFFFFF" />
+            <rect x="38" y="45" width="48" height="4" rx="2" fill="#E2E8F0" />
+            <rect x="38" y="53" width="72" height="3" rx="1.5" fill="#F1F5F9" />
+
+            <rect x="32" y="64" width="104" height="20" rx="3" fill="#FFFFFF" />
+            <rect x="38" y="69" width="40" height="4" rx="2" fill="#E2E8F0" />
+            <rect x="38" y="77" width="64" height="3" rx="1.5" fill="#F1F5F9" />
+          </g>
+
+          {/* New alert email — slides up from below with glow */}
+          <g className="feat-alert-email">
+            {/* Glow behind card */}
+            <rect x="29" y="85" width="110" height="50" rx="6" fill="#2563EB" opacity="0.06" className="feat-alert-glow" />
+            <rect x="32" y="88" width="104" height="44" rx="4" fill="#EFF6FF" stroke="#2563EB" strokeWidth="1.5" />
+
+            {/* Unread dot — pulses */}
+            <circle cx="41" cy="99" r="3" fill="#2563EB" className="feat-alert-dot" />
+            <circle cx="41" cy="99" r="3" fill="none" stroke="#2563EB" strokeWidth="1" className="feat-alert-dot-ping" />
+
+            {/* Subject line */}
+            <text x="48" y="101" fontSize="6" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="600">Hot lead: Sarah M.</text>
+            <text x="112" y="101" fontSize="5" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="500">now</text>
+
+            {/* Preview line — reveals with typing effect */}
+            <g className="feat-alert-preview">
+              <text x="38" y="113" fontSize="5.5" fontFamily="var(--font-body)" fill="#64748B">Score 92 / Budget: $10k+ / Urgent</text>
+            </g>
+
+            {/* Suggested opener — slides in */}
+            <g className="feat-alert-opener">
+              <rect x="38" y="118" width="92" height="10" rx="3" fill="#F0FDF4" />
+              <text x="42" y="126" fontSize="5" fontFamily="var(--font-body)" fill="#16A34A" fontWeight="500">&quot;Hi Sarah, thanks for reaching...&quot;</text>
+            </g>
+          </g>
         </g>
 
-        {/* Expanded alert card on the right — pops in */}
+        {/* ── Expanded alert card on the right ── */}
         <g className="feat-alert-card">
-          <rect x="160" y="16" width="108" height="108" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+          <rect x="160" y="10" width="108" height="130" rx="8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
 
-          {/* Header */}
-          <rect x="160" y="16" width="108" height="26" rx="8" fill="#FEF2F2" />
-          <rect x="160" y="38" width="108" height="1" fill="#E2E8F0" />
-          <rect x="170" y="24" width="8" height="12" rx="4" fill="#DC2626" />
-          <text x="182" y="33" fontSize="8" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot Lead Alert</text>
+          {/* Header with pulse */}
+          <rect x="160" y="10" width="108" height="26" rx="8" fill="#FEF2F2" />
+          <rect x="160" y="34" width="108" height="1" fill="#E2E8F0" />
+          <circle cx="172" cy="23" r="4" fill="#DC2626" className="feat-alert-header-dot" />
+          <circle cx="172" cy="23" r="4" fill="none" stroke="#DC2626" strokeWidth="1.5" className="feat-alert-header-ping" />
+          <text x="180" y="26" fontSize="7" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot Lead Alert</text>
 
-          {/* Score badge */}
-          <rect x="170" y="48" width="32" height="18" rx="6" fill="#FEF2F2" />
-          <text x="178" y="60" fontSize="10" fontFamily="var(--font-mono)" fill="#DC2626" fontWeight="700">92</text>
+          {/* Score — animates counting up */}
+          <g className="feat-alert-score">
+            <rect x="170" y="42" width="32" height="20" rx="6" fill="#FEF2F2" />
+            <text x="178" y="56" fontSize="10" fontFamily="var(--font-mono)" fill="#DC2626" fontWeight="700">92</text>
+          </g>
 
-          {/* Detail lines */}
-          <text x="210" y="55" fontSize="7" fontFamily="var(--font-body)" fill="#64748B">Sarah Mitchell</text>
-          <text x="210" y="63" fontSize="6" fontFamily="var(--font-body)" fill="#94A3B8">sarah@acme.co</text>
+          {/* Name + email */}
+          <g className="feat-alert-contact">
+            <text x="210" y="50" fontSize="6" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="500">Sarah Mitchell</text>
+            <text x="210" y="58" fontSize="5" fontFamily="var(--font-body)" fill="#94A3B8">sarah@acme.co</text>
+          </g>
 
-          {/* Answer summary */}
-          <rect x="170" y="74" width="88" height="4" rx="2" fill="#E2E8F0" />
-          <rect x="170" y="82" width="72" height="4" rx="2" fill="#F1F5F9" />
-          <rect x="170" y="90" width="80" height="4" rx="2" fill="#F1F5F9" />
+          {/* Answer rows — reveal one by one */}
+          <g className="feat-alert-answer-1">
+            <text x="170" y="76" fontSize="5.5" fontFamily="var(--font-body)" fill="#94A3B8">Budget</text>
+            <text x="254" y="76" fontSize="5.5" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="500" textAnchor="end">$5k-$10k</text>
+          </g>
+          <g className="feat-alert-answer-2">
+            <text x="170" y="87" fontSize="5.5" fontFamily="var(--font-body)" fill="#94A3B8">Timeline</text>
+            <text x="254" y="87" fontSize="5.5" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="500" textAnchor="end">This week</text>
+          </g>
+          <g className="feat-alert-answer-3">
+            <text x="170" y="98" fontSize="5.5" fontFamily="var(--font-body)" fill="#94A3B8">Service</text>
+            <text x="254" y="98" fontSize="5.5" fontFamily="var(--font-body)" fill="#0F172A" fontWeight="500" textAnchor="end">Plumbing</text>
+          </g>
 
-          {/* CTA button */}
-          <rect x="170" y="102" width="52" height="16" rx="4" fill="#0F172A" />
-          <text x="181" y="113" fontSize="7" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="500">Respond</text>
-        </g>
+          <rect x="168" y="106" width="92" height="1" fill="#F1F5F9" />
 
-        {/* Timer: "3s ago" badge */}
-        <g className="feat-alert-timer">
-          <rect x="224" y="102" width="34" height="16" rx="4" fill="#EFF6FF" />
-          <text x="231" y="113" fontSize="7" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="500">3s</text>
+          {/* CTA button — pulses to draw attention */}
+          <g className="feat-alert-cta">
+            <rect x="170" y="112" width="52" height="18" rx="4" fill="#16A34A" />
+            <text x="183" y="124" fontSize="6" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600">Call now</text>
+          </g>
+
+          {/* Timer counting — 3s */}
+          <g className="feat-alert-timer">
+            <rect x="228" y="112" width="30" height="18" rx="4" fill="#EFF6FF" />
+            <text x="236" y="124" fontSize="6" fontFamily="var(--font-mono)" fill="#2563EB" fontWeight="600">3s</text>
+          </g>
         </g>
       </svg>
     </div>
