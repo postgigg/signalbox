@@ -398,15 +398,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 7. Store in database
   const db = createAdminClient();
+  const insertPayload = {
+    email,
+    url: targetUrl,
+    domain,
+    scores: scores as unknown as Record<string, unknown>,
+    details: details as unknown as Record<string, unknown>,
+  };
   const { data: audit, error: dbError } = await db
     .from('audits')
-    .insert({
-      email,
-      url: targetUrl,
-      domain,
-      scores: scores as unknown as Record<string, unknown>,
-      details: details as unknown as Record<string, unknown>,
-    })
+    .insert(insertPayload as Record<string, unknown>)
     .select('id')
     .single();
 
