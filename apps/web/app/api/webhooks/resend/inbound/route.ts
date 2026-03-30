@@ -15,14 +15,14 @@ const InboundPayloadSchema = z.object({
   data: z.object({
     from: z.string().max(500),
     to: z.union([z.string().max(500), z.array(z.string().max(500))]),
-    subject: z.string().max(1000).default('(No subject)'),
-    html: z.string().max(500000).optional().default(''),
-    text: z.string().max(500000).optional().default(''),
-    cc: z.union([z.string().max(2000), z.array(z.string())]).optional(),
-    bcc: z.union([z.string().max(2000), z.array(z.string())]).optional(),
-    reply_to: z.string().max(500).optional(),
+    subject: z.string().max(1000).nullable().optional().default('(No subject)'),
+    html: z.string().max(500000).nullable().optional().default(''),
+    text: z.string().max(500000).nullable().optional().default(''),
+    cc: z.union([z.string().max(2000), z.array(z.string())]).nullable().optional(),
+    bcc: z.union([z.string().max(2000), z.array(z.string())]).nullable().optional(),
+    reply_to: z.string().max(500).nullable().optional(),
     message_id: z.string().min(1).max(500),
-    spam_status: z.string().max(50).optional(),
+    spam_status: z.string().max(50).nullable().optional(),
   }).passthrough(),
 }).passthrough();
 
@@ -92,6 +92,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const { data: payload } = parsed;
   const inbound = payload.data;
 
+  // Extract body content — try multiple field locations Resend may use
+  const rawData = body as Record<string, unknown>;
+  const rawInbound = (typeof rawData.data === 'object' && rawData.data !== null)
+    ? rawData.data as Record<string, unknown>
+    : rawData;
+
+  const htmlContent = String(
+    inbound.html
+    ?? rawInbound.html
+    ?? rawInbound.body_html
+    ?? rawInbound.content
+    ?? ''
+  );
+  const textContent = String(
+    inbound.text
+    ?? rawInbound.text
+    ?? rawInbound.body_text
+    ?? rawInbound.body
+    ?? ''
+  );
+
   const { name: fromName, email: fromEmail } = parseEmailAddress(inbound.from);
   const toAddresses = normalizeToArray(inbound.to);
   const ccAddresses = normalizeToArray(inbound.cc);
@@ -109,10 +130,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       cc: ccAddresses.length > 0 ? ccAddresses.join(', ') : null,
       bcc: bccAddresses.length > 0 ? bccAddresses.join(', ') : null,
       reply_to: inbound.reply_to ?? null,
-      subject: inbound.subject,
-      body_html: inbound.html ?? '',
-      body_text: inbound.text ?? '',
+      subject: inbound.subject ?? '(No subject)',
+      body_html: htmlContent,
+      body_text: textContent,
       spam_status: inbound.spam_status ?? null,
+      raw_payload: JSON.stringify(body).substring(0, 500000),
     });
 
   if (insertError) {
