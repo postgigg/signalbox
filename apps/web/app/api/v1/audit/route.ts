@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { createAdminClient } from '@/lib/supabase/admin';
 import { sendEmail } from '@/lib/email/client';
 import { generateAuditPdf } from '@/lib/audit-pdf';
 import { checkRateLimit, rateLimitHeaders, auditLimit } from '@/lib/rate-limit';
@@ -396,20 +395,38 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     details.findings = generateFindings(details);
   }
 
-  // 7. Store in database
-  const db = createAdminClient();
-  const insertPayload = {
+  // 7. Store in database (raw REST to avoid generated type mismatch)
+  const insertRow: Record<string, unknown> = {
     email,
     url: targetUrl,
     domain,
-    scores: scores as unknown as Record<string, unknown>,
-    details: details as unknown as Record<string, unknown>,
+    scores,
+    details,
   };
-  const { data: audit, error: dbError } = await db
-    .from('audits')
-    .insert(insertPayload as Record<string, unknown>)
-    .select('id')
-    .single();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
+  let audit: { id: string } | null = null;
+  let dbError: unknown = null;
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/audits?select=id`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': serviceKey,
+        'Authorization': `Bearer ${serviceKey}`,
+        'Prefer': 'return=representation',
+      },
+      body: JSON.stringify(insertRow),
+    });
+    if (res.ok) {
+      const rows = await res.json() as Array<{ id: string }>;
+      audit = rows[0] ?? null;
+    } else {
+      dbError = await res.text();
+    }
+  } catch (err: unknown) {
+    dbError = err;
+  }
 
   // Generate a fallback ID if DB insert fails (table may not exist yet)
   const auditId = (dbError || !audit)
