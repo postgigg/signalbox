@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: '/pricing', label: 'Pricing' },
   { href: '/agency', label: 'Agencies' },
   { href: '/templates', label: 'Templates' },
+  { href: '/integrations', label: 'Integrations' },
 ] as const;
 
 const FOOTER_PRODUCT = [

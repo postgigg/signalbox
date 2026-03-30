@@ -118,6 +118,33 @@ export function auditLimit(): Ratelimit {
   );
 }
 
+/** Rate limiter for Wix OAuth flow — 10 requests per minute per IP. */
+export function wixOAuthLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.wix_oauth.prefix,
+    RATE_LIMITS.wix_oauth.tokens,
+    RATE_LIMITS.wix_oauth.window
+  );
+}
+
+/** Rate limiter for Wix webhook events — 30 requests per minute per IP. */
+export function wixWebhookLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.wix_webhook.prefix,
+    RATE_LIMITS.wix_webhook.tokens,
+    RATE_LIMITS.wix_webhook.window
+  );
+}
+
+/** Rate limiter for Wix settings — 20 requests per minute per IP. */
+export function wixSettingsLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.wix_settings.prefix,
+    RATE_LIMITS.wix_settings.tokens,
+    RATE_LIMITS.wix_settings.window
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Helper to check rate limit and build response
 // ---------------------------------------------------------------------------

@@ -1575,6 +1575,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      wix_installations: {
+        Row: {
+          id: string;
+          account_id: string;
+          widget_id: string | null;
+          wix_instance_id: string;
+          wix_refresh_token: string;
+          wix_access_token: string | null;
+          wix_token_expires_at: string | null;
+          wix_site_url: string | null;
+          installed_at: string;
+          uninstalled_at: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          widget_id?: string | null;
+          wix_instance_id: string;
+          wix_refresh_token: string;
+          wix_access_token?: string | null;
+          wix_token_expires_at?: string | null;
+          wix_site_url?: string | null;
+          installed_at?: string;
+          uninstalled_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          widget_id?: string | null;
+          wix_instance_id?: string;
+          wix_refresh_token?: string;
+          wix_access_token?: string | null;
+          wix_token_expires_at?: string | null;
+          wix_site_url?: string | null;
+          installed_at?: string;
+          uninstalled_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       ticket_messages: {
         Row: {
           id: string;
@@ -1714,3 +1762,6 @@ export type TicketSenderType = TicketMessage['sender_type'];
 
 // A/B test status type
 export type AbTestStatus = AbTest['status'];
+
+// Wix integration types
+export type WixInstallation = Tables<'wix_installations'>;

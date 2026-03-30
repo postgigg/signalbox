@@ -396,6 +396,21 @@ export const RATE_LIMITS = {
     window: '15 m' as const,
     prefix: 'rl:audit',
   },
+  wix_oauth: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:wix_oauth',
+  },
+  wix_webhook: {
+    tokens: 30,
+    window: '1 m' as const,
+    prefix: 'rl:wix_webhook',
+  },
+  wix_settings: {
+    tokens: 20,
+    window: '1 m' as const,
+    prefix: 'rl:wix_settings',
+  },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -619,3 +634,12 @@ export const APP_NAME = 'HawkLeads';
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://hawkleads.io';
 export const WIDGET_CDN_URL =
   process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io';
+
+// ---------------------------------------------------------------------------
+// Wix integration constants
+// ---------------------------------------------------------------------------
+
+export const WIX_OAUTH_URL = 'https://www.wixapis.com/oauth/access';
+export const WIX_INSTALL_URL = 'https://www.wix.com/installer/install';
+export const WIX_SCRIPTS_API_URL = 'https://www.wixapis.com/apps/v1/scripts';
+export const WIX_WIDGET_SCRIPT_URL = `${process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io'}/v1/sb.js`;

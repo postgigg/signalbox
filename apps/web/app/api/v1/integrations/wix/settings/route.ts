@@ -1,0 +1,252 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+import { createAdminClient } from '@/lib/supabase/admin';
+import { authenticateRequest, requireRole } from '@/lib/auth';
+import { wixSettingsLimit, checkRateLimit, rateLimitHeaders } from '@/lib/rate-limit';
+import { APP_URL } from '@/lib/constants';
+import { injectWidgetScript, refreshWixToken } from '@/lib/wix';
+
+// ---------------------------------------------------------------------------
+// Schemas
+// ---------------------------------------------------------------------------
+
+const getQuerySchema = z.object({
+  instanceId: z.string().min(1).max(500),
+});
+
+const putBodySchema = z.object({
+  instanceId: z.string().min(1).max(500),
+  widgetId: z.string().uuid(),
+});
+
+// ---------------------------------------------------------------------------
+// Helper: get a valid access token, refreshing if expired
+// ---------------------------------------------------------------------------
+
+interface WixInstallationTokenFields {
+  id: string;
+  wix_refresh_token: string;
+  wix_access_token: string | null;
+  wix_token_expires_at: string | null;
+}
+
+async function getValidAccessToken(
+  installation: WixInstallationTokenFields
+): Promise<string> {
+  // Check if current token is still valid (with 60s buffer)
+  if (
+    installation.wix_access_token &&
+    installation.wix_token_expires_at
+  ) {
+    const expiresAt = new Date(installation.wix_token_expires_at).getTime();
+    const bufferMs = 60 * 1000;
+    if (Date.now() < expiresAt - bufferMs) {
+      return installation.wix_access_token;
+    }
+  }
+
+  // Token expired or missing: refresh
+  const tokenResponse = await refreshWixToken(installation.wix_refresh_token);
+
+  // Update stored tokens
+  const admin = createAdminClient();
+  const expiresAt = new Date(Date.now() + tokenResponse.expires_in * 1000).toISOString();
+
+  await admin
+    .from('wix_installations')
+    .update({
+      wix_access_token: tokenResponse.access_token,
+      wix_refresh_token: tokenResponse.refresh_token,
+      wix_token_expires_at: expiresAt,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', installation.id);
+
+  return tokenResponse.access_token;
+}
+
+// ---------------------------------------------------------------------------
+// GET — Return current widget_id for a Wix installation
+// ---------------------------------------------------------------------------
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  // 1. Rate limit
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const rlResult = await checkRateLimit(wixSettingsLimit(), ip);
+  if (!rlResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: rateLimitHeaders(rlResult) }
+    );
+  }
+
+  // 2. Auth check
+  const authResult = await authenticateRequest(request);
+  if ('error' in authResult) return authResult.error;
+  const { account } = authResult.ctx;
+
+  // 3. Parse query params
+  const searchParams = Object.fromEntries(request.nextUrl.searchParams.entries());
+  const parsed = getQuerySchema.safeParse(searchParams);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Invalid query parameters', details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+
+  // 4. Look up installation
+  const admin = createAdminClient();
+  const { data: installation, error: queryError } = await admin
+    .from('wix_installations')
+    .select('id, account_id, widget_id, wix_instance_id, wix_site_url, is_active, installed_at')
+    .eq('wix_instance_id', parsed.data.instanceId)
+    .eq('account_id', account.id)
+    .eq('is_active', true)
+    .limit(1)
+    .maybeSingle();
+
+  if (queryError) {
+    return NextResponse.json({ error: 'Failed to fetch installation' }, { status: 500 });
+  }
+
+  if (!installation) {
+    return NextResponse.json({ error: 'Wix installation not found' }, { status: 404 });
+  }
+
+  return NextResponse.json({
+    data: {
+      id: installation.id,
+      widgetId: installation.widget_id,
+      instanceId: installation.wix_instance_id,
+      siteUrl: installation.wix_site_url,
+      isActive: installation.is_active,
+      installedAt: installation.installed_at,
+    },
+  });
+}
+
+// ---------------------------------------------------------------------------
+// PUT — Update widget_id and inject script into Wix site
+// ---------------------------------------------------------------------------
+
+export async function PUT(request: NextRequest): Promise<NextResponse> {
+  // 1. Rate limit
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  const rlResult = await checkRateLimit(wixSettingsLimit(), ip);
+  if (!rlResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: rateLimitHeaders(rlResult) }
+    );
+  }
+
+  // 2. Auth check
+  const authResult = await authenticateRequest(request);
+  if ('error' in authResult) return authResult.error;
+  const { member, account } = authResult.ctx;
+
+  // 3. Role check — only owner or admin
+  const roleError = requireRole(member, ['owner', 'admin']);
+  if (roleError) return roleError;
+
+  // 4. Parse body
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+
+  const parsed = putBodySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+
+  const { instanceId, widgetId } = parsed.data;
+
+  // 5. Verify the widget belongs to this account
+  const admin = createAdminClient();
+
+  const { data: widget, error: widgetError } = await admin
+    .from('widgets')
+    .select('id, widget_key')
+    .eq('id', widgetId)
+    .eq('account_id', account.id)
+    .eq('is_active', true)
+    .limit(1)
+    .maybeSingle();
+
+  if (widgetError) {
+    return NextResponse.json({ error: 'Failed to verify widget' }, { status: 500 });
+  }
+
+  if (!widget) {
+    return NextResponse.json({ error: 'Widget not found' }, { status: 404 });
+  }
+
+  // 6. Look up Wix installation
+  const { data: installation, error: installError } = await admin
+    .from('wix_installations')
+    .select('id, account_id, wix_instance_id, wix_refresh_token, wix_access_token, wix_token_expires_at, is_active, widget_id')
+    .eq('wix_instance_id', instanceId)
+    .eq('account_id', account.id)
+    .eq('is_active', true)
+    .limit(1)
+    .maybeSingle();
+
+  if (installError) {
+    return NextResponse.json({ error: 'Failed to fetch installation' }, { status: 500 });
+  }
+
+  if (!installation) {
+    return NextResponse.json({ error: 'Wix installation not found' }, { status: 404 });
+  }
+
+  // 7. Get valid access token (refresh if needed)
+  let accessToken: string;
+  try {
+    accessToken = await getValidAccessToken(installation);
+  } catch {
+    return NextResponse.json(
+      { error: 'Failed to authenticate with Wix. Try reconnecting the integration.' },
+      { status: 502 }
+    );
+  }
+
+  // 8. Inject widget script into Wix site
+  const apiUrl = `${APP_URL}/api/v1`;
+  try {
+    await injectWidgetScript(accessToken, widget.widget_key, apiUrl);
+  } catch {
+    return NextResponse.json(
+      { error: 'Failed to inject widget script into Wix site' },
+      { status: 502 }
+    );
+  }
+
+  // 9. Update widget_id on installation record
+  const { error: updateError } = await admin
+    .from('wix_installations')
+    .update({
+      widget_id: widgetId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', installation.id);
+
+  if (updateError) {
+    return NextResponse.json({ error: 'Failed to update installation' }, { status: 500 });
+  }
+
+  return NextResponse.json({
+    data: {
+      instanceId,
+      widgetId,
+      scriptInjected: true,
+    },
+  });
+}
