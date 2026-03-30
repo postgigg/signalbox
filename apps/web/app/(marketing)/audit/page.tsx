@@ -480,6 +480,7 @@ function BeforeAfterSection({ details }: { readonly details: AuditDetails }): Re
 export default function AuditPage(): React.ReactElement {
   const [url, setUrl] = useState('');
   const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [state, setState] = useState<AuditState>('idle');
   const [result, setResult] = useState<AuditResult | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -576,10 +577,31 @@ export default function AuditPage(): React.ReactElement {
                   required
                 />
               </div>
+
+              {/* Consent checkbox */}
+              <label className="mt-4 flex items-start gap-3 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded-sm border-border text-signal focus:ring-signal flex-shrink-0"
+                  disabled={state === 'loading'}
+                />
+                <span className="text-xs text-stone leading-relaxed">
+                  I authorize HawkLeads to crawl the publicly accessible pages of this website
+                  (homepage, /contact, /contact-us, /get-in-touch, /get-started) to analyze
+                  forms, input fields, and page structure. No data is modified. Results are
+                  stored and emailed to the address provided. By proceeding you agree to our{' '}
+                  <a href="/terms" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Terms</a>
+                  {' '}and{' '}
+                  <a href="/privacy" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                </span>
+              </label>
+
               <button
                 type="submit"
-                disabled={state === 'loading' || url.trim().length === 0 || email.trim().length === 0}
-                className="btn-primary-lg w-full mt-3"
+                disabled={state === 'loading' || url.trim().length === 0 || email.trim().length === 0 || !consent}
+                className="btn-primary-lg w-full mt-4"
               >
                 Get Your Score
               </button>
