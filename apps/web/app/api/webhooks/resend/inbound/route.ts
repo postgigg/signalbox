@@ -115,8 +115,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const { name: fromName, email: fromEmail } = parseEmailAddress(inbound.from);
   const toAddresses = normalizeToArray(inbound.to);
-  const ccAddresses = normalizeToArray(inbound.cc);
-  const bccAddresses = normalizeToArray(inbound.bcc);
+  const ccAddresses = normalizeToArray(inbound.cc ?? undefined);
+  const bccAddresses = normalizeToArray(inbound.bcc ?? undefined);
 
   const admin = createAdminClient();
 
