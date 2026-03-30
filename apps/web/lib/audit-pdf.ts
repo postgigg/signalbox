@@ -224,7 +224,6 @@ export function generateAuditPdf(
   ];
 
   // Render in two columns: Qualification on left, Speed+Routing on right
-  const halfW = C / 2 - 4;
   const leftX = M;
   const rightX = M + C / 2 + 4;
   const startY = y;
