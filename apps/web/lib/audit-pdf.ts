@@ -91,7 +91,7 @@ function divider(doc: jsPDF, x: number, y: number, w: number): void {
 // ---------------------------------------------------------------------------
 
 export function generateAuditPdf(
-  domain: string,
+  _domain: string,
   scores: AuditScores,
   details: AuditDetails,
   auditId: string
