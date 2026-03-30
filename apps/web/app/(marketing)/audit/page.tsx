@@ -492,7 +492,7 @@ export default function AuditPage(): React.ReactElement {
 
     const trimmedUrl = url.trim();
     const trimmedEmail = email.trim();
-    if (!trimmedUrl || !trimmedEmail) return;
+    if (!trimmedUrl) return;
 
     let normalizedUrl = trimmedUrl;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
@@ -503,11 +503,14 @@ export default function AuditPage(): React.ReactElement {
     setErrorMessage('');
     setResult(null);
 
+    const payload: Record<string, string> = { url: normalizedUrl };
+    if (trimmedEmail) payload.email = trimmedEmail;
+
     try {
       const response = await fetch('/api/v1/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: normalizedUrl, email: trimmedEmail }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -574,7 +577,6 @@ export default function AuditPage(): React.ReactElement {
                   placeholder="you@company.com"
                   className="input-field flex-1"
                   disabled={state === 'loading'}
-                  required
                 />
               </div>
 
@@ -591,7 +593,7 @@ export default function AuditPage(): React.ReactElement {
                   I authorize HawkLeads to crawl the publicly accessible pages of this website
                   (homepage, /contact, /contact-us, /get-in-touch, /get-started) to analyze
                   forms, input fields, and page structure. No data is modified. Results are
-                  stored and emailed to the address provided. By proceeding you agree to our{' '}
+                  stored and sent to your email if provided. By proceeding you agree to our{' '}
                   <a href="/terms" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Terms</a>
                   {' '}and{' '}
                   <a href="/privacy" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
@@ -600,7 +602,7 @@ export default function AuditPage(): React.ReactElement {
 
               <button
                 type="submit"
-                disabled={state === 'loading' || url.trim().length === 0 || email.trim().length === 0 || !consent}
+                disabled={state === 'loading' || url.trim().length === 0 || !consent}
                 className="btn-primary-lg w-full mt-4"
               >
                 Get Your Score

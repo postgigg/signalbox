@@ -41,7 +41,7 @@ const CONTACT_PATHS = ['', '/contact', '/contact-us', '/get-in-touch', '/get-sta
 // ---------------------------------------------------------------------------
 
 const AuditRequestSchema = z.object({
-  email: z.string().email().max(320).toLowerCase(),
+  email: z.string().email().max(320).toLowerCase().optional(),
   url: z
     .string()
     .min(1)
@@ -336,7 +336,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const targetUrl = parsed.data.url;
-  const email = parsed.data.email;
+  const email = parsed.data.email ?? null;
   let baseUrl: URL;
   try {
     baseUrl = new URL(targetUrl);
@@ -397,7 +397,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // 7. Store in database (raw REST to avoid generated type mismatch)
   const insertRow: Record<string, unknown> = {
-    email,
+    email: email ?? '',
     url: targetUrl,
     domain,
     scores,
@@ -433,10 +433,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     ? crypto.randomUUID()
     : (audit.id as string);
 
-  // 8. Send report email (fire-and-forget)
-  void sendAuditReportEmail(email, domain, scores, details, auditId).catch(() => {
-    // Email failure is non-blocking
-  });
+  // 8. Send report email if provided (fire-and-forget)
+  if (email) {
+    void sendAuditReportEmail(email, domain, scores, details, auditId).catch(() => {
+      // Email failure is non-blocking
+    });
+  }
 
   // 9. Return result
   return NextResponse.json({
