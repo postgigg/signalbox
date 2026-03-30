@@ -145,6 +145,42 @@ export function wixSettingsLimit(): Ratelimit {
   );
 }
 
+/** Rate limiter for Shopify OAuth flow — 5 requests per minute per IP. */
+export function shopifyOAuthLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.shopify_oauth.prefix,
+    RATE_LIMITS.shopify_oauth.tokens,
+    RATE_LIMITS.shopify_oauth.window
+  );
+}
+
+/** Rate limiter for Shopify webhook events — 30 requests per minute per IP. */
+export function shopifyWebhookLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.shopify_webhook.prefix,
+    RATE_LIMITS.shopify_webhook.tokens,
+    RATE_LIMITS.shopify_webhook.window
+  );
+}
+
+/** Rate limiter for Shopify settings — 10 requests per minute per IP. */
+export function shopifySettingsLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.shopify_settings.prefix,
+    RATE_LIMITS.shopify_settings.tokens,
+    RATE_LIMITS.shopify_settings.window
+  );
+}
+
+/** Rate limiter for Shopify GDPR webhooks — 10 requests per minute per IP. */
+export function shopifyGdprLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.shopify_gdpr.prefix,
+    RATE_LIMITS.shopify_gdpr.tokens,
+    RATE_LIMITS.shopify_gdpr.window
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Helper to check rate limit and build response
 // ---------------------------------------------------------------------------

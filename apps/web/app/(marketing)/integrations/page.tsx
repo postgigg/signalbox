@@ -23,8 +23,8 @@ const PLATFORMS = [
   },
   {
     name: 'Shopify',
-    href: '/integrations#shopify',
-    description: 'Add to your theme with one snippet.',
+    href: '/integrations/shopify',
+    description: 'One-click install from the Shopify App Store.',
     icon: 'S',
   },
   {

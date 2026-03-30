@@ -411,6 +411,26 @@ export const RATE_LIMITS = {
     window: '1 m' as const,
     prefix: 'rl:wix_settings',
   },
+  shopify_oauth: {
+    tokens: 5,
+    window: '1 m' as const,
+    prefix: 'rl:shopify_oauth',
+  },
+  shopify_webhook: {
+    tokens: 30,
+    window: '1 m' as const,
+    prefix: 'rl:shopify_webhook',
+  },
+  shopify_settings: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:shopify_settings',
+  },
+  shopify_gdpr: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:shopify_gdpr',
+  },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -643,3 +663,11 @@ export const WIX_OAUTH_URL = 'https://www.wixapis.com/oauth/access';
 export const WIX_INSTALL_URL = 'https://www.wix.com/installer/install';
 export const WIX_SCRIPTS_API_URL = 'https://www.wixapis.com/apps/v1/scripts';
 export const WIX_WIDGET_SCRIPT_URL = `${process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io'}/v1/sb.js`;
+
+// ---------------------------------------------------------------------------
+// Shopify integration constants
+// ---------------------------------------------------------------------------
+
+export const SHOPIFY_API_VERSION = '2024-01';
+export const SHOPIFY_REQUIRED_SCOPES = 'write_script_tags,read_script_tags';
+export const SHOPIFY_WIDGET_SCRIPT_URL = `${process.env.NEXT_PUBLIC_WIDGET_CDN_URL ?? 'https://cdn.hawkleads.io'}/v1/sb.js`;

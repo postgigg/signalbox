@@ -1623,6 +1623,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      shopify_installations: {
+        Row: {
+          id: string;
+          account_id: string;
+          widget_id: string | null;
+          shop_domain: string;
+          access_token: string;
+          script_tag_id: number | null;
+          installed_at: string;
+          uninstalled_at: string | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          widget_id?: string | null;
+          shop_domain: string;
+          access_token: string;
+          script_tag_id?: number | null;
+          installed_at?: string;
+          uninstalled_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          widget_id?: string | null;
+          shop_domain?: string;
+          access_token?: string;
+          script_tag_id?: number | null;
+          installed_at?: string;
+          uninstalled_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       ticket_messages: {
         Row: {
           id: string;
@@ -1765,3 +1807,6 @@ export type AbTestStatus = AbTest['status'];
 
 // Wix integration types
 export type WixInstallation = Tables<'wix_installations'>;
+
+// Shopify integration types
+export type ShopifyInstallation = Tables<'shopify_installations'>;
