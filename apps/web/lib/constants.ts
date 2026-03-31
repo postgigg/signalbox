@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 
 export interface PlanConfig {
-  id: 'trial' | 'starter' | 'pro' | 'agency';
+  id: 'free' | 'trial' | 'starter' | 'pro' | 'agency';
   name: string;
   description: string;
   priceMonthly: number;
@@ -36,6 +36,38 @@ export interface PlanConfig {
 }
 
 export const PLANS: Record<string, PlanConfig> = {
+  free: {
+    id: 'free',
+    name: 'Free',
+    description: 'Free forever. 10 leads/month.',
+    priceMonthly: 0,
+    priceYearly: 0,
+    stripePriceIdMonthly: '',
+    stripePriceIdYearly: '',
+    limits: {
+      widgets: 1,
+      submissionsPerMonth: 10,
+      teamMembers: 1,
+      webhooks: 0,
+      apiKeys: 0,
+      flowSteps: 3,
+      customBranding: false,
+      apiAccess: false,
+      webhookAccess: false,
+      advancedAnalytics: false,
+      prioritySupport: false,
+      leadRouting: false,
+      abTesting: false,
+      maxAbTests: 0,
+      sharedAnalytics: false,
+      maxSharedLinks: 0,
+      dripSequences: false,
+      maxDripSequences: 0,
+      predictiveScoring: false,
+      advancedRouting: false,
+      maxRoutingRules: 0,
+    },
+  },
   trial: {
     id: 'trial',
     name: 'Trial',
@@ -644,6 +676,7 @@ export const DEMO_ACCOUNT_ID = 'f4ec1dec-6f3b-4773-9871-4e55bad2e8f4';
 // ---------------------------------------------------------------------------
 
 export const PLAN_NAV_ITEMS: Record<string, readonly string[]> = {
+  free: ['Overview', 'Leads', 'Widgets', 'Settings'],
   trial: ['Overview', 'Leads', 'Team', 'Widgets', 'Analytics', 'Integrations', 'Settings'],
   starter: ['Overview', 'Leads', 'Team', 'Widgets', 'Analytics', 'Integrations', 'Settings'],
   pro: ['Overview', 'Team', 'Widgets', 'Analytics', 'Settings'],
