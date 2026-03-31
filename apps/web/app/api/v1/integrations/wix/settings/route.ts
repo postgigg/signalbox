@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createAdminClient } from '@/lib/supabase/admin';
-import { authenticateRequest, requireRole } from '@/lib/auth';
 import { wixSettingsLimit, checkRateLimit, rateLimitHeaders } from '@/lib/rate-limit';
 import { APP_URL } from '@/lib/constants';
 import { injectWidgetScript, refreshWixToken } from '@/lib/wix';
@@ -81,12 +80,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 2. Auth check
-  const authResult = await authenticateRequest(request);
-  if ('error' in authResult) return authResult.error;
-  const { account } = authResult.ctx;
-
-  // 3. Parse query params
+  // 2. Parse query params (auth is via Wix instance ID, not Supabase session)
   const searchParams = Object.fromEntries(request.nextUrl.searchParams.entries());
   const parsed = getQuerySchema.safeParse(searchParams);
   if (!parsed.success) {
@@ -96,13 +90,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 4. Look up installation
+  // 3. Look up installation by instance ID
   const admin = createAdminClient();
   const { data: installation, error: queryError } = await admin
     .from('wix_installations')
     .select('id, account_id, widget_id, wix_instance_id, wix_site_url, is_active, installed_at')
     .eq('wix_instance_id', parsed.data.instanceId)
-    .eq('account_id', account.id)
     .eq('is_active', true)
     .limit(1)
     .maybeSingle();
@@ -111,19 +104,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Failed to fetch installation' }, { status: 500 });
   }
 
+  // 4. If no installation found, return hasAccount: false so the UI shows signup
   if (!installation) {
-    return NextResponse.json({ error: 'Wix installation not found' }, { status: 404 });
+    return NextResponse.json({ hasAccount: false, widgets: [], selectedWidgetId: null });
   }
 
+  // 5. Fetch widgets for this account
+  const { data: widgets } = await admin
+    .from('widgets')
+    .select('id, name, steps:flows(id)')
+    .eq('account_id', installation.account_id)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
+
+  const widgetList = (widgets ?? []).map((w: Record<string, unknown>) => ({
+    id: String(w.id),
+    name: String(w.name),
+    steps_count: Array.isArray(w.steps) ? w.steps.length : 0,
+  }));
+
   return NextResponse.json({
-    data: {
-      id: installation.id,
-      widgetId: installation.widget_id,
-      instanceId: installation.wix_instance_id,
-      siteUrl: installation.wix_site_url,
-      isActive: installation.is_active,
-      installedAt: installation.installed_at,
-    },
+    hasAccount: true,
+    widgets: widgetList,
+    selectedWidgetId: installation.widget_id,
   });
 }
 
@@ -142,16 +145,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 2. Auth check
-  const authResult = await authenticateRequest(request);
-  if ('error' in authResult) return authResult.error;
-  const { member, account } = authResult.ctx;
-
-  // 3. Role check — only owner or admin
-  const roleError = requireRole(member, ['owner', 'admin']);
-  if (roleError) return roleError;
-
-  // 4. Parse body
+  // 2. Parse body (auth is via Wix instance ID, not Supabase session)
   let body: unknown;
   try {
     body = await request.json();
@@ -169,14 +163,27 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
 
   const { instanceId, widgetId } = parsed.data;
 
-  // 5. Verify the widget belongs to this account
+  // 3. Look up installation to get account_id
   const admin = createAdminClient();
 
+  const { data: installation, error: installLookupError } = await admin
+    .from('wix_installations')
+    .select('id, account_id, wix_refresh_token, wix_access_token, wix_token_expires_at, is_active, widget_id')
+    .eq('wix_instance_id', instanceId)
+    .eq('is_active', true)
+    .limit(1)
+    .maybeSingle();
+
+  if (installLookupError || !installation) {
+    return NextResponse.json({ error: 'Wix installation not found' }, { status: 404 });
+  }
+
+  // 4. Verify the widget belongs to this account
   const { data: widget, error: widgetError } = await admin
     .from('widgets')
     .select('id, widget_key')
     .eq('id', widgetId)
-    .eq('account_id', account.id)
+    .eq('account_id', installation.account_id)
     .eq('is_active', true)
     .limit(1)
     .maybeSingle();
@@ -189,25 +196,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Widget not found' }, { status: 404 });
   }
 
-  // 6. Look up Wix installation
-  const { data: installation, error: installError } = await admin
-    .from('wix_installations')
-    .select('id, account_id, wix_instance_id, wix_refresh_token, wix_access_token, wix_token_expires_at, is_active, widget_id')
-    .eq('wix_instance_id', instanceId)
-    .eq('account_id', account.id)
-    .eq('is_active', true)
-    .limit(1)
-    .maybeSingle();
-
-  if (installError) {
-    return NextResponse.json({ error: 'Failed to fetch installation' }, { status: 500 });
-  }
-
-  if (!installation) {
-    return NextResponse.json({ error: 'Wix installation not found' }, { status: 404 });
-  }
-
-  // 7. Get valid access token (refresh if needed)
+  // 5. Get valid access token (refresh if needed)
   let accessToken: string;
   try {
     accessToken = await getValidAccessToken(installation);
