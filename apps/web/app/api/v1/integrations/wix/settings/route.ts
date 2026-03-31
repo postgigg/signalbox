@@ -239,3 +239,8 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     },
   });
 }
+
+// POST — alias for PUT (Wix settings page sends POST)
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  return PUT(request);
+}
