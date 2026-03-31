@@ -132,10 +132,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   // If user came from Wix, redirect to wix-connected page to link the account
-  const wixInstance = searchParams.get('wix_instance');
+  const wixInstance = searchParams.get('wix_instance')
+    ?? cookieStore.get('hawkleads_wix_instance')?.value
+    ?? null;
+
   if (wixInstance && redirectPath !== '/reset-password') {
     const wixUrl = new URL('/wix-connected', origin);
-    wixUrl.searchParams.set('wix_instance', wixInstance);
+    wixUrl.searchParams.set('wix_instance', decodeURIComponent(wixInstance));
+    // Clear the cookie
+    cookieStore.set('hawkleads_wix_instance', '', { path: '/', maxAge: 0 });
     return NextResponse.redirect(wixUrl);
   }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import type { FormEvent } from 'react';
@@ -25,6 +25,14 @@ function SignupForm(): React.ReactElement {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Store wix_instance in cookie so the auth callback can read it
+  useEffect(() => {
+    const wixInstance = searchParams.get('wix_instance');
+    if (wixInstance) {
+      document.cookie = `hawkleads_wix_instance=${encodeURIComponent(wixInstance)};path=/;max-age=3600;SameSite=Lax`;
+    }
+  }, [searchParams]);
 
   async function handleGoogleSignup(): Promise<void> {
     setError(null);
