@@ -9,8 +9,6 @@ import { useInViewAnimations } from '@/lib/use-in-view';
 // Constants
 // ---------------------------------------------------------------------------
 
-const SHOPIFY_APP_STORE_URL = 'https://apps.shopify.com/hawkleads';
-
 const STEPS = [
   {
     title: 'Install from the Shopify App Store',
