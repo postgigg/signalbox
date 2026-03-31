@@ -58,6 +58,13 @@ export async function updateSession(request: NextRequest) {
 
   // Redirect authenticated users away from auth routes
   if (user && isAuthRoute) {
+    const wixInstance = request.nextUrl.searchParams.get('wix_instance');
+    if (wixInstance) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/wix-connected';
+      url.searchParams.delete('plan');
+      return NextResponse.redirect(url);
+    }
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
