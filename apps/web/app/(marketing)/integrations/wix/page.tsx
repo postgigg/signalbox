@@ -9,8 +9,6 @@ import { useInViewAnimations } from '@/lib/use-in-view';
 // Constants
 // ---------------------------------------------------------------------------
 
-const WIX_APP_MARKET_URL = 'https://www.wix.com/app-market/hawkleads';
-
 const STEPS = [
   {
     title: 'Install from the Wix App Market',
