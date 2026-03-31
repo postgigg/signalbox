@@ -37,10 +37,15 @@ function SignupForm(): React.ReactElement {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
       );
 
+      const wixInstance = searchParams.get('wix_instance') ?? '';
+      const callbackParams = wixInstance
+        ? `type=signup&wix_instance=${encodeURIComponent(wixInstance)}`
+        : 'type=signup';
+
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/api/auth/callback?type=signup`,
+          redirectTo: `${window.location.origin}/api/auth/callback?${callbackParams}`,
         },
       });
 
@@ -77,11 +82,16 @@ function SignupForm(): React.ReactElement {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
       );
 
+      const wixInst = searchParams.get('wix_instance') ?? '';
+      const cbParams = wixInst
+        ? `type=signup&wix_instance=${encodeURIComponent(wixInst)}`
+        : 'type=signup';
+
       const { error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/callback?type=signup`,
+          emailRedirectTo: `${window.location.origin}/api/auth/callback?${cbParams}`,
         },
       });
 

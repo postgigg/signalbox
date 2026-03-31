@@ -131,6 +131,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       redirectPath = next;
   }
 
+  // If user came from Wix, redirect to wix-connected page to link the account
+  const wixInstance = searchParams.get('wix_instance');
+  if (wixInstance && redirectPath !== '/reset-password') {
+    const wixUrl = new URL('/wix-connected', origin);
+    wixUrl.searchParams.set('wix_instance', wixInstance);
+    return NextResponse.redirect(wixUrl);
+  }
+
   const redirectUrl = new URL(redirectPath, origin);
   return NextResponse.redirect(redirectUrl);
 }

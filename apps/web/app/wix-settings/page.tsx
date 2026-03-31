@@ -179,14 +179,14 @@ export default function WixSettingsPage(): React.ReactElement {
               </p>
               <div className="mt-6 flex flex-col gap-3">
                 <Link
-                  href="/signup"
+                  href={`/signup?wix_instance=${encodeURIComponent(instanceId)}&plan=free`}
                   target="_blank"
                   className="btn-primary text-center h-11 flex items-center justify-center"
                 >
                   Create Free Account
                 </Link>
                 <Link
-                  href="/login"
+                  href={`/login?wix_instance=${encodeURIComponent(instanceId)}`}
                   target="_blank"
                   className="btn-secondary text-center h-11 flex items-center justify-center"
                 >
@@ -194,7 +194,7 @@ export default function WixSettingsPage(): React.ReactElement {
                 </Link>
               </div>
               <p className="mt-4 text-xs text-stone">
-                30-day free trial. No credit card. After signing up, create a widget and come back here to connect it.
+                Free plan: 10 leads/month. No credit card. After signing up, refresh this page to connect your widget.
               </p>
             </div>
 
