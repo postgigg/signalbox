@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 
@@ -10,12 +11,18 @@ import type { Submission } from '@/lib/supabase/types';
 
 type LeadRow = Pick<
   Submission,
-  'id' | 'visitor_name' | 'visitor_email' | 'lead_score' | 'lead_tier' | 'status' | 'created_at'
+  'id' | 'visitor_name' | 'visitor_email' | 'lead_score' | 'lead_tier' | 'status' | 'created_at' | 'gated'
 >;
+
+interface GatedStats {
+  count: number;
+  hotCount: number;
+}
 
 const TIER_OPTIONS = ['all', 'hot', 'warm', 'cold'] as const;
 const STATUS_OPTIONS = ['all', 'new', 'viewed', 'contacted', 'qualified', 'disqualified', 'converted', 'archived'] as const;
 const PAGE_SIZE = 20;
+const HOT_SCORE_THRESHOLD = 70;
 
 function TierBadge({ tier }: { readonly tier: string }): React.ReactElement {
   const classes: Record<string, string> = {
@@ -62,6 +69,8 @@ export default function LeadsPage(): React.ReactElement {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [accountPlan, setAccountPlan] = useState<string>('');
+  const [gatedStats, setGatedStats] = useState<GatedStats>({ count: 0, hotCount: 0 });
 
   const fetchLeads = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -84,9 +93,42 @@ export default function LeadsPage(): React.ReactElement {
 
       if (!memberData) return;
 
+      // Fetch account plan
+      const { data: accountData } = await supabase
+        .from('accounts')
+        .select('plan')
+        .eq('id', memberData.account_id)
+        .single();
+
+      const plan = accountData?.plan ?? '';
+      setAccountPlan(plan);
+
+      // Fetch gated stats for free plan users
+      if (plan === 'free') {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const { data: gatedLeads } = await supabase
+          .from('submissions')
+          .select('lead_score')
+          .eq('account_id', memberData.account_id)
+          .eq('gated', true)
+          .gte('created_at', startOfMonth.toISOString());
+
+        if (gatedLeads && gatedLeads.length > 0) {
+          const hotCount = gatedLeads.filter(
+            (l: { lead_score: number }) => l.lead_score >= HOT_SCORE_THRESHOLD
+          ).length;
+          setGatedStats({ count: gatedLeads.length, hotCount });
+        } else {
+          setGatedStats({ count: 0, hotCount: 0 });
+        }
+      }
+
       let query = supabase
         .from('submissions')
-        .select('id, visitor_name, visitor_email, lead_score, lead_tier, status, created_at', { count: 'exact' })
+        .select('id, visitor_name, visitor_email, lead_score, lead_tier, status, created_at, gated', { count: 'exact' })
         .eq('account_id', memberData.account_id)
         .order(sortField, { ascending: sortDir === 'asc' })
         .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
@@ -135,6 +177,8 @@ export default function LeadsPage(): React.ReactElement {
   }
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const isFreePlan = accountPlan === 'free';
+  const showGatedBanner = isFreePlan && gatedStats.count > 0;
 
   return (
     <div>
@@ -142,6 +186,31 @@ export default function LeadsPage(): React.ReactElement {
         <h1 className="page-heading">Leads</h1>
         <p className="text-sm text-stone">{totalCount} total</p>
       </div>
+
+      {/* Gated leads upsell banner */}
+      {showGatedBanner && (
+        <div className="mt-4 border border-border rounded-md bg-surface p-4 flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-ink">
+              You had {gatedStats.count} more {gatedStats.count === 1 ? 'lead' : 'leads'} this month.
+              {gatedStats.hotCount > 0 && (
+                <span>
+                  {' '}{gatedStats.hotCount} scored above {HOT_SCORE_THRESHOLD}.
+                </span>
+              )}
+            </p>
+            <p className="text-xs text-stone mt-1">
+              Upgrade to see all your leads and unlock predictive scoring.
+            </p>
+          </div>
+          <Link
+            href="/dashboard/settings/billing"
+            className="btn-primary text-sm h-9 px-4 flex items-center shrink-0 ml-4"
+          >
+            Upgrade
+          </Link>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -282,26 +351,61 @@ export default function LeadsPage(): React.ReactElement {
                 </tr>
               </thead>
               <tbody>
-                {leads.map((lead) => (
-                  <tr
-                    key={lead.id}
-                    className="border-b border-border last:border-0 transition-colors duration-fast hover:bg-surface-alt cursor-pointer"
-                    onClick={() => router.push(`/dashboard/leads/${lead.id}`)}
-                  >
-                    <td className="py-3.5 px-5 font-medium text-ink whitespace-nowrap">{lead.visitor_name}</td>
-                    <td className="py-3.5 px-5 text-stone">{lead.visitor_email}</td>
-                    <td className="py-3.5 px-5 text-right font-mono tabular-nums">{lead.lead_score}</td>
-                    <td className="py-3.5 px-5 text-center">
-                      <TierBadge tier={lead.lead_tier} />
-                    </td>
-                    <td className="py-3.5 px-5 text-center">
-                      <StatusBadge status={lead.status} />
-                    </td>
-                    <td className="py-3.5 px-5 text-right text-stone whitespace-nowrap">
-                      {new Date(lead.created_at).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
+                {leads.map((lead) => {
+                  const isGated = isFreePlan && lead.gated;
+                  return (
+                    <tr
+                      key={lead.id}
+                      className={`border-b border-border last:border-0 transition-colors duration-fast ${
+                        isGated ? 'opacity-75' : 'hover:bg-surface-alt cursor-pointer'
+                      }`}
+                      onClick={() => {
+                        if (!isGated) {
+                          router.push(`/dashboard/leads/${lead.id}`);
+                        }
+                      }}
+                    >
+                      <td className="py-3.5 px-5 font-medium text-ink whitespace-nowrap">
+                        {isGated ? (
+                          <span className="select-none" style={{ filter: 'blur(4px)' }}>
+                            {lead.visitor_name}
+                          </span>
+                        ) : (
+                          lead.visitor_name
+                        )}
+                      </td>
+                      <td className="py-3.5 px-5 text-stone">
+                        {isGated ? (
+                          <span className="select-none" style={{ filter: 'blur(4px)' }}>
+                            {lead.visitor_email}
+                          </span>
+                        ) : (
+                          lead.visitor_email
+                        )}
+                      </td>
+                      <td className="py-3.5 px-5 text-right font-mono tabular-nums">{lead.lead_score}</td>
+                      <td className="py-3.5 px-5 text-center">
+                        <TierBadge tier={lead.lead_tier} />
+                      </td>
+                      <td className="py-3.5 px-5 text-center">
+                        {isGated ? (
+                          <Link
+                            href="/dashboard/settings/billing"
+                            className="text-xs font-medium text-signal hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Upgrade
+                          </Link>
+                        ) : (
+                          <StatusBadge status={lead.status} />
+                        )}
+                      </td>
+                      <td className="py-3.5 px-5 text-right text-stone whitespace-nowrap">
+                        {new Date(lead.created_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

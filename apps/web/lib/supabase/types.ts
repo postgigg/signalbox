@@ -15,7 +15,7 @@ export type Database = {
           name: string;
           slug: string;
           owner_id: string;
-          plan: 'trial' | 'starter' | 'pro' | 'agency';
+          plan: 'free' | 'trial' | 'starter' | 'pro' | 'agency';
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
           subscription_status:
@@ -50,7 +50,7 @@ export type Database = {
           name: string;
           slug: string;
           owner_id: string;
-          plan?: 'trial' | 'starter' | 'pro' | 'agency';
+          plan?: 'free' | 'trial' | 'starter' | 'pro' | 'agency';
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_status?:
@@ -85,7 +85,7 @@ export type Database = {
           name?: string;
           slug?: string;
           owner_id?: string;
-          plan?: 'trial' | 'starter' | 'pro' | 'agency';
+          plan?: 'free' | 'trial' | 'starter' | 'pro' | 'agency';
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
           subscription_status?:
@@ -302,6 +302,7 @@ export type Database = {
           assigned_by_rule_id: string | null;
           ab_test_id: string | null;
           ab_variant: 'a' | 'b' | null;
+          gated: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -354,6 +355,7 @@ export type Database = {
           assigned_by_rule_id?: string | null;
           ab_test_id?: string | null;
           ab_variant?: 'a' | 'b' | null;
+          gated?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -406,6 +408,7 @@ export type Database = {
           assigned_by_rule_id?: string | null;
           ab_test_id?: string | null;
           ab_variant?: 'a' | 'b' | null;
+          gated?: boolean;
           created_at?: string;
           updated_at?: string;
         };

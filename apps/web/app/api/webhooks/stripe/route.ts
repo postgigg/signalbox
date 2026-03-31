@@ -3,6 +3,7 @@ import { stripe, Stripe } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendPaymentFailedEmail } from '@/lib/email';
 import { PLANS } from '@/lib/constants';
+import { getPlanLimits } from '@/lib/plan-limits';
 import type { Plan } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
@@ -93,17 +94,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         console.error(`[stripe-webhook] Unknown price ID: ${priceId} for account ${accountId}`);
       }
 
+      const resolvedPlan: Plan = plan ?? 'starter';
+
       await admin
         .from('accounts')
         .update({
           stripe_customer_id: customerId,
           stripe_subscription_id: subscriptionId,
-          plan: plan ?? 'starter',
+          plan: resolvedPlan,
           subscription_status: 'active',
           trial_ends_at: null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', accountId);
+
+      // Sync widget submission limits to new plan
+      const newLimits = getPlanLimits(resolvedPlan);
+      const newSubmissionLimit = newLimits.submissionsPerMonth === -1
+        ? 999999
+        : newLimits.submissionsPerMonth;
+
+      await admin
+        .from('widgets')
+        .update({ submission_limit: newSubmissionLimit })
+        .eq('account_id', accountId)
+        .eq('is_active', true);
 
       break;
     }
@@ -156,6 +171,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }
 
       await admin.from('accounts').update(updates).eq('id', account.id);
+
+      // Sync widget submission limits when plan changes
+      if (plan) {
+        const updatedLimits = getPlanLimits(plan);
+        const updatedSubmissionLimit = updatedLimits.submissionsPerMonth === -1
+          ? 999999
+          : updatedLimits.submissionsPerMonth;
+
+        await admin
+          .from('widgets')
+          .update({ submission_limit: updatedSubmissionLimit })
+          .eq('account_id', account.id)
+          .eq('is_active', true);
+      }
 
       break;
     }

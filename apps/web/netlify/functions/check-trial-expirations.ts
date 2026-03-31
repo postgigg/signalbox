@@ -71,13 +71,13 @@ function buildTrialExpiredHtml(account: AccountRow): string {
         </svg>
         <span style="font-weight: 700; font-size: 18px; vertical-align: middle; letter-spacing: -0.03em;">HawkLeads</span>
       </div>
-      <h2>Your HawkLeads trial has expired</h2>
+      <h2>Your HawkLeads trial has ended</h2>
       <p>Hi there,</p>
-      <p>The free trial for <strong>${account.name}</strong> has ended. Your account has been moved to a canceled state, and your widgets are no longer active.</p>
-      <p>Don't worry — your data is safe. Upgrade to a paid plan to reactivate your account and pick up right where you left off.</p>
+      <p>Your free trial for <strong>${account.name}</strong> has ended. Your account is now on the Free plan: 10 leads per month with form-based scoring.</p>
+      <p>Your widgets are still active and your data is safe. Upgrade anytime to unlock more leads, predictive scoring, and team features.</p>
       <a href="${APP_URL}/settings/billing"
          style="display: inline-block; padding: 12px 24px; background-color: #3B82F6; color: #FFFFFF; text-decoration: none; border-radius: 6px; font-weight: bold;">
-        Reactivate Account
+        Upgrade Now
       </a>
       <p style="margin-top: 16px;">Our plans start at just $99/month. <a href="${APP_URL}/pricing">View pricing</a></p>
       <p style="color: #6B7280; font-size: 12px; margin-top: 24px;">
@@ -196,37 +196,39 @@ async function processExpiredTrials(
 
     for (const account of accounts) {
       try {
-        // Cancel the subscription status
+        // Downgrade to free plan (keep account active)
         const { error: updateError } = await supabase
           .from('accounts')
-          .update({ subscription_status: 'canceled' })
+          .update({ plan: 'free', subscription_status: 'active' })
           .eq('id', account.id);
 
         if (updateError) {
-          console.error(`[check-trial-expirations] Failed to cancel account ${account.id}:`, updateError.message);
+          console.error(`[check-trial-expirations] Failed to downgrade account ${account.id}:`, updateError.message);
           failed++;
           continue;
         }
 
-        // Deactivate all widgets for this account
+        // Update all active widget submission limits to free plan limit (10)
+        const FREE_SUBMISSION_LIMIT = 10;
         const { error: widgetError } = await supabase
           .from('widgets')
-          .update({ is_active: false })
-          .eq('account_id', account.id);
+          .update({ submission_limit: FREE_SUBMISSION_LIMIT })
+          .eq('account_id', account.id)
+          .eq('is_active', true);
 
         if (widgetError) {
-          console.error(`[check-trial-expirations] Failed to deactivate widgets for account ${account.id}:`, widgetError.message);
+          console.error(`[check-trial-expirations] Failed to update widget limits for account ${account.id}:`, widgetError.message);
         }
 
-        // Send trial expired email
+        // Send trial ended email
         if (account.notification_email) {
           try {
             await resend.emails.send({
               from: fromAddress,
               to: account.notification_email,
-              subject: 'Your HawkLeads trial has expired',
+              subject: 'Your HawkLeads trial has ended',
               html: buildTrialExpiredHtml(account),
-              text: `Your HawkLeads trial for ${account.name} has expired. Your account has been deactivated. Upgrade to reactivate: ${APP_URL}/settings/billing`,
+              text: `Your HawkLeads trial for ${account.name} has ended. Your account is now on the Free plan: 10 leads/month, form-based scoring. Upgrade anytime for more: ${APP_URL}/settings/billing`,
             });
           } catch (emailErr) {
             console.error(`[check-trial-expirations] Failed to send expired email for account ${account.id}:`, emailErr instanceof Error ? emailErr.message : String(emailErr));

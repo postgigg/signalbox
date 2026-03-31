@@ -4,7 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { authenticateRequest, requireRole } from '@/lib/auth';
 import { TRIAL_DURATION_DAYS, DEMO_ACCOUNT_ID } from '@/lib/constants';
-import type { Json } from '@/lib/supabase/types';
+import { getPlanLimits } from '@/lib/plan-limits';
+import type { Json, Plan } from '@/lib/supabase/types';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +23,7 @@ const createAccountSchema = z.object({
     ),
   timezone: z.string().default('UTC'),
   notificationEmail: z.string().email().optional(),
+  plan: z.enum(['free', 'trial']).default('trial'),
 }).strict();
 
 const patchAccountSchema = z.object({
@@ -145,9 +147,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // Calculate trial end date
-  const trialEndsAt = new Date();
-  trialEndsAt.setDate(trialEndsAt.getDate() + TRIAL_DURATION_DAYS);
+  // Determine plan and trial settings
+  const requestedPlan: Plan = parsed.data.plan === 'free' ? 'free' : 'trial';
+  const isFree = requestedPlan === 'free';
+
+  let trialEndsAt: string | null = null;
+  if (!isFree) {
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + TRIAL_DURATION_DAYS);
+    trialEndsAt = trialEnd.toISOString();
+  }
 
   // Create account
   const { data: account, error: accountError } = await admin
@@ -156,9 +165,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       name: parsed.data.name,
       slug: parsed.data.slug,
       owner_id: user.id,
-      plan: 'trial',
-      subscription_status: 'trialing',
-      trial_ends_at: trialEndsAt.toISOString(),
+      plan: requestedPlan,
+      subscription_status: isFree ? 'active' : 'trialing',
+      trial_ends_at: trialEndsAt,
       timezone: parsed.data.timezone,
       notification_email: parsed.data.notificationEmail ?? user.email ?? null,
     })
@@ -189,7 +198,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // Create default widget
+  // Create default widget with plan-appropriate submission limit
+  const planLimits = getPlanLimits(requestedPlan);
+  const widgetSubmissionLimit = planLimits.submissionsPerMonth === -1
+    ? 999999
+    : planLimits.submissionsPerMonth;
+
   const { data: widget, error: widgetError } = await admin
     .from('widgets')
     .insert({
@@ -197,7 +211,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       name: `${parsed.data.name} Widget`,
       theme: DEFAULT_THEME,
       confirmation: DEFAULT_CONFIRMATION,
-      submission_limit: 100, // trial limit
+      submission_limit: widgetSubmissionLimit,
     })
     .select('*')
     .single();

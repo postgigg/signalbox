@@ -430,8 +430,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     current_limit: widget.submission_limit,
   });
 
+  const isFreePlan = account.plan === 'free';
+
   if (!incremented) {
-    // Submission was inserted but limit was reached concurrently — remove it
+    if (isFreePlan) {
+      // Free plan: keep the submission but mark it as gated
+      await admin
+        .from('submissions')
+        .update({ gated: true })
+        .eq('id', submission.id);
+
+      // Return 201 so the visitor sees normal confirmation
+      return corsJson(
+        {
+          message: 'Submission received',
+          id: submission.id,
+          tier: leadTier,
+          score: leadScore,
+          gated: true,
+        },
+        { status: 201 },
+      );
+    }
+
+    // Paid plan: remove submission and return 403
     await admin.from('submissions').delete().eq('id', submission.id);
     return corsJson(
       { error: 'Submission limit reached for this widget' },
