@@ -26,8 +26,6 @@ type SettingsState =
 
 function decodeWixInstance(instanceParam: string): string | null {
   try {
-    // Wix instance token is a JWT-like format: base64(header).base64(payload)
-    // The payload contains instanceId
     const parts = instanceParam.split('.');
     if (parts.length < 2) return null;
     const payload = parts[1];
@@ -47,153 +45,6 @@ function decodeWixInstance(instanceParam: string): string | null {
     return null;
   }
 }
-
-// ---------------------------------------------------------------------------
-// Inline styles for iframe context (no marketing header/footer)
-// ---------------------------------------------------------------------------
-
-const STYLES = {
-  container: {
-    maxWidth: '480px',
-    margin: '0 auto',
-    padding: '24px',
-    fontFamily: 'var(--font-body)',
-  } as const,
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    marginBottom: '24px',
-  } as const,
-  heading: {
-    fontFamily: 'var(--font-display)',
-    fontSize: '20px',
-    fontWeight: 600,
-    lineHeight: 1.15,
-    color: 'var(--sb-ink)',
-    margin: 0,
-  } as const,
-  subtext: {
-    fontSize: '14px',
-    color: 'var(--sb-stone)',
-    marginTop: '8px',
-  } as const,
-  label: {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: 500,
-    marginBottom: '6px',
-    color: 'var(--sb-ink)',
-  } as const,
-  select: {
-    width: '100%',
-    height: '44px',
-    padding: '0 12px',
-    border: '1px solid var(--sb-border)',
-    borderRadius: '6px',
-    background: 'var(--sb-surface)',
-    fontSize: '14px',
-    fontFamily: 'inherit',
-    color: 'var(--sb-ink)',
-    cursor: 'pointer',
-  } as const,
-  btnPrimary: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '40px',
-    padding: '0 16px',
-    border: 'none',
-    borderRadius: '6px',
-    background: 'var(--sb-ink)',
-    color: '#FFFFFF',
-    fontFamily: 'inherit',
-    fontSize: '14px',
-    fontWeight: 500,
-    cursor: 'pointer',
-  } as const,
-  card: {
-    border: '1px solid var(--sb-border)',
-    borderRadius: '8px',
-    padding: '16px',
-    background: 'var(--sb-surface)',
-    marginTop: '16px',
-  } as const,
-  previewLabel: {
-    fontSize: '12px',
-    color: 'var(--sb-stone-light)',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.05em',
-  } as const,
-  previewName: {
-    fontSize: '14px',
-    fontWeight: 500,
-    marginTop: '4px',
-    color: 'var(--sb-ink)',
-  } as const,
-  previewMeta: {
-    fontSize: '12px',
-    color: 'var(--sb-stone)',
-    marginTop: '2px',
-  } as const,
-  successCard: {
-    border: '1px solid var(--sb-success)',
-    borderRadius: '8px',
-    padding: '16px',
-    background: 'var(--sb-success-light)',
-  } as const,
-  successText: {
-    fontSize: '14px',
-    fontWeight: 500,
-    color: 'var(--sb-success)',
-    margin: 0,
-  } as const,
-  successDetail: {
-    fontSize: '13px',
-    color: 'var(--sb-stone)',
-    marginTop: '4px',
-  } as const,
-  errorCard: {
-    border: '1px solid var(--sb-danger)',
-    borderRadius: '8px',
-    padding: '16px',
-    background: 'var(--sb-danger-light)',
-  } as const,
-  errorText: {
-    fontSize: '14px',
-    color: 'var(--sb-danger)',
-    margin: 0,
-  } as const,
-  emptyCard: {
-    border: '1px solid var(--sb-border)',
-    borderRadius: '8px',
-    padding: '24px',
-    background: 'var(--sb-surface)',
-    textAlign: 'center' as const,
-  } as const,
-  emptyText: {
-    fontSize: '14px',
-    color: 'var(--sb-stone)',
-    margin: 0,
-  } as const,
-  link: {
-    color: 'var(--sb-signal)',
-    textDecoration: 'none',
-    fontWeight: 500,
-  } as const,
-  loadingWrap: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    gap: '12px',
-    padding: '40px 0',
-  } as const,
-  divider: {
-    height: '1px',
-    background: 'var(--sb-border)',
-    margin: '20px 0',
-  } as const,
-} as const;
 
 // ---------------------------------------------------------------------------
 // Component
@@ -244,7 +95,6 @@ export default function WixSettingsPage(): React.ReactElement {
             setState({ status: 'no-widgets' });
           } else {
             setState({ status: 'loaded', widgets });
-            // Pre-select the currently-connected widget or the first one
             if (
               'selectedWidgetId' in data &&
               typeof (data as Record<string, unknown>).selectedWidgetId === 'string'
@@ -292,45 +142,44 @@ export default function WixSettingsPage(): React.ReactElement {
   }, [selectedWidgetId, instanceId]);
 
   return (
-    <div style={STYLES.container}>
+    <div className="max-w-[480px] mx-auto px-6 py-6 font-body">
       {/* Header */}
-      <div style={STYLES.header}>
-        <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-          <rect width="32" height="32" rx="6" fill="#0F172A" />
-          <path d="M8 12L16 8L24 12" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M8 16L16 12L24 16" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M8 20L16 16L24 20" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <h1 style={STYLES.heading}>HawkLeads Settings</h1>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-8 h-8 rounded-md bg-ink flex items-center justify-center flex-shrink-0">
+          <svg width="16" height="16" viewBox="0 0 48 48" fill="none">
+            <path d="M6 24 L16 6 L16 42 Z" fill="#FFFFFF" opacity="0.3" />
+            <path d="M12 24 L20 10 L20 38 Z" fill="#FFFFFF" opacity="0.5" />
+            <path d="M18 24 L26 12 L26 36 Z" fill="#FFFFFF" />
+          </svg>
+        </div>
+        <h1 className="font-display text-xl font-semibold text-ink">HawkLeads Settings</h1>
       </div>
 
-      {/* Loading State */}
+      {/* Loading */}
       {state.status === 'loading' && (
-        <div style={STYLES.loadingWrap}>
-          <div className="spinner" style={{ width: '20px', height: '20px' }} />
-          <p style={STYLES.subtext}>Loading your widgets...</p>
+        <div className="flex flex-col items-center gap-3 py-10">
+          <div className="spinner w-5 h-5" />
+          <p className="text-sm text-stone">Loading your widgets...</p>
         </div>
       )}
 
-      {/* Error State */}
+      {/* Error */}
       {state.status === 'error' && (
-        <div style={STYLES.errorCard}>
-          <p style={STYLES.errorText}>{state.message}</p>
+        <div className="p-4 rounded-md bg-danger-light border border-danger/20">
+          <p className="text-sm text-danger">{state.message}</p>
         </div>
       )}
 
-      {/* No Widgets State */}
+      {/* No Widgets */}
       {state.status === 'no-widgets' && (
-        <div style={STYLES.emptyCard}>
-          <p style={STYLES.emptyText}>
-            You need to create a widget first.
-          </p>
-          <p style={{ marginTop: '12px' }}>
+        <div className="card text-center py-8">
+          <p className="text-sm text-stone">You need to create a widget first.</p>
+          <p className="mt-3">
             <a
               href="https://hawkleads.io/dashboard/widgets/new"
               target="_blank"
               rel="noopener noreferrer"
-              style={STYLES.link}
+              className="text-sm text-signal font-medium hover:text-signal-hover transition-colors duration-fast"
             >
               Open HawkLeads Dashboard
             </a>
@@ -338,15 +187,15 @@ export default function WixSettingsPage(): React.ReactElement {
         </div>
       )}
 
-      {/* Loaded State */}
+      {/* Loaded */}
       {state.status === 'loaded' && (
         <div>
-          <label htmlFor="widget-select" style={STYLES.label}>
+          <label htmlFor="widget-select" className="block text-sm font-medium text-ink mb-1.5">
             Select which widget to embed on this site
           </label>
           <select
             id="widget-select"
-            style={STYLES.select}
+            className="input-field w-full h-11"
             value={selectedWidgetId}
             onChange={(e) => setSelectedWidgetId(e.target.value)}
           >
@@ -357,28 +206,23 @@ export default function WixSettingsPage(): React.ReactElement {
             ))}
           </select>
 
-          {/* Widget Preview */}
           {selectedWidgetId && (
-            <div style={STYLES.card}>
-              <p style={STYLES.previewLabel}>Selected widget</p>
-              <p style={STYLES.previewName}>
+            <div className="card mt-4">
+              <p className="text-xs text-stone-light uppercase tracking-wide">Selected widget</p>
+              <p className="text-sm font-medium text-ink mt-1">
                 {state.widgets.find((w) => w.id === selectedWidgetId)?.name ?? 'Unknown'}
               </p>
-              <p style={STYLES.previewMeta}>
+              <p className="text-xs text-stone mt-0.5">
                 {state.widgets.find((w) => w.id === selectedWidgetId)?.steps_count ?? 0} steps
               </p>
             </div>
           )}
 
-          <div style={STYLES.divider} />
+          <div className="border-t border-border my-5" />
 
           <button
             type="button"
-            style={{
-              ...STYLES.btnPrimary,
-              opacity: selectedWidgetId ? 1 : 0.5,
-              cursor: selectedWidgetId ? 'pointer' : 'not-allowed',
-            }}
+            className="btn-primary"
             disabled={!selectedWidgetId}
             onClick={() => void handleSave()}
           >
@@ -387,19 +231,19 @@ export default function WixSettingsPage(): React.ReactElement {
         </div>
       )}
 
-      {/* Saving State */}
+      {/* Saving */}
       {state.status === 'saving' && (
-        <div style={STYLES.loadingWrap}>
-          <div className="spinner" style={{ width: '20px', height: '20px' }} />
-          <p style={STYLES.subtext}>Saving your settings...</p>
+        <div className="flex flex-col items-center gap-3 py-10">
+          <div className="spinner w-5 h-5" />
+          <p className="text-sm text-stone">Saving your settings...</p>
         </div>
       )}
 
-      {/* Saved State */}
+      {/* Saved */}
       {state.status === 'saved' && (
-        <div style={STYLES.successCard}>
-          <p style={STYLES.successText}>Widget connected.</p>
-          <p style={STYLES.successDetail}>
+        <div className="p-4 rounded-md bg-success-light border border-success/20">
+          <p className="text-sm font-medium text-success">Widget connected.</p>
+          <p className="text-xs text-stone mt-1">
             It will appear on your Wix site within 60 seconds.
           </p>
         </div>
