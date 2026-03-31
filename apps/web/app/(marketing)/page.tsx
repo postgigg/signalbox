@@ -116,7 +116,7 @@ export default function LandingPage(): React.ReactElement {
               onToggle={() => setIsAnnual((prev) => !prev)}
             />
           </div>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {PLANS.map((plan, index) => (
               <div
                 key={plan.name}

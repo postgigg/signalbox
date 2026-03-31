@@ -5,26 +5,25 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 const PLAN_FEATURES = [
-  { feature: 'Widgets', starter: '1', pro: '5', agency: '25' },
-  { feature: 'Submissions/month', starter: '500', pro: '2,000', agency: 'Unlimited' },
-  { feature: 'Team members', starter: '3', pro: '10', agency: '25' },
-  { feature: 'Lead scoring', starter: true, pro: true, agency: true },
-  { feature: 'Email alerts', starter: true, pro: true, agency: true },
-  { feature: 'Custom branding', starter: true, pro: true, agency: true },
-  { feature: 'Flow templates', starter: true, pro: true, agency: true },
-  { feature: 'Basic analytics', starter: true, pro: true, agency: true },
-  { feature: 'Webhook integrations', starter: true, pro: true, agency: true },
-  { feature: 'Advanced analytics', starter: false, pro: true, agency: true },
-  { feature: 'Slack notifications', starter: false, pro: true, agency: true },
-  { feature: 'Lead routing rules', starter: false, pro: true, agency: true },
-  { feature: 'A/B testing', starter: false, pro: true, agency: true },
-  { feature: 'Drip email sequences', starter: false, pro: true, agency: true },
-  { feature: 'API access', starter: false, pro: true, agency: true },
-  { feature: 'Remove branding', starter: false, pro: true, agency: true },
-  { feature: 'Shared analytics links', starter: false, pro: false, agency: true },
-  { feature: 'White-label', starter: false, pro: false, agency: true },
-  { feature: 'Multi-client dashboard', starter: false, pro: false, agency: true },
-  { feature: 'Priority support', starter: false, pro: false, agency: true },
+  { feature: 'Widgets', free: '1', starter: '1', pro: '5', agency: '25' },
+  { feature: 'Submissions/month', free: '10', starter: '500', pro: '2,000', agency: 'Unlimited' },
+  { feature: 'Team members', free: '1', starter: '3', pro: '10', agency: '25' },
+  { feature: 'Lead scoring (form)', free: true, starter: true, pro: true, agency: true },
+  { feature: 'Engagement scoring', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Email alerts', free: true, starter: true, pro: true, agency: true },
+  { feature: 'Flow templates', free: true, starter: true, pro: true, agency: true },
+  { feature: 'Basic analytics', free: false, starter: true, pro: true, agency: true },
+  { feature: 'Webhook integrations', free: false, starter: true, pro: true, agency: true },
+  { feature: 'Custom branding', free: false, starter: true, pro: true, agency: true },
+  { feature: 'Advanced analytics', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Lead routing rules', free: false, starter: false, pro: true, agency: true },
+  { feature: 'A/B testing', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Drip email sequences', free: false, starter: false, pro: true, agency: true },
+  { feature: 'API access', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Remove branding', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Shared analytics links', free: false, starter: false, pro: false, agency: true },
+  { feature: 'White-label', free: false, starter: false, pro: false, agency: true },
+  { feature: 'Priority support', free: false, starter: false, pro: false, agency: true },
 ] as const;
 
 const PRICING_FAQ = [
@@ -223,7 +222,39 @@ export default function PricingPage(): React.ReactElement {
 
       {/* Plan Cards */}
       <section className="pb-16 px-6">
-        <div className="max-w-content mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="max-w-content mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Free */}
+          <div className="card flex flex-col transition-all duration-normal">
+            <h2 className="font-display text-xl font-semibold text-ink">Free</h2>
+            <p className="mt-1 text-sm text-stone">
+              One widget. 10 leads/month.
+            </p>
+            <p className="mt-1 text-xs text-stone-light">
+              Free forever. No credit card.
+            </p>
+            <div className="mt-4 relative h-12 overflow-hidden">
+              <div className="animate-price-slide">
+                <span className="font-display text-4xl font-bold text-ink">
+                  $0
+                </span>
+                <span className="text-sm text-stone">/mo</span>
+              </div>
+            </div>
+            <ul className="mt-4 space-y-2 flex-1">
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Lead scoring (form answers)</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> Email alerts</li>
+              <li className="flex items-center gap-2 text-sm text-stone"><CheckIcon /> 1 team member</li>
+            </ul>
+            <button
+              type="button"
+              onClick={() => void handlePlanSelect('free')}
+              disabled={checkoutLoading !== null}
+              className="btn-secondary mt-6 w-full"
+            >
+              {isLoggedIn ? 'Select Free' : 'Get Started Free'}
+            </button>
+          </div>
+
           {/* Starter */}
           <div className="card flex flex-col transition-all duration-normal">
             <h2 className="font-display text-xl font-semibold text-ink">Starter</h2>
@@ -420,6 +451,7 @@ export default function PricingPage(): React.ReactElement {
               <thead>
                 <tr className="table-header">
                   <th className="text-left py-3 px-4 font-medium">Feature</th>
+                  <th className="text-center py-3 px-4 font-medium">Free</th>
                   <th className="text-center py-3 px-4 font-medium">Starter</th>
                   <th className="text-center py-3 px-4 font-medium">Pro</th>
                   <th className="text-center py-3 px-4 font-medium">Agency</th>
@@ -429,6 +461,19 @@ export default function PricingPage(): React.ReactElement {
                 {PLAN_FEATURES.map((row) => (
                   <tr key={row.feature} className="table-row">
                     <td className="py-3 px-4 text-ink font-medium">{row.feature}</td>
+                    <td className="py-3 px-4 text-center">
+                      {typeof row.free === 'string' ? (
+                        <span className="text-stone">{row.free}</span>
+                      ) : row.free ? (
+                        <span className="inline-flex justify-center">
+                          <CheckIcon />
+                        </span>
+                      ) : (
+                        <span className="inline-flex justify-center">
+                          <DashIcon />
+                        </span>
+                      )}
+                    </td>
                     <td className="py-3 px-4 text-center">
                       {typeof row.starter === 'string' ? (
                         <span className="text-stone">{row.starter}</span>

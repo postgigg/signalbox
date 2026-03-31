@@ -73,16 +73,29 @@ export interface PricingPlan {
 
 export const PLANS: readonly PricingPlan[] = [
   {
+    name: 'Free',
+    monthlyPrice: 0,
+    annualPrice: 0,
+    description: 'One widget. 10 leads/month.',
+    bestFor: 'Best for trying it out. Free forever.',
+    features: [
+      'Lead scoring (form answers)',
+      'Email alerts',
+      '1 widget, 1 team member',
+    ],
+    highlighted: false,
+  },
+  {
     name: 'Starter',
     monthlyPrice: 99,
     annualPrice: 82,
     description: 'One widget. 500 submissions/month.',
     bestFor: 'Best for single-location businesses.',
     features: [
-      'Lead scoring',
-      'Email alerts',
-      'Basic analytics',
+      'Everything in Free',
       'Webhook integrations',
+      'Basic analytics',
+      '3 team members',
     ],
     highlighted: false,
   },
