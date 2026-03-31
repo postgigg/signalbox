@@ -196,29 +196,20 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Widget not found' }, { status: 404 });
   }
 
-  // 5. Get valid access token (refresh if needed)
-  let accessToken: string;
-  try {
-    accessToken = await getValidAccessToken(installation);
-  } catch {
-    return NextResponse.json(
-      { error: 'Failed to authenticate with Wix. Try reconnecting the integration.' },
-      { status: 502 }
-    );
+  // 5. Try to inject widget script (optional — works when OAuth tokens exist)
+  let scriptInjected = false;
+  if (installation.wix_refresh_token) {
+    try {
+      const accessToken = await getValidAccessToken(installation);
+      const apiUrl = `${APP_URL}/api/v1`;
+      await injectWidgetScript(accessToken, widget.widget_key, apiUrl);
+      scriptInjected = true;
+    } catch {
+      // Script injection failed — widget can still be embedded manually via embed code
+    }
   }
 
-  // 8. Inject widget script into Wix site
-  const apiUrl = `${APP_URL}/api/v1`;
-  try {
-    await injectWidgetScript(accessToken, widget.widget_key, apiUrl);
-  } catch {
-    return NextResponse.json(
-      { error: 'Failed to inject widget script into Wix site' },
-      { status: 502 }
-    );
-  }
-
-  // 9. Update widget_id on installation record
+  // 6. Update widget_id on installation record
   const { error: updateError } = await admin
     .from('wix_installations')
     .update({
@@ -235,7 +226,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     data: {
       instanceId,
       widgetId,
-      scriptInjected: true,
+      scriptInjected,
     },
   });
 }
