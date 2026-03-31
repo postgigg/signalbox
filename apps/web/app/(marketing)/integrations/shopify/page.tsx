@@ -121,17 +121,19 @@ export default function ShopifyIntegrationPage(): React.ReactElement {
             <h1 className="mt-3 font-display text-5xl font-semibold text-ink leading-tight">
               HawkLeads for Shopify
             </h1>
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-ink text-white text-sm font-medium rounded-md">
+              <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+              Coming Soon
+            </div>
             <p className="mt-6 text-lg text-stone leading-relaxed max-w-[520px]">
               Score every lead on your Shopify store. Install from the Shopify App Store. Auto-embeds on your storefront.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-3">
               <a
-                href={SHOPIFY_APP_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/signup"
                 className="btn-primary-lg"
               >
-                Install on Shopify
+                Join the Waitlist
               </a>
               <a href="#how-it-works" className="btn-secondary self-center">
                 See how it works
@@ -289,14 +291,12 @@ export default function ShopifyIntegrationPage(): React.ReactElement {
             30 days free.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href={SHOPIFY_APP_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/signup"
               className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
             >
-              Install on Shopify
-            </a>
+              Join the Waitlist
+            </Link>
             <Link
               href="/pricing"
               className="inline-flex items-center justify-center rounded-md border border-white/20 text-white/80 font-body font-medium text-sm h-12 px-5 transition-all duration-fast hover:border-white/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
