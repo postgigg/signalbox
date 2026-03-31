@@ -39,6 +39,20 @@
     Cache-Control = "public, max-age=60"
 
 [[headers]]
+  for = "/wix-settings*"
+  [headers.values]
+    X-Frame-Options = "ALLOWALL"
+    Content-Security-Policy = "frame-ancestors https://*.wix.com https://*.editorx.com"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/shopify-settings*"
+  [headers.values]
+    X-Frame-Options = "ALLOWALL"
+    Content-Security-Policy = "frame-ancestors https://*.myshopify.com https://admin.shopify.com"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
