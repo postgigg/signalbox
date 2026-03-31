@@ -4,7 +4,43 @@ const nextConfig = {
   poweredByHeader: false,
   headers: async () => [
     {
-      source: '/(.*)',
+      source: '/wix-settings/:path*',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "img-src 'self' data: https:",
+            "font-src 'self' https://fonts.gstatic.com",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+            "frame-ancestors https://*.wix.com https://*.editorx.com",
+          ].join('; '),
+        },
+      ],
+    },
+    {
+      source: '/shopify-settings/:path*',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "img-src 'self' data: https:",
+            "font-src 'self' https://fonts.gstatic.com",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+            "frame-ancestors https://*.myshopify.com https://admin.shopify.com",
+          ].join('; '),
+        },
+      ],
+    },
+    {
+      source: '/((?!wix-settings|shopify-settings).*)',
       headers: [
         { key: 'X-Frame-Options', value: 'DENY' },
         { key: 'X-Content-Type-Options', value: 'nosniff' },
