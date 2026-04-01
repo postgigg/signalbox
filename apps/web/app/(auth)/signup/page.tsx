@@ -26,11 +26,17 @@ function SignupForm(): React.ReactElement {
   const [emailSent, setEmailSent] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Store wix_instance in cookie so the auth callback can read it
+  const plan = searchParams.get('plan') ?? '';
+
+  // Store wix_instance and plan in cookies so the auth callback can read them
   useEffect(() => {
     const wixInstance = searchParams.get('wix_instance');
     if (wixInstance) {
       document.cookie = `hawkleads_wix_instance=${encodeURIComponent(wixInstance)};path=/;max-age=3600;SameSite=Lax`;
+    }
+    const planParam = searchParams.get('plan');
+    if (planParam) {
+      document.cookie = `hawkleads_plan=${encodeURIComponent(planParam)};path=/;max-age=3600;SameSite=Lax`;
     }
   }, [searchParams]);
 
@@ -46,9 +52,11 @@ function SignupForm(): React.ReactElement {
       );
 
       const wixInstance = searchParams.get('wix_instance') ?? '';
-      const callbackParams = wixInstance
-        ? `type=signup&wix_instance=${encodeURIComponent(wixInstance)}`
-        : 'type=signup';
+      const callbackParams = [
+        'type=signup',
+        wixInstance ? `wix_instance=${encodeURIComponent(wixInstance)}` : '',
+        plan ? `plan=${encodeURIComponent(plan)}` : '',
+      ].filter(Boolean).join('&');
 
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -91,9 +99,11 @@ function SignupForm(): React.ReactElement {
       );
 
       const wixInst = searchParams.get('wix_instance') ?? '';
-      const cbParams = wixInst
-        ? `type=signup&wix_instance=${encodeURIComponent(wixInst)}`
-        : 'type=signup';
+      const cbParams = [
+        'type=signup',
+        wixInst ? `wix_instance=${encodeURIComponent(wixInst)}` : '',
+        plan ? `plan=${encodeURIComponent(plan)}` : '',
+      ].filter(Boolean).join('&');
 
       const { error: authError } = await supabase.auth.signUp({
         email,
@@ -145,7 +155,9 @@ function SignupForm(): React.ReactElement {
         Create your HawkLeads account
       </h1>
       <p className="mt-2 text-sm text-stone">
-        30-day free trial. No credit card required.
+        {plan === 'free'
+          ? 'Free forever. 10 leads per month.'
+          : '30-day free trial. No credit card required.'}
       </p>
 
       {error !== null && (

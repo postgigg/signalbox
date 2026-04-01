@@ -1,7 +1,7 @@
 export const STATS = [
-  { number: '78%', body: 'of deals go to whoever responds first, per InsideSales.com research. Your competitor already knows this.' },
-  { number: '47hrs', body: 'is the average response time to a web form, per a Harvard Business Review study. Every hour costs you revenue.' },
-  { number: '5min', body: 'is the window to reach a lead before your odds drop 10x, per Lead Response Management research.' },
+  { number: '42%', body: 'of sales reps say bad lead quality is their biggest problem, per Gleanster Research. HawkLeads fixes what lands in your inbox.' },
+  { number: '5min', body: 'is the window to reach a lead before your odds drop 10x, per Harvard Business Review. Every minute counts.' },
+  { number: '75%', body: 'of inbound leads are not ready for sales, per Gleanster Research. Score them first so you only call the ones that are.' },
 ] as const;
 
 export const STEPS = [
@@ -215,11 +215,11 @@ export const INDUSTRY_HOOKS = [
 export const BEFORE_ITEMS = [
   'Every lead looks the same in your inbox',
   'Your team wastes hours calling tire-kickers',
-  'Your competitor responds first and wins the deal',
+  'Your first words: "Hi, thanks for reaching out, what can I help you with?"',
 ] as const;
 
 export const AFTER_ITEMS = [
   'Budget, timeline, and intent scored before you dial',
   'Your team calls the $10k jobs first, every time',
-  'Hot leads get a call in minutes, not days',
+  'Your first words: "Hi Sarah, saw you need emergency plumbing this week and your budget is $5-10k. I have availability tomorrow morning."',
 ] as const;

@@ -26,7 +26,7 @@ type SettingsState =
   | { readonly status: 'no-widgets' }
   | { readonly status: 'loaded'; readonly widgets: readonly WixWidget[] }
   | { readonly status: 'saving' }
-  | { readonly status: 'saved' };
+  | { readonly status: 'saved'; readonly scriptInjected: boolean; readonly widgetKey: string };
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -128,7 +128,15 @@ export default function WixSettingsPage(): React.ReactElement {
         setState({ status: 'error', message });
         return;
       }
-      setState({ status: 'saved' });
+      const resBody: unknown = await res.json().catch(() => null);
+      const data = typeof resBody === 'object' && resBody !== null && 'data' in resBody
+        ? (resBody as Record<string, unknown>).data as Record<string, unknown>
+        : null;
+      const scriptInjected = data !== null && data['scriptInjected'] === true;
+      const widgetKey = data !== null && typeof data['widgetKey'] === 'string'
+        ? data['widgetKey'] as string
+        : '';
+      setState({ status: 'saved', scriptInjected, widgetKey });
     } catch {
       setState({ status: 'error', message: 'Network error. Check your connection and try again.' });
     }
@@ -410,10 +418,39 @@ export default function WixSettingsPage(): React.ReactElement {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="font-display text-2xl font-semibold text-ink">Widget connected.</h2>
-            <p className="mt-2 text-sm text-stone">
-              The qualifying flow will appear on your Wix site within 60 seconds. Every submission will be scored and delivered to your dashboard.
-            </p>
+            <h2 className="font-display text-2xl font-semibold text-ink">Widget selected.</h2>
+            {state.scriptInjected ? (
+              <p className="mt-2 text-sm text-stone">
+                The qualifying flow will appear on your Wix site within 60 seconds.
+                Every submission will be scored and delivered to your dashboard.
+              </p>
+            ) : (
+              <div className="mt-4 text-left">
+                <p className="text-sm text-stone mb-3">
+                  Add this code to your Wix site to show the widget. In your Wix Editor, go to
+                  Settings &gt; Custom Code &gt; Add Custom Code, paste the snippet below, and set it to load on all pages in the body end.
+                </p>
+                <div className="relative">
+                  <pre className="bg-ink text-white text-xs p-4 rounded-md overflow-x-auto font-mono leading-relaxed">
+{`<script
+  src="https://cdn.hawkleads.io/v1/sb.js"
+  data-widget-key="${state.widgetKey}"
+  defer
+></script>`}
+                  </pre>
+                  <button
+                    type="button"
+                    className="absolute top-2 right-2 text-xs text-white/60 hover:text-white bg-white/10 rounded px-2 py-1 transition-colors duration-fast"
+                    onClick={() => {
+                      const snippet = `<script\n  src="https://cdn.hawkleads.io/v1/sb.js"\n  data-widget-key="${state.widgetKey}"\n  defer\n></script>`;
+                      void navigator.clipboard.writeText(snippet);
+                    }}
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
             <div className="mt-6 flex justify-center gap-4">
               <Link
                 href="/dashboard"

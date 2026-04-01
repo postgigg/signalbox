@@ -41,7 +41,10 @@ export default function LandingPage(): React.ReactElement {
             <h1 className="font-display text-5xl font-semibold text-ink leading-tight">
               Your competitor is calling your best leads first.
             </h1>
-            <p className="mt-6 text-lg text-stone leading-relaxed max-w-[520px]">
+            <p className="mt-4 text-base text-stone leading-relaxed max-w-[520px]">
+              Even if you only get two leads a week, knowing their budget and timeline before you dial changes everything.
+            </p>
+            <p className="mt-3 text-lg text-stone leading-relaxed max-w-[520px]">
               Know the budget, timeline, and intent of every lead before you pick up the phone.
               The ones worth $10k get a call in minutes. The rest can wait.
             </p>

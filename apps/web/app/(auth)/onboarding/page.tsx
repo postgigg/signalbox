@@ -1,9 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
+
+import { TRIAL_DURATION_DAYS } from '@/lib/constants';
+import { getPlanLimits } from '@/lib/plan-limits';
 
 import type { FormEvent } from 'react';
+import type { Plan } from '@/lib/supabase/types';
 
 const STEP_LABELS = ['Account', 'Template', 'Widget'] as const;
 
@@ -24,7 +28,18 @@ function stepIndex(step: StepKey): number {
 }
 
 export default function OnboardingPage(): React.ReactElement {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[400px]"><span className="spinner w-6 h-6" /></div>}>
+      <OnboardingForm />
+    </Suspense>
+  );
+}
+
+function OnboardingForm(): React.ReactElement {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedPlan: Plan = searchParams.get('plan') === 'free' ? 'free' : 'trial';
+  const wixInstance = searchParams.get('wix_instance') ?? '';
 
   const [step, setStep] = useState<StepKey>('account');
   const [accountName, setAccountName] = useState('');
@@ -77,6 +92,14 @@ export default function OnboardingPage(): React.ReactElement {
       const suffix = Math.random().toString(36).slice(2, 8);
       const slug = `${baseSlug}-${suffix}`;
 
+      const isFree = requestedPlan === 'free';
+      let trialEndsAt: string | null = null;
+      if (!isFree) {
+        const d = new Date();
+        d.setDate(d.getDate() + TRIAL_DURATION_DAYS);
+        trialEndsAt = d.toISOString();
+      }
+
       const { data: account, error: accountError } = await supabase
         .from('accounts')
         .insert({
@@ -84,6 +107,9 @@ export default function OnboardingPage(): React.ReactElement {
           slug,
           owner_id: user.id,
           notification_email: user.email,
+          plan: requestedPlan,
+          subscription_status: isFree ? 'active' : 'trialing',
+          trial_ends_at: trialEndsAt,
         })
         .select('id')
         .single();
@@ -109,12 +135,16 @@ export default function OnboardingPage(): React.ReactElement {
         return;
       }
 
+      const planLimits = getPlanLimits(requestedPlan);
+      const submissionLimit = planLimits.submissionsPerMonth === -1 ? 999999 : planLimits.submissionsPerMonth;
+
       const { data: widget, error: widgetError } = await supabase
         .from('widgets')
         .insert({
           account_id: account.id,
           name: widgetName.trim() || 'My Widget',
           domain: domain.trim() || null,
+          submission_limit: submissionLimit,
         })
         .select('id')
         .single();
@@ -144,7 +174,11 @@ export default function OnboardingPage(): React.ReactElement {
         }
       }
 
-      router.push(`/dashboard/widgets/${widget.id}/flow`);
+      if (wixInstance) {
+        router.push(`/wix-connected?wix_instance=${encodeURIComponent(wixInstance)}`);
+      } else {
+        router.push(`/dashboard/widgets/${widget.id}/flow`);
+      }
       router.refresh();
     } catch {
       setError('Something went wrong. Please try again.');

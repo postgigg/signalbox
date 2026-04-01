@@ -131,16 +131,35 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       redirectPath = next;
   }
 
-  // If user came from Wix, redirect to wix-connected page to link the account
+  // If user came from Wix, redirect based on whether they need onboarding
   const wixInstance = searchParams.get('wix_instance')
     ?? cookieStore.get('hawkleads_wix_instance')?.value
     ?? null;
 
+  const plan = searchParams.get('plan')
+    ?? cookieStore.get('hawkleads_plan')?.value
+    ?? null;
+
   if (wixInstance && redirectPath !== '/reset-password') {
+    // Clear cookies
+    cookieStore.set('hawkleads_wix_instance', '', { path: '/', maxAge: 0 });
+    if (plan) {
+      cookieStore.set('hawkleads_plan', '', { path: '/', maxAge: 0 });
+    }
+
+    if (redirectPath === '/onboarding') {
+      // New user — send to onboarding with wix + plan params
+      const onboardingUrl = new URL('/onboarding', origin);
+      onboardingUrl.searchParams.set('wix_instance', decodeURIComponent(wixInstance));
+      if (plan) {
+        onboardingUrl.searchParams.set('plan', plan);
+      }
+      return NextResponse.redirect(onboardingUrl);
+    }
+
+    // Existing user — link account via wix-connected
     const wixUrl = new URL('/wix-connected', origin);
     wixUrl.searchParams.set('wix_instance', decodeURIComponent(wixInstance));
-    // Clear the cookie
-    cookieStore.set('hawkleads_wix_instance', '', { path: '/', maxAge: 0 });
     return NextResponse.redirect(wixUrl);
   }
 

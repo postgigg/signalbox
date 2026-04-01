@@ -226,6 +226,7 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
     data: {
       instanceId,
       widgetId,
+      widgetKey: widget.widget_key,
       scriptInjected,
     },
   });
