@@ -531,25 +531,54 @@ class HawkLeadsWidget {
 
 // ── IIFE Bootstrap ─────────────────────────────────────────────────────────
 (function () {
+  // Read config from data attributes on the current script tag as fallback.
+  // This supports <script src="sb.js" data-widget-key="KEY" data-api-url="URL">
+  // used by Wix and other platform integrations.
+  function readScriptAttrs(): { key: string; apiUrl: string } | null {
+    const scripts = document.querySelectorAll('script[data-widget-key]');
+    const el = scripts[scripts.length - 1];
+    if (!el) return null;
+    const key = el.getAttribute('data-widget-key');
+    if (!key) return null;
+    return { key, apiUrl: el.getAttribute('data-api-url') ?? '' };
+  }
+
   // Wait for DOM to be ready
   function boot(): void {
-    const config = window.HawkLeadsConfig;
-    if (!config || !config.key) {
-      return;
-    }
-
+    let key: string;
     let apiUrl = DEFAULT_API_URL;
-    if (config.apiUrl) {
-      try {
-        const parsed = new URL(config.apiUrl);
-        if (parsed.protocol === 'https:') {
-          apiUrl = config.apiUrl;
+
+    const config = window.HawkLeadsConfig;
+    if (config?.key) {
+      key = config.key;
+      if (config.apiUrl) {
+        try {
+          const parsed = new URL(config.apiUrl);
+          if (parsed.protocol === 'https:') {
+            apiUrl = config.apiUrl;
+          }
+        } catch {
+          // Invalid URL, use default
         }
-      } catch {
-        // Invalid URL, use default
+      }
+    } else {
+      // Fallback: read from script tag data attributes
+      const attrs = readScriptAttrs();
+      if (!attrs) return;
+      key = attrs.key;
+      if (attrs.apiUrl) {
+        try {
+          const parsed = new URL(attrs.apiUrl);
+          if (parsed.protocol === 'https:') {
+            apiUrl = attrs.apiUrl;
+          }
+        } catch {
+          // Invalid URL, use default
+        }
       }
     }
-    const widget = new HawkLeadsWidget(config.key, apiUrl);
+
+    const widget = new HawkLeadsWidget(key, apiUrl);
     widget.start();
   }
 
