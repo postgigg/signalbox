@@ -7,6 +7,7 @@ import { ConversionRateChart, SubmissionsChart } from '@/components/dashboard/An
 import { TierBreakdown } from '@/components/dashboard/TierBreakdown';
 import { AdvancedSection } from '@/components/dashboard/AdvancedAnalytics';
 import { AnalyticsSkeleton } from '@/components/dashboard/AnalyticsSkeleton';
+import { StepFunnel } from '@/components/dashboard/StepFunnel';
 
 import type { AnalyticsData, AdvancedData } from './types';
 
@@ -131,7 +132,7 @@ export default function AnalyticsPage(): React.ReactElement {
       prevFromDate.setDate(fromDate.getDate() - dateRange);
       const prevFromStr = prevFromDate.toISOString().split('T')[0] ?? '';
 
-      const selectFields = 'date, impressions, opens, completions, submissions, hot_count, warm_count, cold_count, avg_score, step_1_views, step_2_views, step_3_views, step_4_views, step_5_views';
+      const selectFields = 'date, impressions, opens, completions, submissions, hot_count, warm_count, cold_count, avg_score, step_1_views, step_2_views, step_3_views, step_4_views, step_5_views, step_1_abandons, step_2_abandons, step_3_abandons, step_4_abandons, step_5_abandons';
 
       let currentQuery = supabase
         .from('widget_analytics')
@@ -246,6 +247,17 @@ export default function AnalyticsPage(): React.ReactElement {
             ) : (
               <ConversionFunnel steps={funnelSteps} avgScore={current.avgScore} />
             )}
+          </div>
+
+          <div className="mt-8">
+            <h2 className="font-display text-lg font-semibold text-ink mb-4">Question Funnel</h2>
+            <StepFunnel
+              steps={[1, 2, 3, 4, 5].map((n) => ({
+                label: `Step ${n}`,
+                views: data.reduce((s, d) => s + (d[`step_${n}_views` as keyof AnalyticsData] as number), 0),
+                abandons: data.reduce((s, d) => s + (d[`step_${n}_abandons` as keyof AnalyticsData] as number), 0),
+              })).filter((s) => s.views > 0)}
+            />
           </div>
 
           <div className="mt-8">

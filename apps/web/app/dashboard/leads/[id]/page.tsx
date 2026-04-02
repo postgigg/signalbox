@@ -77,6 +77,16 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
 
   const scoreHistory: ScoreHistoryRow[] = (scoreHistoryData as ScoreHistoryRow[] | null) ?? [];
 
+  // Fetch linked submissions (same email, different records)
+  const { data: linkedSubmissions } = await supabase
+    .from('submissions')
+    .select('id, visitor_name, lead_score, lead_tier, created_at')
+    .eq('account_id', submission.account_id)
+    .eq('visitor_email', submission.visitor_email)
+    .neq('id', id)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
   // Fetch behavioral insights from visitor_sessions
   let behavioralInsights: BehavioralInsightsData | null = null;
   const { data: visitorSession } = await supabase
@@ -304,6 +314,36 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
               <p className="text-sm text-stone leading-relaxed">
                 {submission.visitor_message}
               </p>
+            </div>
+          )}
+
+          {/* Previous Submissions */}
+          {linkedSubmissions && linkedSubmissions.length > 0 && (
+            <div className="card">
+              <h2 className="font-display text-lg font-semibold text-ink mb-4">
+                Previous Submissions
+              </h2>
+              <p className="text-xs text-stone mb-3">
+                This visitor has submitted {linkedSubmissions.length} other {linkedSubmissions.length === 1 ? 'time' : 'times'}.
+              </p>
+              <div className="space-y-2">
+                {linkedSubmissions.map((linked) => (
+                  <Link
+                    key={linked.id}
+                    href={`/dashboard/leads/${linked.id}`}
+                    className="flex items-center justify-between py-2 px-3 rounded-sm border border-border hover:bg-surface-alt transition-colors duration-fast"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium text-ink">{linked.visitor_name}</span>
+                      <TierBadge tier={linked.lead_tier} />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm text-stone">{linked.lead_score}</span>
+                      <span className="text-xs text-stone">{new Date(linked.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>

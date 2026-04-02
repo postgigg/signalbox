@@ -195,7 +195,6 @@ export interface RendererCallbacks {
 // ── Widget Renderer ────────────────────────────────────────────────────────
 export class WidgetRenderer {
   private shadow: ShadowRoot;
-  private host: HTMLElement;
   private config: WidgetConfig | null = null;
   private callbacks: RendererCallbacks;
 
@@ -214,7 +213,6 @@ export class WidgetRenderer {
   private boundKeyHandler: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(host: HTMLElement, callbacks: RendererCallbacks) {
-    this.host = host;
     this.callbacks = callbacks;
     this.shadow = host.attachShadow({ mode: 'open' });
   }
@@ -280,9 +278,16 @@ export class WidgetRenderer {
     }
   }
 
+  // Flag for return visitor welcome
+  private returnVisitor = false;
+
   // ── Open Panel ───────────────────────────────────────────────────────
-  openPanel(stepIndex: number, totalSteps: number): void {
+  openPanel(stepIndex: number, totalSteps: number, returnVisitor?: boolean): void {
     if (!this.config) return;
+
+    if (returnVisitor !== undefined) {
+      this.returnVisitor = returnVisitor;
+    }
 
     this.hideTrigger();
     this.showOverlay();
@@ -447,6 +452,14 @@ export class WidgetRenderer {
     const buildStep = () => {
       const wrapper = el('div', 'sb-step');
 
+      // Show welcome back message for return visitors on first step
+      if (stepIndex === 0 && this.returnVisitor) {
+        const welcomeBack = el('p', 'sb-welcome-back');
+        welcomeBack.textContent = 'Welcome back!';
+        welcomeBack.style.cssText = 'font-size: 13px; color: #3B82F6; font-weight: 600; margin: 0 0 8px; padding: 0;';
+        wrapper.appendChild(welcomeBack);
+      }
+
       const question = el('h2', 'sb-question');
       question.textContent = step.question;
       wrapper.appendChild(question);
@@ -464,6 +477,8 @@ export class WidgetRenderer {
 
       for (let i = 0; i < step.options.length; i++) {
         const opt = step.options[i];
+        if (!opt) continue;
+
         const btn = el('button', 'sb-option', {
           type: 'button',
           role: 'radio',
@@ -486,15 +501,18 @@ export class WidgetRenderer {
         label.textContent = opt.label;
         btn.appendChild(label);
 
+        const optionId = opt.id;
+        const optionLabel = opt.label;
+        const optionScore = opt.scoreWeight;
         btn.addEventListener('click', () => {
           animateOptionTap(btn);
           // Brief delay to let the tap animation be visible
           setTimeout(() => {
             this.callbacks.onOptionSelect(
               step.id,
-              opt.id,
-              opt.label,
-              opt.scoreWeight
+              optionId,
+              optionLabel,
+              optionScore
             );
           }, 120);
         });
@@ -1109,15 +1127,59 @@ export class WidgetRenderer {
       this.shadow.appendChild(styleEl);
     }
 
-    const wrapper = el('div', 'sb-panel', {
+    const wrapper = el('div', '', {
       role: 'status',
-      style: 'position: fixed; bottom: 24px; right: 24px; z-index: 2147483647; padding: 20px; max-width: 320px;',
+      style: [
+        'position: fixed',
+        'bottom: 24px',
+        'right: 24px',
+        'z-index: 2147483647',
+        'width: 300px',
+        'background: #ffffff',
+        'border: 1px solid #E2E8F0',
+        'border-radius: 12px',
+        'box-shadow: 0 4px 12px rgba(0,0,0,0.08)',
+        'padding: 24px',
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        'text-align: center',
+        'pointer-events: auto',
+      ].join('; '),
     });
 
-    const msg = el('p', '', {
-      style: 'font-size: 14px; opacity: 0.7; line-height: 1.5; text-align: center; margin: 0;',
+    const icon = el('div', '', {
+      style: [
+        'width: 40px',
+        'height: 40px',
+        'margin: 0 auto 12px',
+        'background: #F1F5F9',
+        'border-radius: 50%',
+        'display: flex',
+        'align-items: center',
+        'justify-content: center',
+      ].join('; '),
     });
-    msg.textContent = 'Please contact us directly';
+    const iconSvg = createSvg(
+      '0 0 24 24',
+      svgPath(
+        'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z',
+        { fill: 'none', stroke: '#64748B', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }
+      )
+    );
+    iconSvg.setAttribute('width', '20');
+    iconSvg.setAttribute('height', '20');
+    icon.appendChild(iconSvg);
+    wrapper.appendChild(icon);
+
+    const heading = el('p', '', {
+      style: 'font-size: 15px; font-weight: 600; color: #1E293B; margin: 0 0 4px; line-height: 1.4;',
+    });
+    heading.textContent = 'Widget temporarily unavailable';
+    wrapper.appendChild(heading);
+
+    const msg = el('p', '', {
+      style: 'font-size: 13px; color: #64748B; margin: 0; line-height: 1.5;',
+    });
+    msg.textContent = 'Please contact us directly for assistance.';
     wrapper.appendChild(msg);
 
     this.shadow.appendChild(wrapper);

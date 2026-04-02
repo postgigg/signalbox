@@ -13,6 +13,11 @@ export interface AnalyticsData {
   step_3_views: number;
   step_4_views: number;
   step_5_views: number;
+  step_1_abandons: number;
+  step_2_abandons: number;
+  step_3_abandons: number;
+  step_4_abandons: number;
+  step_5_abandons: number;
 }
 
 export interface AdvancedData {

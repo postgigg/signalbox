@@ -365,6 +365,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  // 15a. Lead deduplication: link to prior submission with same email + account
+  const { data: priorSubmission } = await admin
+    .from('submissions')
+    .select('id')
+    .eq('account_id', account.id)
+    .eq('visitor_email', payload.visitorEmail)
+    .neq('id', submission.id)
+    .order('created_at', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (priorSubmission) {
+    await admin
+      .from('submissions')
+      .update({ linked_submission_id: priorSubmission.id })
+      .eq('id', submission.id);
+  }
+
   // 15b. Update A/B test results if applicable
   if (payload.abTestId && payload.abVariant) {
     const today = new Date().toISOString().split('T')[0]!;

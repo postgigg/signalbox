@@ -90,7 +90,7 @@ export default async function handler(): Promise<void> {
     .select('*, widgets!inner(account_id, name), accounts!inner(notification_email, name)')
     .eq('lead_tier', 'hot')
     .eq('status', 'new')
-    .eq('notification_sent', false)
+    .eq('followup_sent', false)
     .lt('created_at', oneHourAgo)
     .limit(BATCH_SIZE);
 
@@ -130,8 +130,8 @@ export default async function handler(): Promise<void> {
       const { error: updateError } = await supabase
         .from('submissions')
         .update({
-          notification_sent: true,
-          notification_sent_at: new Date().toISOString(),
+          followup_sent: true,
+          followup_sent_at: new Date().toISOString(),
         })
         .eq('id', lead.id);
 

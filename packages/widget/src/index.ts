@@ -4,7 +4,6 @@ import type {
   SubmitPayload,
   ConfirmationConfig,
   ValidationErrors,
-  AbTestConfig,
   FlowStep,
 } from './types';
 import { WidgetStateMachine } from './state';
@@ -267,7 +266,8 @@ class HawkLeadsWidget {
     if (!config || config.steps.length === 0) return;
 
     const totalSteps = config.steps.length;
-    this.renderer.openPanel(0, totalSteps);
+    const isReturnVisitor = this.tracker !== null && this.tracker.getSessionData().sessionNumber > 1;
+    this.renderer.openPanel(0, totalSteps, isReturnVisitor);
     this.stepDirection = 'forward';
     trackEvent(this.apiUrl, this.widgetKey, 'step_view', 0, this.abTestId, this.abVariant);
     this.renderCurrentView();
@@ -276,6 +276,11 @@ class HawkLeadsWidget {
   private handleClose(): void {
     const state = this.machine.getState();
     if (state === 'open' || state === 'complete' || state === 'error') {
+      // Track abandonment if closing mid-flow (not on complete/error)
+      if (state === 'open') {
+        const ctx = this.machine.getContext();
+        trackEvent(this.apiUrl, this.widgetKey, 'step_abandon', ctx.currentStepIndex, this.abTestId, this.abVariant);
+      }
       this.renderer.closePanel();
       if (state === 'complete') {
         this.machine.reset();

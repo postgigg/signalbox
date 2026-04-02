@@ -32,6 +32,9 @@
 [functions.process-drip-emails]
   schedule = "*/5 * * * *"
 
+[functions.send-weekly-digest]
+  schedule = "0 9 * * 1"
+
 [[headers]]
   for = "/api/v1/widget/*"
   [headers.values]

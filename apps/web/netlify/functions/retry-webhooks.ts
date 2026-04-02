@@ -210,13 +210,16 @@ export default async function handler(): Promise<void> {
   const resend = createResendClient();
   const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
 
-  // Find webhook endpoints that have failed but are still retryable
+  // Find webhook endpoints that have failed but are still retryable,
+  // and whose backoff window has passed
+  const now = new Date().toISOString();
   const { data: failingEndpoints, error: endpointsError } = await supabase
     .from('webhook_endpoints')
     .select('*')
     .eq('is_active', true)
     .gt('failure_count', 0)
-    .lt('failure_count', MAX_FAILURE_COUNT);
+    .lt('failure_count', MAX_FAILURE_COUNT)
+    .or(`next_retry_at.is.null,next_retry_at.lte.${now}`);
 
   if (endpointsError) {
     console.error('[retry-webhooks] Failed to query failing endpoints:', endpointsError.message);
@@ -296,6 +299,7 @@ export default async function handler(): Promise<void> {
               last_triggered_at: new Date().toISOString(),
               last_status_code: response.status,
               failure_count: 0,
+              next_retry_at: null,
             })
             .eq('id', endpoint.id);
 
@@ -304,16 +308,20 @@ export default async function handler(): Promise<void> {
           break;
         } else {
           const newFailureCount = endpoint.failure_count + 1;
+          const backoffSeconds = Math.pow(2, newFailureCount) * 60;
+          const nextRetryAt = new Date(Date.now() + backoffSeconds * 1000).toISOString();
 
           const updateData: Database['public']['Tables']['webhook_endpoints']['Update'] = {
             last_triggered_at: new Date().toISOString(),
             last_status_code: response.status,
             failure_count: newFailureCount,
+            next_retry_at: nextRetryAt,
           };
 
           // Deactivate if max failures reached
           if (newFailureCount >= MAX_FAILURE_COUNT) {
             updateData.is_active = false;
+            updateData.next_retry_at = null;
           }
 
           await supabase
@@ -339,15 +347,19 @@ export default async function handler(): Promise<void> {
         }
       } catch (err) {
         const newFailureCount = endpoint.failure_count + 1;
+        const backoffSeconds = Math.pow(2, newFailureCount) * 60;
+        const nextRetryAt = new Date(Date.now() + backoffSeconds * 1000).toISOString();
 
         const updateData: Database['public']['Tables']['webhook_endpoints']['Update'] = {
           last_triggered_at: new Date().toISOString(),
           last_status_code: 0,
           failure_count: newFailureCount,
+          next_retry_at: nextRetryAt,
         };
 
         if (newFailureCount >= MAX_FAILURE_COUNT) {
           updateData.is_active = false;
+          updateData.next_retry_at = null;
         }
 
         await supabase

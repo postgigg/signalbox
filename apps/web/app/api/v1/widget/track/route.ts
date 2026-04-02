@@ -8,7 +8,7 @@ import { configLimit, checkRateLimit } from '@/lib/rate-limit';
 
 const trackSchema = z.object({
   widgetKey: z.string().min(1).max(48),
-  event: z.enum(['impression', 'open', 'step_view', 'completion']),
+  event: z.enum(['impression', 'open', 'step_view', 'completion', 'step_abandon']),
   stepIndex: z.number().int().min(0).max(4).optional(),
   abTestId: z.string().uuid().optional(),
   abVariant: z.enum(['a', 'b']).optional(),
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const { data: existing } = await admin
     .from('widget_analytics')
-    .select('id, impressions, opens, completions, step_1_views, step_2_views, step_3_views, step_4_views, step_5_views')
+    .select('id, impressions, opens, completions, step_1_views, step_2_views, step_3_views, step_4_views, step_5_views, step_1_abandons, step_2_abandons, step_3_abandons, step_4_abandons, step_5_abandons')
     .eq('widget_id', widget.id)
     .eq('date', today)
     .maybeSingle();
@@ -82,6 +82,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
         break;
       }
+      case 'step_abandon': {
+        const abandonStepNum = (stepIndex ?? 0) + 1;
+        const abandonColName = `step_${String(abandonStepNum)}_abandons`;
+        if (abandonStepNum >= 1 && abandonStepNum <= 5) {
+          const current = existing[abandonColName as 'step_1_abandons' | 'step_2_abandons' | 'step_3_abandons' | 'step_4_abandons' | 'step_5_abandons'];
+          updates[abandonColName] = (current ?? 0) + 1;
+        }
+        break;
+      }
     }
 
     if (Object.keys(updates).length > 0) {
@@ -92,6 +101,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   } else {
     const stepNum = event === 'step_view' ? (stepIndex ?? 0) + 1 : 0;
+    const abandonStepNum = event === 'step_abandon' ? (stepIndex ?? 0) + 1 : 0;
 
     await admin.from('widget_analytics').insert({
       widget_id: widget.id,
@@ -105,6 +115,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       step_3_views: stepNum === 3 ? 1 : 0,
       step_4_views: stepNum === 4 ? 1 : 0,
       step_5_views: stepNum === 5 ? 1 : 0,
+      step_1_abandons: abandonStepNum === 1 ? 1 : 0,
+      step_2_abandons: abandonStepNum === 2 ? 1 : 0,
+      step_3_abandons: abandonStepNum === 3 ? 1 : 0,
+      step_4_abandons: abandonStepNum === 4 ? 1 : 0,
+      step_5_abandons: abandonStepNum === 5 ? 1 : 0,
     });
   }
 

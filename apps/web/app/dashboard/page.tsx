@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { ConversionFunnel } from '@/components/dashboard/ConversionFunnel';
+import { OnboardingChecklist } from '@/components/dashboard/OnboardingChecklist';
 import { HelpTip } from '@/components/shared/HelpTip';
 import { HELP_TIPS } from '@/lib/help-content';
 import { createClient } from '@/lib/supabase/server';
@@ -57,6 +58,9 @@ export default async function DashboardOverviewPage(): Promise<React.ReactElemen
   let avgScore = 0;
   let avgResponseTime = '-';
   let funnelData = { opens: 0, step1: 0, step2: 0, step3: 0, submitted: 0 };
+  let widgetCount = 0;
+  let hasFlow = false;
+  let onboardingCompleted = false;
   let recentHotLeads: Array<{
     id: string;
     visitor_name: string;
@@ -76,6 +80,34 @@ export default async function DashboardOverviewPage(): Promise<React.ReactElemen
 
     if (memberData) {
       const accountId = memberData.account_id;
+
+      // Check onboarding status and widget count for checklist
+      const { data: accountData } = await supabase
+        .from('accounts')
+        .select('onboarding_completed_at')
+        .eq('id', accountId)
+        .single();
+
+      onboardingCompleted = accountData?.onboarding_completed_at !== null && accountData?.onboarding_completed_at !== undefined;
+
+      const { count: wCount } = await supabase
+        .from('widgets')
+        .select('id', { count: 'exact', head: true })
+        .eq('account_id', accountId)
+        .eq('is_active', true);
+
+      widgetCount = wCount ?? 0;
+
+      // Check if any widget has a flow with steps
+      if (widgetCount > 0) {
+        const { count: flowCount } = await supabase
+          .from('flows')
+          .select('id', { count: 'exact', head: true })
+          .eq('account_id', accountId)
+          .gt('version', 0);
+
+        hasFlow = (flowCount ?? 0) > 0;
+      }
 
       const { count: totalCount } = await supabase
         .from('submissions')
@@ -164,6 +196,17 @@ export default async function DashboardOverviewPage(): Promise<React.ReactElemen
   return (
     <div>
       <h1 className="page-heading">Overview</h1>
+
+      {/* Onboarding Checklist — shown for new accounts */}
+      {!onboardingCompleted && (
+        <div className="mt-6">
+          <OnboardingChecklist
+            widgetCount={widgetCount}
+            hasFlow={hasFlow}
+            submissionCount={totalLeads}
+          />
+        </div>
+      )}
 
       {/* Stat Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

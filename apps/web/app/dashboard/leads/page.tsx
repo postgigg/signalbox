@@ -54,6 +54,8 @@ function StatusBadge({ status }: { readonly status: string }): React.ReactElemen
   );
 }
 
+const BULK_STATUS_OPTIONS = ['new', 'viewed', 'contacted', 'qualified', 'disqualified', 'converted', 'archived'] as const;
+
 export default function LeadsPage(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -71,6 +73,8 @@ export default function LeadsPage(): React.ReactElement {
   const [totalCount, setTotalCount] = useState(0);
   const [accountPlan, setAccountPlan] = useState<string>('');
   const [gatedStats, setGatedStats] = useState<GatedStats>({ count: 0, hotCount: 0 });
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   const fetchLeads = useCallback(async (): Promise<void> => {
     setLoading(true);
@@ -176,9 +180,56 @@ export default function LeadsPage(): React.ReactElement {
     setPage(0);
   }
 
+  function toggleSelect(id: string): void {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  function toggleSelectAll(): void {
+    const selectableIds = leads.filter((l) => !(isFreePlan && l.gated)).map((l) => l.id);
+    const allSelected = selectableIds.length > 0 && selectableIds.every((id) => selectedIds.has(id));
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(selectableIds));
+    }
+  }
+
+  async function executeBulkAction(action: string, payload?: Record<string, unknown>): Promise<void> {
+    if (selectedIds.size === 0) return;
+    setBulkLoading(true);
+    try {
+      const response = await fetch('/api/v1/leads/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ids: Array.from(selectedIds),
+          action,
+          payload,
+        }),
+      });
+      if (response.ok) {
+        setSelectedIds(new Set());
+        void fetchLeads();
+      }
+    } catch {
+      // Bulk action failed
+    } finally {
+      setBulkLoading(false);
+    }
+  }
+
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const isFreePlan = accountPlan === 'free';
   const showGatedBanner = isFreePlan && gatedStats.count > 0;
+  const hasSelection = selectedIds.size > 0;
 
   return (
     <div>
@@ -282,6 +333,48 @@ export default function LeadsPage(): React.ReactElement {
         Every submission is here. Scoring sorts them by priority. Nothing is deleted or hidden.
       </p>
 
+      {/* Bulk action bar */}
+      {hasSelection && (
+        <div className="mt-4 bg-ink text-white rounded-md px-5 py-3 flex items-center justify-between sticky top-0 z-10">
+          <span className="text-sm font-medium">{selectedIds.size} selected</span>
+          <div className="flex items-center gap-2">
+            <select
+              onChange={(e) => {
+                if (e.target.value) {
+                  void executeBulkAction('status_change', { status: e.target.value });
+                  e.target.value = '';
+                }
+              }}
+              disabled={bulkLoading}
+              className="h-8 px-2 rounded-sm text-xs bg-white text-ink border-0"
+              aria-label="Change status"
+            >
+              <option value="">Change status...</option>
+              {BULK_STATUS_OPTIONS.map((s) => (
+                <option key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => void executeBulkAction('archive')}
+              disabled={bulkLoading}
+              className="h-8 px-3 rounded-sm text-xs bg-white/20 hover:bg-white/30 transition-colors duration-fast"
+            >
+              Archive
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedIds(new Set())}
+              className="h-8 px-3 rounded-sm text-xs bg-white/10 hover:bg-white/20 transition-colors duration-fast"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Table inside card */}
       <div className="mt-4 bg-surface border border-border rounded-md overflow-hidden">
         {loading ? (
@@ -313,6 +406,15 @@ export default function LeadsPage(): React.ReactElement {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface-alt">
+                  <th className="py-3 px-3 w-10">
+                    <input
+                      type="checkbox"
+                      onChange={toggleSelectAll}
+                      checked={leads.filter((l) => !(isFreePlan && l.gated)).length > 0 && leads.filter((l) => !(isFreePlan && l.gated)).every((l) => selectedIds.has(l.id))}
+                      className="rounded-sm"
+                      aria-label="Select all"
+                    />
+                  </th>
                   <th className="text-left py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">Name</th>
                   <th className="text-left py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">Email</th>
                   <th className="text-right py-3 px-5 text-xs font-medium uppercase tracking-wide text-stone">
@@ -365,6 +467,17 @@ export default function LeadsPage(): React.ReactElement {
                         }
                       }}
                     >
+                      <td className="py-3.5 px-3 w-10" onClick={(e) => e.stopPropagation()}>
+                        {!isGated && (
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(lead.id)}
+                            onChange={() => toggleSelect(lead.id)}
+                            className="rounded-sm"
+                            aria-label={`Select ${lead.visitor_name}`}
+                          />
+                        )}
+                      </td>
                       <td className="py-3.5 px-5 font-medium text-ink whitespace-nowrap">
                         {isGated ? (
                           <span className="select-none" style={{ filter: 'blur(4px)' }}>

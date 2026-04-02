@@ -87,18 +87,18 @@ function buildTrialExpiredHtml(account: AccountRow): string {
   `;
 }
 
-async function processTrialEndingSoon(
+async function processTrialEndingWindow(
   supabase: SupabaseClient<Database>,
   resend: Resend,
   fromAddress: string,
+  targetDays: number,
 ): Promise<{ sent: number; failed: number }> {
   let sent = 0;
   let failed = 0;
 
-  // Find accounts whose trial ends in approximately 3 days (between 2.5 and 3.5 days from now)
-  const threeDaysFromNow = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-  const windowStart = new Date(threeDaysFromNow.getTime() - 12 * 60 * 60 * 1000).toISOString();
-  const windowEnd = new Date(threeDaysFromNow.getTime() + 12 * 60 * 60 * 1000).toISOString();
+  const targetTime = new Date(Date.now() + targetDays * 24 * 60 * 60 * 1000);
+  const windowStart = new Date(targetTime.getTime() - 12 * 60 * 60 * 1000).toISOString();
+  const windowEnd = new Date(targetTime.getTime() + 12 * 60 * 60 * 1000).toISOString();
 
   let offset = 0;
   let hasMore = true;
@@ -116,7 +116,7 @@ async function processTrialEndingSoon(
       .range(offset, offset + BATCH_SIZE - 1);
 
     if (error) {
-      console.error('[check-trial-expirations] Failed to query trial-ending-soon accounts:', error.message);
+      console.error(`[check-trial-expirations] Failed to query trial-ending-soon accounts (${targetDays}d):`, error.message);
       break;
     }
 
@@ -127,21 +127,20 @@ async function processTrialEndingSoon(
 
     for (const account of accounts) {
       if (!account.notification_email) {
-        // Look up the owner's email from the members table or skip
         console.warn(`[check-trial-expirations] No notification email for account ${account.id}, skipping`);
         continue;
       }
 
       try {
-        const trialEndsAt = new Date(account.trial_ends_at!);
+        const trialEndsAt = new Date(account.trial_ends_at as string);
         const daysLeft = Math.ceil((trialEndsAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000));
 
         await resend.emails.send({
           from: fromAddress,
           to: account.notification_email,
-          subject: `Your HawkLeads trial ends in ${daysLeft} days`,
+          subject: `Your HawkLeads trial ends in ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`,
           html: buildTrialEndingSoonHtml(account, daysLeft),
-          text: `Your HawkLeads trial for ${account.name} ends in ${daysLeft} days. Upgrade now to keep your lead generation running: ${APP_URL}/settings/billing`,
+          text: `Your HawkLeads trial for ${account.name} ends in ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}. Upgrade now to keep your lead generation running: ${APP_URL}/settings/billing`,
         });
 
         sent++;
@@ -159,6 +158,25 @@ async function processTrialEndingSoon(
   }
 
   return { sent, failed };
+}
+
+async function processTrialEndingSoon(
+  supabase: SupabaseClient<Database>,
+  resend: Resend,
+  fromAddress: string,
+): Promise<{ sent: number; failed: number }> {
+  const windows = [7, 3, 1] as const;
+  let totalSent = 0;
+  let totalFailed = 0;
+
+  for (const days of windows) {
+    const result = await processTrialEndingWindow(supabase, resend, fromAddress, days);
+    totalSent += result.sent;
+    totalFailed += result.failed;
+    console.log(`[check-trial-expirations] ${days}-day window: ${result.sent} sent, ${result.failed} failed`);
+  }
+
+  return { sent: totalSent, failed: totalFailed };
 }
 
 async function processExpiredTrials(

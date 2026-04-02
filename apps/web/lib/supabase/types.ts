@@ -303,6 +303,9 @@ export type Database = {
           ab_test_id: string | null;
           ab_variant: 'a' | 'b' | null;
           gated: boolean;
+          followup_sent: boolean;
+          followup_sent_at: string | null;
+          linked_submission_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -356,6 +359,9 @@ export type Database = {
           ab_test_id?: string | null;
           ab_variant?: 'a' | 'b' | null;
           gated?: boolean;
+          followup_sent?: boolean;
+          followup_sent_at?: string | null;
+          linked_submission_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -409,6 +415,9 @@ export type Database = {
           ab_test_id?: string | null;
           ab_variant?: 'a' | 'b' | null;
           gated?: boolean;
+          followup_sent?: boolean;
+          followup_sent_at?: string | null;
+          linked_submission_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -464,6 +473,7 @@ export type Database = {
           last_triggered_at: string | null;
           last_status_code: number | null;
           failure_count: number;
+          next_retry_at: string | null;
           created_at: string;
         };
         Insert: {
@@ -476,6 +486,7 @@ export type Database = {
           last_triggered_at?: string | null;
           last_status_code?: number | null;
           failure_count?: number;
+          next_retry_at?: string | null;
           created_at?: string;
         };
         Update: {
@@ -488,6 +499,7 @@ export type Database = {
           last_triggered_at?: string | null;
           last_status_code?: number | null;
           failure_count?: number;
+          next_retry_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -859,6 +871,11 @@ export type Database = {
           step_3_views: number;
           step_4_views: number;
           step_5_views: number;
+          step_1_abandons: number;
+          step_2_abandons: number;
+          step_3_abandons: number;
+          step_4_abandons: number;
+          step_5_abandons: number;
           completions: number;
           submissions: number;
           hot_count: number;
@@ -879,6 +896,11 @@ export type Database = {
           step_3_views?: number;
           step_4_views?: number;
           step_5_views?: number;
+          step_1_abandons?: number;
+          step_2_abandons?: number;
+          step_3_abandons?: number;
+          step_4_abandons?: number;
+          step_5_abandons?: number;
           completions?: number;
           submissions?: number;
           hot_count?: number;
@@ -899,6 +921,11 @@ export type Database = {
           step_3_views?: number;
           step_4_views?: number;
           step_5_views?: number;
+          step_1_abandons?: number;
+          step_2_abandons?: number;
+          step_3_abandons?: number;
+          step_4_abandons?: number;
+          step_5_abandons?: number;
           completions?: number;
           submissions?: number;
           hot_count?: number;
