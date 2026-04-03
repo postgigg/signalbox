@@ -12,7 +12,7 @@ import {
   denormalizeAnswers,
   parseFlowSteps,
 } from '@/lib/scoring';
-import { sendNewLeadNotification, sendLeadAssignedNotification } from '@/lib/email';
+import { sendNewLeadNotification, sendLeadAssignedNotification, sendEmail, renderSubmissionConfirmation } from '@/lib/email';
 import { fireWebhooks } from '@/lib/webhooks';
 import { sendSlackNotification } from '@/lib/slack';
 import { stripHtml } from '@/lib/sanitize';
@@ -696,6 +696,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }).catch(() => {
     // Webhook delivery failure — non-blocking
   });
+
+  // 20. Auto-reply confirmation email to the visitor
+  if (widget.auto_reply_enabled) {
+    const autoReplyAnswers = denormalized as Array<{ question?: string; label?: string }>;
+    const rendered = renderSubmissionConfirmation({
+      visitorName: payload.visitorName,
+      accountName: account.name,
+      widgetName: widget.name,
+      answers: autoReplyAnswers
+        .filter((a): a is { question: string; label: string } =>
+          typeof a.question === 'string' && typeof a.label === 'string'
+        ),
+    });
+
+    sendEmail({
+      to: payload.visitorEmail,
+      subject: rendered.subject,
+      html: rendered.html,
+      text: rendered.text,
+      ...(account.notification_email ? { replyTo: account.notification_email } : {}),
+      tags: [{ name: 'type', value: 'auto_reply' }],
+    }).catch(() => {
+      // Auto-reply delivery failure — non-blocking
+    });
+  }
 
   return corsJson(
     {

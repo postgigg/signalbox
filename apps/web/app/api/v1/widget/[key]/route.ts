@@ -117,6 +117,66 @@ export async function GET(
     .limit(1)
     .maybeSingle();
 
+  // Compute business hours isOpen status
+  let isOpen = true;
+  let offlineMessage = '';
+
+  const businessHours = widget.business_hours as {
+    enabled?: boolean;
+    timezone?: string;
+    schedule?: Record<string, { start: string; end: string } | null>;
+    offlineMessage?: string;
+  } | null;
+
+  if (businessHours?.enabled === true && businessHours.timezone && businessHours.schedule) {
+    try {
+      const now = new Date();
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: businessHours.timezone,
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+
+      const parts = formatter.formatToParts(now);
+      const weekdayPart = parts.find((p) => p.type === 'weekday');
+      const hourPart = parts.find((p) => p.type === 'hour');
+      const minutePart = parts.find((p) => p.type === 'minute');
+
+      if (weekdayPart && hourPart && minutePart) {
+        const dayMap: Record<string, string> = {
+          Sun: 'sun', Mon: 'mon', Tue: 'tue', Wed: 'wed', Thu: 'thu', Fri: 'fri', Sat: 'sat',
+        };
+        const dayKey = dayMap[weekdayPart.value] ?? '';
+        const currentMinutes = parseInt(hourPart.value, 10) * 60 + parseInt(minutePart.value, 10);
+
+        const daySchedule = businessHours.schedule[dayKey];
+
+        if (!daySchedule) {
+          // Day is closed
+          isOpen = false;
+        } else {
+          const [startH, startM] = daySchedule.start.split(':').map(Number);
+          const [endH, endM] = daySchedule.end.split(':').map(Number);
+          const startMinutes = (startH ?? 0) * 60 + (startM ?? 0);
+          const endMinutes = (endH ?? 0) * 60 + (endM ?? 0);
+
+          if (currentMinutes < startMinutes || currentMinutes >= endMinutes) {
+            isOpen = false;
+          }
+        }
+      }
+    } catch {
+      // Timezone or date parsing error, default to open
+      isOpen = true;
+    }
+
+    if (!isOpen && businessHours.offlineMessage) {
+      offlineMessage = businessHours.offlineMessage;
+    }
+  }
+
   const configPayload: Record<string, unknown> = {
     widgetKey: widget.widget_key,
     theme: widget.theme,
@@ -136,6 +196,8 @@ export async function GET(
     socialProofText: widget.social_proof_text ?? '',
     socialProofMin: widget.social_proof_min ?? 0,
     submissionCount: widget.submission_count ?? 0,
+    isOpen,
+    offlineMessage,
   };
 
   // Include A/B test data if there's a running test

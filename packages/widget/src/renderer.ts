@@ -460,6 +460,14 @@ export class WidgetRenderer {
         wrapper.appendChild(welcomeBack);
       }
 
+      // Show offline message if outside business hours
+      if (stepIndex === 0 && this.config && !this.config.isOpen && this.config.offlineMessage) {
+        const offline = el('div', 'sb-offline-msg');
+        offline.style.cssText = 'font-size: 13px; color: #92400E; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 6px; padding: 8px 12px; margin: 0 0 12px; line-height: 1.4;';
+        offline.textContent = this.config.offlineMessage;
+        wrapper.appendChild(offline);
+      }
+
       const question = el('h2', 'sb-question');
       question.textContent = step.question;
       wrapper.appendChild(question);

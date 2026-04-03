@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { CopyButton } from './CopyButton';
 import { LeadSidebar } from './LeadSidebar';
 import { ScoreBreakdown } from './ScoreBreakdown';
+import { ReplyComposer } from './ReplyComposer';
 
 import type { Submission } from '@/lib/supabase/types';
 
@@ -119,6 +120,15 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
       'scoreWeight' in a
   );
 
+  // Fetch account name for reply composer
+  const { data: accountData } = await supabase
+    .from('accounts')
+    .select('name')
+    .eq('id', submission.account_id)
+    .single();
+
+  const accountName = accountData?.name ?? '';
+
   const firstName = submission.visitor_name.split(' ')[0] ?? submission.visitor_name;
   const firstAnswer = answers[0];
   const secondAnswer = answers[1];
@@ -214,7 +224,15 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps): P
             <div className="bg-surface-alt rounded-sm p-4">
               <p className="text-sm text-ink leading-relaxed">{suggestedOpener}</p>
             </div>
-            <CopyButton text={suggestedOpener} />
+            <div className="flex items-center gap-2">
+              <CopyButton text={suggestedOpener} />
+              <ReplyComposer
+                leadId={submission.id}
+                visitorName={submission.visitor_name}
+                accountName={accountName}
+                suggestedOpener={suggestedOpener}
+              />
+            </div>
           </div>
 
           {/* Activity Timeline */}

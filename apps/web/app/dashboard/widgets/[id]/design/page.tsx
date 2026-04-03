@@ -84,6 +84,32 @@ const TRIGGER_TYPE_OPTIONS = [
   { value: 'tab', label: 'Tab' },
 ] as const;
 
+const BH_TIMEZONES = [
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Phoenix',
+  'America/Anchorage',
+  'Pacific/Honolulu',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+  'Australia/Sydney',
+] as const;
+
+const DAY_LABELS: Record<string, string> = {
+  mon: 'Monday',
+  tue: 'Tuesday',
+  wed: 'Wednesday',
+  thu: 'Thursday',
+  fri: 'Friday',
+  sat: 'Saturday',
+  sun: 'Sunday',
+};
+
 export default function WidgetDesignPage(): React.ReactElement {
   const params = useParams();
   const widgetId = typeof params.id === 'string' ? params.id : '';
@@ -91,9 +117,9 @@ export default function WidgetDesignPage(): React.ReactElement {
   const [theme, setTheme] = useState<ThemeConfig>(DEFAULT_THEME);
 
   const [confirmation, setConfirmation] = useState({
-    hot: { headline: 'You are a priority!', body: 'Expect to hear from us within 1 business hour.' },
-    warm: { headline: 'Thanks for reaching out!', body: 'A team member will review your request and get back to you within 24 hours.' },
-    cold: { headline: 'Thanks for your interest!', body: 'We will send you some helpful resources to get started.' },
+    hot: { headline: 'You are a priority!', body: 'Expect to hear from us within 1 business hour.', ctaText: '', ctaUrl: '' },
+    warm: { headline: 'Thanks for reaching out!', body: 'A team member will review your request and get back to you within 24 hours.', ctaText: '', ctaUrl: '' },
+    cold: { headline: 'Thanks for your interest!', body: 'We will send you some helpful resources to get started.', ctaText: '', ctaUrl: '' },
   });
 
   const [saving, setSaving] = useState(false);
@@ -101,6 +127,20 @@ export default function WidgetDesignPage(): React.ReactElement {
   const [loading, setLoading] = useState(true);
   const [canRemoveBranding, setCanRemoveBranding] = useState(false);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
+  const [autoReplyEnabled, setAutoReplyEnabled] = useState(false);
+
+  const [businessHoursEnabled, setBusinessHoursEnabled] = useState(false);
+  const [businessTimezone, setBusinessTimezone] = useState('America/New_York');
+  const [businessSchedule, setBusinessSchedule] = useState<Record<string, { start: string; end: string } | null>>({
+    mon: { start: '09:00', end: '17:00' },
+    tue: { start: '09:00', end: '17:00' },
+    wed: { start: '09:00', end: '17:00' },
+    thu: { start: '09:00', end: '17:00' },
+    fri: { start: '09:00', end: '17:00' },
+    sat: null,
+    sun: null,
+  });
+  const [offlineMessage, setOfflineMessage] = useState('We are currently closed. Leave your details and we will get back to you first thing.');
   const [previewContact, setPreviewContact] = useState(false);
   const [previewConfirmation, setPreviewConfirmation] = useState(false);
   const [previewLayout, setPreviewLayout] = useState(false);
@@ -185,7 +225,7 @@ export default function WidgetDesignPage(): React.ReactElement {
         // Fetch widget theme and confirmation
         const { data: widget } = await supabase
           .from('widgets')
-          .select('theme, confirmation, social_proof_text, social_proof_min, contact_show_phone, contact_phone_required, contact_show_message, contact_message_required, contact_message_placeholder, contact_submit_text')
+          .select('theme, confirmation, social_proof_text, social_proof_min, contact_show_phone, contact_phone_required, contact_show_message, contact_message_required, contact_message_placeholder, contact_submit_text, auto_reply_enabled, business_hours')
           .eq('id', widgetId)
           .eq('account_id', memberData.account_id)
           .single();
@@ -227,20 +267,43 @@ export default function WidgetDesignPage(): React.ReactElement {
             socialProofMinThreshold: widget.social_proof_min ?? prev.socialProofMinThreshold,
           }));
 
-          const savedConfirmation = widget.confirmation as Record<string, { headline?: string; body?: string }> | null;
+          if (typeof widget.auto_reply_enabled === 'boolean') {
+            setAutoReplyEnabled(widget.auto_reply_enabled);
+          }
+
+          const savedBH = widget.business_hours as {
+            enabled?: boolean;
+            timezone?: string;
+            schedule?: Record<string, { start: string; end: string } | null>;
+            offlineMessage?: string;
+          } | null;
+          if (savedBH) {
+            if (typeof savedBH.enabled === 'boolean') setBusinessHoursEnabled(savedBH.enabled);
+            if (savedBH.timezone) setBusinessTimezone(savedBH.timezone);
+            if (savedBH.schedule) setBusinessSchedule(savedBH.schedule);
+            if (savedBH.offlineMessage) setOfflineMessage(savedBH.offlineMessage);
+          }
+
+          const savedConfirmation = widget.confirmation as Record<string, { headline?: string; body?: string; ctaText?: string; ctaUrl?: string }> | null;
           if (savedConfirmation) {
             setConfirmation((prev) => ({
               hot: {
                 headline: savedConfirmation['hot']?.headline ?? prev.hot.headline,
                 body: savedConfirmation['hot']?.body ?? prev.hot.body,
+                ctaText: savedConfirmation['hot']?.ctaText ?? prev.hot.ctaText,
+                ctaUrl: savedConfirmation['hot']?.ctaUrl ?? prev.hot.ctaUrl,
               },
               warm: {
                 headline: savedConfirmation['warm']?.headline ?? prev.warm.headline,
                 body: savedConfirmation['warm']?.body ?? prev.warm.body,
+                ctaText: savedConfirmation['warm']?.ctaText ?? prev.warm.ctaText,
+                ctaUrl: savedConfirmation['warm']?.ctaUrl ?? prev.warm.ctaUrl,
               },
               cold: {
                 headline: savedConfirmation['cold']?.headline ?? prev.cold.headline,
                 body: savedConfirmation['cold']?.body ?? prev.cold.body,
+                ctaText: savedConfirmation['cold']?.ctaText ?? prev.cold.ctaText,
+                ctaUrl: savedConfirmation['cold']?.ctaUrl ?? prev.cold.ctaUrl,
               },
             }));
           }
@@ -280,6 +343,13 @@ export default function WidgetDesignPage(): React.ReactElement {
           contact_message_required: theme.contactRequireMessage,
           contact_message_placeholder: theme.contactMessagePlaceholder,
           contact_submit_text: theme.contactSubmitText,
+          auto_reply_enabled: autoReplyEnabled,
+          business_hours: {
+            enabled: businessHoursEnabled,
+            timezone: businessTimezone,
+            schedule: businessSchedule,
+            offlineMessage,
+          } as unknown as Record<string, unknown>,
         })
         .eq('id', widgetId);
 
@@ -542,6 +612,131 @@ export default function WidgetDesignPage(): React.ReactElement {
             </div>
           </div>
 
+          {/* Auto-Reply Email */}
+          <div className="card">
+            <h3 className="font-body text-sm font-semibold text-ink mb-4">Auto-Reply Email</h3>
+            <label className="flex items-center justify-between cursor-pointer">
+              <div>
+                <span className="text-sm text-ink font-body">Send confirmation email to visitor</span>
+                <p className="text-xs text-stone mt-0.5">
+                  Visitors will receive a summary of their answers after submitting.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={autoReplyEnabled}
+                onChange={(e) => setAutoReplyEnabled(e.target.checked)}
+                className="rounded-sm border-border text-signal focus:ring-signal"
+              />
+            </label>
+          </div>
+
+          {/* Business Hours */}
+          <div className="card">
+            <h3 className="font-body text-sm font-semibold text-ink mb-4">Business Hours</h3>
+            <div className="space-y-4">
+              <label className="flex items-center justify-between cursor-pointer">
+                <div>
+                  <span className="text-sm text-ink font-body">Enable business hours</span>
+                  <p className="text-xs text-stone mt-0.5">
+                    Shows an offline message outside your working hours. Submissions are still accepted.
+                  </p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={businessHoursEnabled}
+                  onChange={(e) => setBusinessHoursEnabled(e.target.checked)}
+                  className="rounded-sm border-border text-signal focus:ring-signal"
+                />
+              </label>
+
+              {businessHoursEnabled && (
+                <>
+                  <div>
+                    <label htmlFor="bhTimezone" className="input-label">Timezone</label>
+                    <select
+                      id="bhTimezone"
+                      value={businessTimezone}
+                      onChange={(e) => setBusinessTimezone(e.target.value)}
+                      className="input-field h-10 text-sm"
+                    >
+                      {BH_TIMEZONES.map((tz) => (
+                        <option key={tz} value={tz}>{tz}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    {(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const).map((day) => {
+                      const schedule = businessSchedule[day];
+                      const isOpen = schedule !== null;
+                      return (
+                        <div key={day} className="flex items-center gap-2">
+                          <label className="flex items-center gap-2 w-24 shrink-0">
+                            <input
+                              type="checkbox"
+                              checked={isOpen}
+                              onChange={(e) => {
+                                setBusinessSchedule((prev) => ({
+                                  ...prev,
+                                  [day]: e.target.checked ? { start: '09:00', end: '17:00' } : null,
+                                }));
+                              }}
+                              className="rounded-sm border-border text-signal focus:ring-signal"
+                            />
+                            <span className="text-xs text-ink font-body">{DAY_LABELS[day]}</span>
+                          </label>
+                          {isOpen && schedule && (
+                            <div className="flex items-center gap-1.5">
+                              <input
+                                type="time"
+                                value={schedule.start}
+                                onChange={(e) => {
+                                  setBusinessSchedule((prev) => ({
+                                    ...prev,
+                                    [day]: { ...schedule, start: e.target.value },
+                                  }));
+                                }}
+                                className="input-field h-8 text-xs w-auto px-2"
+                              />
+                              <span className="text-xs text-stone">to</span>
+                              <input
+                                type="time"
+                                value={schedule.end}
+                                onChange={(e) => {
+                                  setBusinessSchedule((prev) => ({
+                                    ...prev,
+                                    [day]: { ...schedule, end: e.target.value },
+                                  }));
+                                }}
+                                className="input-field h-8 text-xs w-auto px-2"
+                              />
+                            </div>
+                          )}
+                          {!isOpen && (
+                            <span className="text-xs text-stone">Closed</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div>
+                    <label htmlFor="offlineMsg" className="input-label">Offline Message</label>
+                    <input
+                      id="offlineMsg"
+                      type="text"
+                      value={offlineMessage}
+                      onChange={(e) => setOfflineMessage(e.target.value)}
+                      className="input-field h-10 text-sm"
+                      maxLength={300}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
           {/* Confirmation Messages */}
           <div className="card" ref={confirmationSectionRef}>
             <h3 className="font-body text-sm font-semibold text-ink mb-4">
@@ -575,8 +770,35 @@ export default function WidgetDesignPage(): React.ReactElement {
                   }
                   placeholder="Body text"
                   rows={2}
-                  className="input-field h-auto py-2 resize-none"
+                  className="input-field h-auto py-2 resize-none mb-2"
                 />
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={confirmation[tierKey].ctaText}
+                    onChange={(e) =>
+                      setConfirmation((prev) => ({
+                        ...prev,
+                        [tierKey]: { ...prev[tierKey], ctaText: e.target.value },
+                      }))
+                    }
+                    placeholder="CTA button text"
+                    className="input-field h-9 text-xs"
+                    maxLength={40}
+                  />
+                  <input
+                    type="url"
+                    value={confirmation[tierKey].ctaUrl}
+                    onChange={(e) =>
+                      setConfirmation((prev) => ({
+                        ...prev,
+                        [tierKey]: { ...prev[tierKey], ctaUrl: e.target.value },
+                      }))
+                    }
+                    placeholder="https://calendly.com/..."
+                    className="input-field h-9 text-xs"
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -661,6 +883,17 @@ export default function WidgetDesignPage(): React.ReactElement {
                         </div>
                         <p className="text-lg font-semibold">{confirmation.hot.headline}</p>
                         <p className="text-sm opacity-60 mt-1">{confirmation.hot.body}</p>
+                        {confirmation.hot.ctaText && confirmation.hot.ctaUrl && (
+                          <div
+                            className="mt-3 mx-auto h-9 px-5 inline-flex items-center justify-center text-white text-sm font-medium"
+                            style={{
+                              backgroundColor: theme.accentColor,
+                              borderRadius: `${String(Math.min(theme.borderRadius, 8))}px`,
+                            }}
+                          >
+                            {confirmation.hot.ctaText}
+                          </div>
+                        )}
                         <div className="mt-4 flex items-center justify-center gap-1.5">
                           <span className="inline-block w-1.5 h-1.5 rounded-pill" style={{ backgroundColor: theme.accentColor }} />
                           <span className="inline-block w-1.5 h-1.5 rounded-pill bg-yellow-400" />

@@ -62,6 +62,57 @@ function layout(content: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Template: Submission confirmation (auto-reply to visitor)
+// ---------------------------------------------------------------------------
+
+export interface SubmissionConfirmationData {
+  visitorName: string;
+  accountName: string;
+  widgetName: string;
+  answers: Array<{ question: string; label: string }>;
+}
+
+export function renderSubmissionConfirmation(
+  data: SubmissionConfirmationData
+): { subject: string; html: string; text: string } {
+  const firstName = data.visitorName.split(' ')[0] ?? data.visitorName;
+
+  const answersHtml = data.answers
+    .map(
+      (a) =>
+        `<tr><td style="color:#71717a;padding:4px 8px 4px 0;">${a.question}</td><td style="font-weight:600;padding:4px 0;">${a.label}</td></tr>`
+    )
+    .join('');
+
+  const answersText = data.answers
+    .map((a) => `  ${a.question}: ${a.label}`)
+    .join('\n');
+
+  const html = layout(`
+    <h2>Thanks for reaching out, ${firstName}!</h2>
+    <p>We received your submission to <strong>${data.accountName}</strong> and will be in touch shortly.</p>
+    ${answersHtml.length > 0 ? `
+    <p style="margin-top:16px;font-weight:600;font-size:14px;">Your responses:</p>
+    <table>${answersHtml}</table>
+    ` : ''}
+    <p style="margin-top:16px;">If you have any additional questions, you can reply directly to this email.</p>
+  `);
+
+  const text = `Thanks for reaching out, ${firstName}!
+
+We received your submission to ${data.accountName} and will be in touch shortly.
+
+${answersText.length > 0 ? `Your responses:\n${answersText}\n` : ''}
+If you have any additional questions, you can reply directly to this email.`;
+
+  return {
+    subject: `We received your submission — ${data.accountName}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Template: New lead notification
 // ---------------------------------------------------------------------------
 

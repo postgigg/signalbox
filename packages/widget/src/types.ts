@@ -89,6 +89,8 @@ export interface WidgetConfig {
   socialProofText: string;
   socialProofMin: number;
   submissionCount: number;
+  isOpen: boolean;
+  offlineMessage: string;
   abTest?: AbTestConfig;
   attentionGrabber?: AttentionGrabberConfig;
 }

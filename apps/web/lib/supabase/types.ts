@@ -41,6 +41,7 @@ export type Database = {
           referral_source: string | null;
           lifetime_revenue: number | null;
           scoring_config: Json;
+          sla_response_minutes: number;
           onboarding_completed_at: string | null;
           created_at: string;
           updated_at: string;
@@ -76,6 +77,7 @@ export type Database = {
           referral_source?: string | null;
           lifetime_revenue?: number | null;
           scoring_config?: Json;
+          sla_response_minutes?: number;
           onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -111,6 +113,7 @@ export type Database = {
           referral_source?: string | null;
           lifetime_revenue?: number | null;
           scoring_config?: Json;
+          sla_response_minutes?: number;
           onboarding_completed_at?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -168,6 +171,8 @@ export type Database = {
           contact_message_required: boolean | null;
           contact_message_placeholder: string | null;
           contact_submit_text: string | null;
+          auto_reply_enabled: boolean;
+          business_hours: Json;
           submission_count: number;
           submission_limit: number;
           client_account_id: string | null;
@@ -191,6 +196,8 @@ export type Database = {
           contact_message_required?: boolean | null;
           contact_message_placeholder?: string | null;
           contact_submit_text?: string | null;
+          auto_reply_enabled?: boolean;
+          business_hours?: Json;
           submission_count?: number;
           submission_limit?: number;
           client_account_id?: string | null;
@@ -214,6 +221,8 @@ export type Database = {
           contact_message_required?: boolean | null;
           contact_message_placeholder?: string | null;
           contact_submit_text?: string | null;
+          auto_reply_enabled?: boolean;
+          business_hours?: Json;
           submission_count?: number;
           submission_limit?: number;
           client_account_id?: string | null;

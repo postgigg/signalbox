@@ -20,6 +20,7 @@ export {
   renderWebhookFailures,
   renderLeadAssigned,
   renderTeamInvite,
+  renderSubmissionConfirmation,
 } from './templates';
 
 export interface NewLeadEmailParams {

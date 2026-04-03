@@ -41,6 +41,7 @@ export default function AccountSettingsPage(): React.ReactElement {
   const [notificationEmail, setNotificationEmail] = useState('');
   const [hotThreshold, setHotThreshold] = useState(70);
   const [warmThreshold, setWarmThreshold] = useState(40);
+  const [slaResponseMinutes, setSlaResponseMinutes] = useState(60);
   const [accountPlan, setAccountPlan] = useState<string>('trial');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -70,7 +71,7 @@ export default function AccountSettingsPage(): React.ReactElement {
 
         const { data: account } = await supabase
           .from('accounts')
-          .select('name, slug, timezone, notification_email, hot_lead_threshold, warm_lead_threshold, plan')
+          .select('name, slug, timezone, notification_email, hot_lead_threshold, warm_lead_threshold, sla_response_minutes, plan')
           .eq('id', memberData.account_id)
           .single();
 
@@ -81,6 +82,7 @@ export default function AccountSettingsPage(): React.ReactElement {
           setNotificationEmail(account.notification_email ?? '');
           setHotThreshold(account.hot_lead_threshold);
           setWarmThreshold(account.warm_lead_threshold);
+          setSlaResponseMinutes(account.sla_response_minutes ?? 60);
           setAccountPlan(account.plan);
         }
       } catch {
@@ -130,6 +132,7 @@ export default function AccountSettingsPage(): React.ReactElement {
           notification_email: notificationEmail.trim() || null,
           hot_lead_threshold: hotThreshold,
           warm_lead_threshold: warmThreshold,
+          sla_response_minutes: slaResponseMinutes,
         })
         .eq('id', memberData.account_id);
 
@@ -286,6 +289,28 @@ export default function AccountSettingsPage(): React.ReactElement {
                 className="input-field"
               />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="slaResponse" className="input-label">
+              Hot Lead Response SLA
+              <HelpTip text="How long to wait before sending a followup alert for uncontacted hot leads." />
+            </label>
+            <select
+              id="slaResponse"
+              value={slaResponseMinutes}
+              onChange={(e) => setSlaResponseMinutes(parseInt(e.target.value, 10))}
+              className="input-field"
+            >
+              <option value={15}>15 minutes</option>
+              <option value={30}>30 minutes</option>
+              <option value={60}>1 hour</option>
+              <option value={120}>2 hours</option>
+              <option value={240}>4 hours</option>
+            </select>
+            <p className="mt-1 text-xs text-stone-light">
+              You will receive a followup email if a hot lead has not been contacted within this time.
+            </p>
           </div>
 
           <div className="flex items-center gap-2">

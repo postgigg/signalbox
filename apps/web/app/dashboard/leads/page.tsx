@@ -226,6 +226,41 @@ export default function LeadsPage(): React.ReactElement {
     }
   }
 
+  const [exporting, setExporting] = useState(false);
+
+  function handleExportCsv(): void {
+    setExporting(true);
+    const params = new URLSearchParams();
+    if (tier !== 'all') params.set('tier', tier);
+    if (status !== 'all') params.set('status', status);
+    if (search.trim().length > 0) params.set('search', search);
+    if (dateFrom) params.set('from', new Date(dateFrom).toISOString());
+    if (dateTo) {
+      const endOfDay = new Date(dateTo);
+      endOfDay.setHours(23, 59, 59, 999);
+      params.set('to', endOfDay.toISOString());
+    }
+
+    const qs = params.toString();
+    const url = `/api/v1/leads/export${qs ? `?${qs}` : ''}`;
+
+    fetch(url)
+      .then(async (res) => {
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `hawkleads-export-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch(() => {
+        // Export failed
+      })
+      .finally(() => setExporting(false));
+  }
+
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const isFreePlan = accountPlan === 'free';
   const showGatedBanner = isFreePlan && gatedStats.count > 0;
@@ -235,7 +270,20 @@ export default function LeadsPage(): React.ReactElement {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="page-heading">Leads</h1>
-        <p className="text-sm text-stone">{totalCount} total</p>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-stone">{totalCount} total</p>
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={exporting || totalCount === 0}
+            className="btn-ghost text-sm h-9 px-3 flex items-center gap-1.5"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            {exporting ? 'Exporting...' : 'Export CSV'}
+          </button>
+        </div>
       </div>
 
       {/* Gated leads upsell banner */}
