@@ -212,6 +212,29 @@ export const INDUSTRY_HOOKS = [
   },
 ] as const;
 
+export const INDUSTRIES = [
+  'Plumbing',
+  'Roofing',
+  'Electricians',
+  'HVAC',
+  'Landscaping',
+  'Pest Control',
+  'Solar',
+  'Law Firms',
+  'Real Estate',
+  'Insurance',
+  'Marketing Agencies',
+  'Med Spas',
+  'Dental',
+  'Auto Body',
+  'Financial Advisors',
+  'Home Remodeling',
+  'Cleaning Services',
+  'Photography',
+  'Architecture',
+  'Accounting',
+] as const;
+
 export const BEFORE_ITEMS = [
   'Every lead looks the same in your inbox',
   'Your team wastes hours calling tire-kickers',

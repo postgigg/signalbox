@@ -12,6 +12,7 @@ import { TrustSignals } from './_components/TrustSignals';
 import { FaqAccordion } from './_components/FaqAccordion';
 import { PricingToggle } from './_components/PricingToggle';
 import { HeroIllustration } from './_components/HeroIllustration';
+import { IndustryCarousel } from './_components/IndustryCarousel';
 import { STATS, PLANS, COMPARISON_ROWS, TEMPLATES_PREVIEW } from './_constants';
 
 export default function LandingPage(): React.ReactElement {
@@ -72,6 +73,8 @@ export default function LandingPage(): React.ReactElement {
           </div>
         </div>
       </section>
+
+      <IndustryCarousel />
 
       <HowItWorks />
 
