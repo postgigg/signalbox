@@ -63,14 +63,6 @@ export function AuthBrandPanel(): React.ReactElement {
           <Logo size="lg" dark />
         </Link>
 
-        {/* Centered mark */}
-        <svg viewBox="0 0 180 180" fill="none" className="w-20 h-20 mb-8">
-          <path d="M20 90 L62 16 L62 164 Z" fill="#E8E4DF" opacity="0.1" />
-          <path d="M42 90 L76 28 L76 152 Z" fill="#E8E4DF" opacity="0.3" />
-          <path d="M64 90 L92 44 L92 136 Z" fill="#E8E4DF" opacity="0.9" />
-          <circle cx="32" cy="90" r="4" fill="#E8E4DF" />
-        </svg>
-
         <h2 className="font-display text-3xl font-semibold leading-tight" style={{ color: '#E8E4DF' }}>
           {content.headline}
         </h2>
