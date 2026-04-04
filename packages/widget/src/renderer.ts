@@ -484,12 +484,48 @@ export class WidgetRenderer {
       // Only nudge if widget is still in ready state (not open)
       if (!btn.classList.contains('sb-trigger--hidden') && !this.panelEl) {
         btn.classList.add('sb-trigger--nudge');
+        this.spawnConfetti(btn);
         // Remove class after animation so hover/click transitions work normally
         setTimeout(() => {
           btn.classList.remove('sb-trigger--nudge');
         }, 1500);
       }
     }, 4000);
+  }
+
+  private spawnConfetti(anchor: HTMLElement): void {
+    const rect = anchor.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'sb-confetti-wrap';
+    wrap.style.left = `${String(cx)}px`;
+    wrap.style.top = `${String(cy)}px`;
+
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+    const count = 8;
+
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'sb-confetti-dot';
+      const angle = (i / count) * Math.PI * 2;
+      const dist = 28 + Math.random() * 20;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist - 10; // bias upward
+      dot.style.setProperty('--sb-cx', `${String(dx)}px`);
+      dot.style.setProperty('--sb-cy', `${String(dy)}px`);
+      dot.style.setProperty('--sb-cd', `${String(i * 30)}ms`);
+      dot.style.backgroundColor = colors[i % colors.length] ?? '#3B82F6';
+      wrap.appendChild(dot);
+    }
+
+    this.shadow.appendChild(wrap);
+
+    // Clean up after animation
+    setTimeout(() => {
+      wrap.remove();
+    }, 1200);
   }
 
   // Flag for return visitor welcome

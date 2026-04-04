@@ -192,7 +192,7 @@ export function getStyles(theme: WidgetTheme): string {
   user-select: none;
 }
 
-/* Gentle nudge: soft bounce + ring after 4s, plays once */
+/* Gentle nudge: soft bounce + ring + confetti burst */
 @keyframes sb-nudge {
   0%, 100% { transform: translateY(0); }
   15% { transform: translateY(-6px); }
@@ -208,6 +208,32 @@ export function getStyles(theme: WidgetTheme): string {
 .sb-trigger--nudge {
   animation: sb-nudge 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
              sb-ring 1.2s ease-out both;
+}
+
+/* Mini confetti dots */
+@keyframes sb-confetti-pop {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--sb-cx), var(--sb-cy)) scale(0);
+  }
+}
+.sb-confetti-wrap {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2147483646;
+}
+.sb-confetti-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: sb-confetti-pop 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: var(--sb-cd, 0ms);
 }
 
 .sb-trigger:hover {
