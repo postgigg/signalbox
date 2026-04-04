@@ -368,6 +368,9 @@ export class WidgetRenderer {
     // Detect background contrast after button is positioned
     this.scheduleContrastDetection();
     this.attachResizeListener();
+
+    // Gentle nudge after 4 seconds to catch attention
+    this.scheduleNudge();
   }
 
   // ── Show/Hide Trigger ────────────────────────────────────────────────
@@ -469,6 +472,24 @@ export class WidgetRenderer {
       }, 300);
     };
     window.addEventListener('resize', this.resizeHandler, { passive: true });
+  }
+
+  private nudgeTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private scheduleNudge(): void {
+    if (!this.triggerEl) return;
+    const btn = this.triggerEl;
+
+    this.nudgeTimer = setTimeout(() => {
+      // Only nudge if widget is still in ready state (not open)
+      if (!btn.classList.contains('sb-trigger--hidden') && !this.panelEl) {
+        btn.classList.add('sb-trigger--nudge');
+        // Remove class after animation so hover/click transitions work normally
+        setTimeout(() => {
+          btn.classList.remove('sb-trigger--nudge');
+        }, 1500);
+      }
+    }, 4000);
   }
 
   // Flag for return visitor welcome
@@ -1551,6 +1572,10 @@ export class WidgetRenderer {
   // ── Destroy ──────────────────────────────────────────────────────────
   destroy(): void {
     this.disableFocusTrap();
+    if (this.nudgeTimer) {
+      clearTimeout(this.nudgeTimer);
+      this.nudgeTimer = null;
+    }
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = null;

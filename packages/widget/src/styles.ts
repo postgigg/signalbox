@@ -78,6 +78,7 @@ export function getStyles(theme: WidgetTheme): string {
 /* ── CSS Custom Properties ──────────────────────────────────────────────── */
 :host {
   --sb-primary: ${theme.primaryColor};
+  --sb-primary-ring: ${hexToRgba(theme.primaryColor, 0.4)};
   --sb-accent: ${theme.accentColor};
   --sb-bg: ${theme.backgroundColor};
   --sb-text: ${theme.textColor};
@@ -189,6 +190,24 @@ export function getStyles(theme: WidgetTheme): string {
   outline: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+}
+
+/* Gentle nudge: soft bounce + ring after 4s, plays once */
+@keyframes sb-nudge {
+  0%, 100% { transform: translateY(0); }
+  15% { transform: translateY(-6px); }
+  30% { transform: translateY(0); }
+  45% { transform: translateY(-3px); }
+  60% { transform: translateY(0); }
+}
+@keyframes sb-ring {
+  0% { box-shadow: 0 0 0 0 var(--sb-primary-ring); }
+  50% { box-shadow: 0 0 0 10px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.sb-trigger--nudge {
+  animation: sb-nudge 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
+             sb-ring 1.2s ease-out both;
 }
 
 .sb-trigger:hover {
