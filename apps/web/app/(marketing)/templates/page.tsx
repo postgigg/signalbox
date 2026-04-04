@@ -142,13 +142,16 @@ export default function TemplatesPage(): React.ReactElement {
 
   return (
     <div>
-      {/* Header */}
-      <section className="pt-32 pb-12 px-6">
+      {/* Hero */}
+      <section className="bg-black pt-32 pb-12 px-6">
         <div className="max-w-content mx-auto">
-          <h1 className="font-display text-5xl font-semibold text-ink">
+          <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+            TEMPLATES
+          </p>
+          <h1 className="font-display text-5xl font-semibold text-white">
             Flow templates.
           </h1>
-          <p className="mt-4 text-lg text-stone max-w-prose">
+          <p className="mt-4 text-lg text-zinc-400 max-w-prose font-body">
             Pre-built qualifying flows for common industries. Pick one, customize the
             questions and score weights, and deploy in minutes.
           </p>
@@ -156,7 +159,7 @@ export default function TemplatesPage(): React.ReactElement {
       </section>
 
       {/* Filter */}
-      <section className="pb-6 px-6">
+      <section className="bg-black pb-6 px-6">
         <div className="max-w-content mx-auto">
           <div className="flex flex-wrap gap-2">
             {INDUSTRIES.map((industry) => (
@@ -164,10 +167,10 @@ export default function TemplatesPage(): React.ReactElement {
                 key={industry}
                 type="button"
                 onClick={() => setActiveFilter(industry)}
-                className={`px-3 py-1.5 rounded-sm text-sm font-body transition-colors duration-fast ${
+                className={`px-3 py-1.5 rounded-md text-sm font-body transition-colors duration-150 ${
                   activeFilter === industry
-                    ? 'bg-ink text-white'
-                    : 'bg-surface border border-border text-stone hover:text-ink hover:border-border-dark'
+                    ? 'bg-white text-black'
+                    : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
                 }`}
               >
                 {industry}
@@ -178,52 +181,58 @@ export default function TemplatesPage(): React.ReactElement {
       </section>
 
       {/* Template Grid */}
-      <section className="pb-20 px-6">
+      <section className="bg-black pb-20 px-6">
         <div className="max-w-content mx-auto">
           {filteredTemplates.length === 0 ? (
             <div className="py-16 text-center">
-              <p className="text-stone font-body">
+              <p className="text-zinc-400 font-body">
                 No templates found for this industry.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredTemplates.map((template) => (
-                <div key={template.name} className="card">
+                <div
+                  key={template.name}
+                  className="bg-zinc-900 border border-zinc-800 rounded-md p-6"
+                >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="font-display text-lg font-semibold text-ink">
+                      <h2 className="font-display text-lg font-semibold text-white">
                         {template.name}
                       </h2>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-stone-light font-body">
+                        <span className="text-xs text-zinc-600 font-body">
                           {template.industry}
                         </span>
-                        <span className="text-xs text-border">|</span>
-                        <span className="text-xs text-stone-light font-body">
+                        <span className="text-xs text-zinc-700">|</span>
+                        <span className="text-xs text-zinc-600 font-body">
                           {template.steps} steps
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="mt-3 text-sm text-stone">{template.description}</p>
+                  <p className="mt-3 text-sm text-zinc-400 font-body">{template.description}</p>
                   <div className="mt-4">
-                    <h4 className="text-xs font-medium text-stone uppercase tracking-wide mb-2">
+                    <h4 className="text-xs font-medium text-zinc-500 uppercase tracking-wide mb-2 font-body">
                       Questions
                     </h4>
                     <ol className="space-y-1.5">
                       {template.questions.map((q, i) => (
                         <li key={q} className="flex items-start gap-2 text-sm">
-                          <span className="font-mono text-xs text-stone-light mt-0.5 w-4 flex-shrink-0">
+                          <span className="font-mono text-xs text-zinc-600 mt-0.5 w-4 flex-shrink-0">
                             {i + 1}.
                           </span>
-                          <span className="text-stone">{q}</span>
+                          <span className="text-zinc-400 font-body">{q}</span>
                         </li>
                       ))}
                     </ol>
                   </div>
-                  <div className="mt-5 pt-4 border-t border-border">
-                    <Link href="/signup" className="btn-secondary text-sm">
+                  <div className="mt-5 pt-4 border-t border-zinc-800">
+                    <Link
+                      href="/signup"
+                      className="inline-flex items-center justify-center rounded-md bg-white text-black font-body font-medium text-sm h-10 px-5 transition-colors duration-150 hover:bg-zinc-100"
+                    >
                       Use This Template
                     </Link>
                   </div>
@@ -235,7 +244,7 @@ export default function TemplatesPage(): React.ReactElement {
       </section>
 
       {/* CTA */}
-      <section className="bg-ink py-20 px-6">
+      <section className="bg-black border-t border-zinc-800 py-20 px-6">
         <div className="max-w-content mx-auto text-center">
           <h2 className="font-display text-4xl font-semibold text-white">
             Pick a template and go live in 2 minutes.
@@ -243,12 +252,12 @@ export default function TemplatesPage(): React.ReactElement {
           <div className="mt-8">
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper"
+              className="inline-flex items-center justify-center rounded-md bg-white text-black font-body font-medium text-base h-12 px-7 transition-colors duration-150 hover:bg-zinc-100"
             >
               Start Free Trial
             </Link>
           </div>
-          <p className="mt-4 text-sm text-stone-light">
+          <p className="mt-4 text-sm text-zinc-500 font-body">
             30 days free. No credit card. Cancel anytime.
           </p>
         </div>

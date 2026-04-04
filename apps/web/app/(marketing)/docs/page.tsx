@@ -120,11 +120,17 @@ export default function DocsPage(): React.ReactElement {
   const [activeSection, setActiveSection] = useState<SectionId>('overview');
 
   return (
-    <div className="max-w-content mx-auto px-6 py-16">
-      <h1 className="font-display text-3xl font-semibold text-ink">API Documentation</h1>
-      <p className="mt-2 text-sm text-stone">
-        Reference for the HawkLeads REST API. API access requires a Pro or Agency plan.
-      </p>
+    <div>
+    <section className="bg-black pt-32 pb-12 px-6">
+      <div className="max-w-content mx-auto">
+        <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">Developer Reference</p>
+        <h1 className="font-display text-3xl font-semibold text-white">API Documentation</h1>
+        <p className="mt-2 text-sm text-zinc-400">
+          Reference for the HawkLeads REST API. API access requires a Pro or Agency plan.
+        </p>
+      </div>
+    </section>
+    <div className="bg-white max-w-content mx-auto px-6 py-10">
 
       {/* Mobile section select */}
       <div className="mt-6 md:hidden">
@@ -743,6 +749,7 @@ function verifyWebhook(body, signature, secret) {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -1162,3 +1162,93 @@
 .animate-price-fade {
   animation: price-fade-in 200ms ease-out 100ms both;
 }
+
+/* ── Why HawkLeads page illustrations ── */
+
+/* Draw a polyline by animating stroke-dashoffset */
+@keyframes why-draw-line {
+  from { stroke-dashoffset: 600; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Pulse opacity for price tags */
+@keyframes why-price-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Problem 1: Lead Blindness — cards fade in staggered, prices pulse */
+.is-visible .why-blind-card-1 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .why-blind-card-2 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both; }
+.is-visible .why-blind-card-3 { animation: slide-row-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+.is-visible .why-blind-price-1,
+.is-visible .why-blind-price-2,
+.is-visible .why-blind-price-3 {
+  animation: why-price-pulse 2s ease-in-out 800ms infinite;
+}
+.is-visible .why-blind-equals {
+  animation: fade-in 400ms ease-out 900ms both;
+}
+
+/* Problem 2: Wasted Time — bars grow, callout pops */
+.is-visible .why-waste-bar-1,
+.is-visible .why-waste-bar-2,
+.is-visible .why-waste-bar-3,
+.is-visible .why-waste-bar-4 {
+  transform-origin: left center;
+}
+.is-visible .why-waste-bar-1 { animation: grow-bar 600ms ease-out 200ms both; }
+.is-visible .why-waste-bar-2 { animation: grow-bar 600ms ease-out 400ms both; }
+.is-visible .why-waste-bar-3 { animation: grow-bar 600ms ease-out 600ms both; }
+.is-visible .why-waste-bar-4 { animation: grow-bar 600ms ease-out 800ms both; }
+.is-visible .why-waste-label-1 { animation: fade-in 300ms ease-out 400ms both; }
+.is-visible .why-waste-label-2 { animation: fade-in 300ms ease-out 600ms both; }
+.is-visible .why-waste-label-3 { animation: fade-in 300ms ease-out 800ms both; }
+.is-visible .why-waste-label-4 { animation: fade-in 300ms ease-out 1000ms both; }
+.is-visible .why-waste-pct-1 { animation: count-fade 300ms ease-out 500ms both; }
+.is-visible .why-waste-pct-2 { animation: count-fade 300ms ease-out 700ms both; }
+.is-visible .why-waste-pct-3 { animation: count-fade 300ms ease-out 900ms both; }
+.is-visible .why-waste-pct-4 { animation: count-fade 300ms ease-out 1100ms both; }
+.is-visible .why-waste-callout { animation: pop-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms both; }
+
+/* Problem 3: Speed to Lead — drop line draws, dots pop, label slides in */
+.is-visible .why-speed-drop-line {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: why-draw-line 1200ms ease-out 200ms both;
+}
+.is-visible .why-speed-red-zone { animation: fade-in 600ms ease-out 400ms both; }
+.is-visible .why-speed-dot-ok { animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+.is-visible .why-speed-dot-bad { animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms both; }
+.is-visible .why-speed-label { animation: slide-in-right 400ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both; }
+
+/* Solution 1: Lead Scoring — score pops, badge appears, bar fills */
+.is-visible .why-score-avatar { animation: fade-in 300ms ease-out 200ms both; }
+.is-visible .why-score-name { animation: type-in 300ms ease-out 400ms both; }
+.is-visible .why-score-number { animation: pop-in 500ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+.is-visible .why-score-badge { animation: pop-in 400ms cubic-bezier(0.16, 1, 0.3, 1) 900ms both; }
+.is-visible .why-score-bar-fill {
+  transform-origin: left center;
+  animation: grow-bar 700ms ease-out 700ms both;
+}
+.is-visible .why-score-answers { animation: type-in 400ms ease-out 1000ms both; }
+
+/* Solution 2: Prioritized Call List — rows slide in, alert pings */
+.is-visible .why-list-row-1 { animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .why-list-row-2 { animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 450ms both; }
+.is-visible .why-list-row-3 { animation: slide-in-left 400ms cubic-bezier(0.16, 1, 0.3, 1) 700ms both; }
+.is-visible .why-list-alert { animation: pop-in 300ms cubic-bezier(0.16, 1, 0.3, 1) 500ms both; }
+.is-visible .why-list-ping { animation: ping-ring 1.2s ease-out 700ms infinite; }
+
+/* Solution 3: Nurture Sequence — steps light up, badges transition */
+.is-visible .why-nurture-step-1 { animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.is-visible .why-nurture-conn-1 { animation: fade-in 300ms ease-out 500ms both; }
+.is-visible .why-nurture-step-2 { animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 600ms both; }
+.is-visible .why-nurture-conn-2 { animation: fade-in 300ms ease-out 900ms both; }
+.is-visible .why-nurture-step-3 { animation: fade-in-up 400ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms both; }
+.is-visible .why-nurture-badge-cold { animation: fade-in 300ms ease-out 300ms both; }
+.is-visible .why-nurture-arrow { animation: fade-in 300ms ease-out 600ms both; }
+.is-visible .why-nurture-badge-warm { animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 800ms both; }
+.is-visible .why-nurture-arrow-2 { animation: fade-in 300ms ease-out 1000ms both; }
+.is-visible .why-nurture-badge-hot { animation: pop-in 350ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms both; }
+.is-visible .why-nurture-label { animation: type-in 300ms ease-out 1400ms both; }

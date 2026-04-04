@@ -4,6 +4,15 @@ import Link from 'next/link';
 
 import { useInViewAnimations } from '@/lib/use-in-view';
 
+import {
+  ProblemBlindnessIllustration,
+  ProblemWastedTimeIllustration,
+  ProblemSpeedIllustration,
+  SolutionScoreIllustration,
+  SolutionCallListIllustration,
+  SolutionNurtureIllustration,
+} from '../_components/WhyIllustrations';
+
 // ---------------------------------------------------------------------------
 // Research data — all sourced from published studies
 // ---------------------------------------------------------------------------
@@ -30,11 +39,11 @@ const SPEED_STATS = [
 ] as const;
 
 const COST_OF_DELAY = [
-  { delay: '5 min', odds: '100%', color: 'bg-success' },
-  { delay: '10 min', odds: '80%', color: 'bg-success/70' },
-  { delay: '30 min', odds: '10%', color: 'bg-warning' },
-  { delay: '1 hr', odds: '5%', color: 'bg-danger/60' },
-  { delay: '24 hr', odds: '<1%', color: 'bg-danger' },
+  { delay: '5 min', odds: '100%', color: 'bg-emerald-500' },
+  { delay: '10 min', odds: '80%', color: 'bg-emerald-500/70' },
+  { delay: '30 min', odds: '10%', color: 'bg-amber-500' },
+  { delay: '1 hr', odds: '5%', color: 'bg-red-500/60' },
+  { delay: '24 hr', odds: '<1%', color: 'bg-red-500' },
 ] as const;
 
 const PROBLEM_POINTS = [
@@ -92,21 +101,33 @@ const ROI_MATH = [
   { label: 'ROI', value: '134x' },
 ] as const;
 
+const PROBLEM_ILLUSTRATIONS = [
+  ProblemBlindnessIllustration,
+  ProblemWastedTimeIllustration,
+  ProblemSpeedIllustration,
+] as const;
+
+const SOLUTION_ILLUSTRATIONS = [
+  SolutionScoreIllustration,
+  SolutionCallListIllustration,
+  SolutionNurtureIllustration,
+] as const;
+
 export default function WhyHawkLeadsPage(): React.ReactElement {
   useInViewAnimations();
 
   return (
     <div>
-      {/* ── Hero ── */}
-      <section className="pt-32 pb-20 px-6">
+      {/* ── Hero (dark) ── */}
+      <section className="bg-black pt-32 pb-20 px-6">
         <div className="max-w-prose mx-auto animate-on-enter">
-          <p className="text-sm font-medium text-signal uppercase tracking-wide mb-4">
-            Market Research
+          <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+            MARKET RESEARCH
           </p>
-          <h1 className="font-display text-5xl font-semibold text-ink leading-tight">
+          <h1 className="font-display text-5xl font-semibold text-white leading-tight">
             The data is clear: speed and context win deals.
           </h1>
-          <p className="mt-6 text-lg text-stone leading-relaxed">
+          <p className="mt-6 text-lg text-zinc-400 leading-relaxed">
             This is not a pitch. It is a collection of published research from Harvard,
             MIT, Forrester, and industry studies that all point to the same conclusion:
             the business that responds fastest with the most context closes the deal.
@@ -115,10 +136,13 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Speed Stats ── */}
-      <section className="py-20 px-6 bg-surface-alt border-y border-border">
+      {/* ── Speed Stats (light) ── */}
+      <section className="py-20 px-6 bg-white border-y border-border">
         <div className="max-w-content mx-auto">
           <div className="text-center mb-12 animate-on-enter">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+              THE NUMBERS
+            </p>
             <h2 className="font-display text-3xl font-semibold text-ink">
               Three numbers that change everything.
             </h2>
@@ -127,7 +151,7 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
             {SPEED_STATS.map((item, index) => (
               <div
                 key={item.stat}
-                className={`animate-on-enter stagger-${index + 1}`}
+                className={`animate-on-enter stagger-${String(index + 1)}`}
               >
                 <p className="font-display text-5xl font-bold text-ink">
                   {item.stat}
@@ -147,19 +171,22 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Cost of Delay Chart ── */}
-      <section className="py-20 px-6">
+      {/* ── Cost of Delay Chart (dark) ── */}
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="animate-on-enter">
-            <h2 className="font-display text-3xl font-semibold text-ink">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+              THE CLIFF
+            </p>
+            <h2 className="font-display text-3xl font-semibold text-white">
               Every minute costs you money.
             </h2>
-            <p className="mt-4 text-base text-stone leading-relaxed">
+            <p className="mt-4 text-base text-zinc-400 leading-relaxed">
               Lead Response Management studied over 100,000 call attempts and found
               a direct, measurable decline in contact rates as response time increases.
               The drop is not gradual. It is a cliff.
             </p>
-            <p className="mt-3 text-sm text-stone-light">
+            <p className="mt-3 text-sm text-zinc-500">
               Source: Lead Response Management Study, Dr. James Oldroyd, MIT
             </p>
           </div>
@@ -167,32 +194,35 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
             <div className="space-y-3">
               {COST_OF_DELAY.map((row) => (
                 <div key={row.delay} className="flex items-center gap-4">
-                  <span className="w-14 text-sm font-mono text-stone text-right flex-shrink-0">
+                  <span className="w-14 text-sm font-mono text-zinc-400 text-right flex-shrink-0">
                     {row.delay}
                   </span>
-                  <div className="flex-1 h-8 bg-surface-alt rounded-sm overflow-hidden border border-border">
+                  <div className="flex-1 h-8 bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800">
                     <div
                       className={`h-full ${row.color} rounded-sm transition-all duration-700`}
                       style={{ width: row.odds }}
                     />
                   </div>
-                  <span className="w-12 text-sm font-medium text-ink text-right flex-shrink-0">
+                  <span className="w-12 text-sm font-medium text-white text-right flex-shrink-0">
                     {row.odds}
                   </span>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-xs text-stone text-center">
+            <p className="mt-4 text-xs text-zinc-500 text-center">
               Relative probability of qualifying the lead vs. 5-minute baseline
             </p>
           </div>
         </div>
       </section>
 
-      {/* ── The Problem ── */}
-      <section className="py-20 px-6 bg-surface-alt border-y border-border">
+      {/* ── The Problem (light) ── */}
+      <section className="py-20 px-6 bg-white border-y border-border">
         <div className="max-w-content mx-auto">
           <div className="max-w-prose animate-on-enter">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+              THE PROBLEM
+            </p>
             <h2 className="font-display text-3xl font-semibold text-ink">
               The problem is not lead volume. It is lead blindness.
             </h2>
@@ -201,68 +231,94 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
               matter until after the call. By then, time and money are already spent.
             </p>
           </div>
-          <div className="mt-12 space-y-10">
-            {PROBLEM_POINTS.map((point, index) => (
-              <div
-                key={point.number}
-                className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-4 animate-on-enter stagger-${index + 1}`}
-              >
-                <span className="font-display text-4xl font-bold text-border-dark">
-                  {point.number}
-                </span>
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-ink">
-                    {point.title}
-                  </h3>
-                  <p className="mt-2 text-base text-stone leading-relaxed max-w-[600px]">
-                    {point.body}
-                  </p>
+          <div className="mt-12 space-y-16">
+            {PROBLEM_POINTS.map((point, index) => {
+              const Illustration = PROBLEM_ILLUSTRATIONS[index];
+              return (
+                <div
+                  key={point.number}
+                  className={`grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-8 items-center animate-on-enter stagger-${String(index + 1)}`}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-4">
+                    <span className="font-display text-4xl font-bold text-border-dark">
+                      {point.number}
+                    </span>
+                    <div>
+                      <h3 className="font-display text-xl font-semibold text-ink">
+                        {point.title}
+                      </h3>
+                      <p className="mt-2 text-base text-stone leading-relaxed max-w-[600px]">
+                        {point.body}
+                      </p>
+                    </div>
+                  </div>
+                  {Illustration !== undefined && (
+                    <div className="hidden lg:block">
+                      <Illustration />
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── The Solution ── */}
-      <section className="py-20 px-6">
+      {/* ── The Solution (dark) ── */}
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-content mx-auto">
           <div className="max-w-prose animate-on-enter">
-            <h2 className="font-display text-3xl font-semibold text-ink">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+              THE SOLUTION
+            </p>
+            <h2 className="font-display text-3xl font-semibold text-white">
               What changes when every lead arrives pre-qualified.
             </h2>
-            <p className="mt-4 text-base text-stone leading-relaxed">
+            <p className="mt-4 text-base text-zinc-400 leading-relaxed">
               HawkLeads sits on your website as a 30-second tappable flow. Visitors
               answer qualifying questions. You get a scored, prioritized call list.
             </p>
           </div>
-          <div className="mt-12 space-y-10">
-            {SOLUTION_POINTS.map((point, index) => (
-              <div
-                key={point.number}
-                className={`grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-4 animate-on-enter stagger-${index + 1}`}
-              >
-                <span className="font-display text-4xl font-bold text-signal/20">
-                  {point.number}
-                </span>
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-ink">
-                    {point.title}
-                  </h3>
-                  <p className="mt-2 text-base text-stone leading-relaxed max-w-[600px]">
-                    {point.body}
-                  </p>
+          <div className="mt-12 space-y-16">
+            {SOLUTION_POINTS.map((point, index) => {
+              const Illustration = SOLUTION_ILLUSTRATIONS[index];
+              return (
+                <div
+                  key={point.number}
+                  className={`grid grid-cols-1 lg:grid-cols-[1fr_480px] gap-8 items-center animate-on-enter stagger-${String(index + 1)}`}
+                >
+                  <div className="grid grid-cols-1 lg:grid-cols-[80px_1fr] gap-4">
+                    <span className="font-display text-4xl font-bold text-zinc-700">
+                      {point.number}
+                    </span>
+                    <div>
+                      <h3 className="font-display text-xl font-semibold text-white">
+                        {point.title}
+                      </h3>
+                      <p className="mt-2 text-base text-zinc-400 leading-relaxed max-w-[600px]">
+                        {point.body}
+                      </p>
+                    </div>
+                  </div>
+                  {Illustration !== undefined && (
+                    <div className="hidden lg:block">
+                      <Illustration />
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── Benchmark Table ── */}
-      <section className="py-20 px-6 bg-surface-alt border-y border-border">
+      {/* ── Benchmark Table (light) ── */}
+      <section className="py-20 px-6 bg-white border-y border-border">
         <div className="max-w-content mx-auto">
           <div className="text-center mb-10 animate-on-enter">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+              BENCHMARKS
+            </p>
             <h2 className="font-display text-3xl font-semibold text-ink">
               Industry average vs. HawkLeads.
             </h2>
@@ -294,38 +350,41 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── ROI Math ── */}
-      <section className="py-20 px-6">
+      {/* ── ROI Math (dark) ── */}
+      <section className="py-20 px-6 bg-black">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div className="animate-on-enter">
-            <h2 className="font-display text-3xl font-semibold text-ink">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+              ROI
+            </p>
+            <h2 className="font-display text-3xl font-semibold text-white">
               The math on one extra closed deal per month.
             </h2>
-            <p className="mt-4 text-base text-stone leading-relaxed">
+            <p className="mt-4 text-base text-zinc-400 leading-relaxed">
               Conservative scenario for a service business doing $5,000 average jobs.
               The numbers assume a modest 10-point improvement in close rate from
               better lead prioritization. Real results vary, but the economics are
               hard to argue with.
             </p>
-            <p className="mt-3 text-sm text-stone-light">
+            <p className="mt-3 text-sm text-zinc-500">
               One extra closed deal per month pays for a full year of HawkLeads.
               Four extra deals per month and you are looking at $240,000 in
               additional annual revenue on a $1,788 investment.
             </p>
           </div>
           <div className="animate-slide-right">
-            <div className="border border-border rounded-md overflow-hidden">
+            <div className="border border-zinc-800 rounded-md overflow-hidden">
               {ROI_MATH.map((row, index) => (
                 <div
                   key={row.label}
                   className={`flex items-center justify-between px-5 py-3.5 text-sm ${
-                    index < ROI_MATH.length - 1 ? 'border-b border-border' : 'bg-ink'
+                    index < ROI_MATH.length - 1 ? 'border-b border-zinc-800' : 'bg-white'
                   }`}
                 >
-                  <span className={index === ROI_MATH.length - 1 ? 'text-white font-medium' : 'text-stone'}>
+                  <span className={index === ROI_MATH.length - 1 ? 'text-black font-medium' : 'text-zinc-400'}>
                     {row.label}
                   </span>
-                  <span className={index === ROI_MATH.length - 1 ? 'text-white font-display text-xl font-bold' : 'text-ink font-medium font-mono'}>
+                  <span className={index === ROI_MATH.length - 1 ? 'text-black font-display text-xl font-bold' : 'text-white font-medium font-mono'}>
                     {row.value}
                   </span>
                 </div>
@@ -335,10 +394,13 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Fewer Leads, Better Revenue ── */}
-      <section className="py-20 px-6">
+      {/* ── Fewer Leads, Better Revenue (light) ── */}
+      <section className="py-20 px-6 bg-white border-y border-border">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div className="animate-on-enter">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+              THE TRADEOFF
+            </p>
             <h2 className="font-display text-3xl font-semibold text-ink">
               Yes, you will get fewer submissions.
             </h2>
@@ -376,31 +438,34 @@ export default function WhyHawkLeadsPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Final CTA ── */}
-      <section className="py-24 px-6 bg-ink">
+      {/* ── Final CTA (dark) ── */}
+      <section className="py-24 px-6 bg-black">
         <div className="max-w-prose mx-auto text-center animate-on-enter">
+          <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">
+            GET STARTED
+          </p>
           <h2 className="font-display text-4xl font-semibold text-white">
             The research is done. The numbers are clear.
           </h2>
-          <p className="mt-4 text-base text-stone-light leading-relaxed">
+          <p className="mt-4 text-base text-zinc-400 leading-relaxed">
             Speed wins deals. Context closes them. HawkLeads gives you both.
             Start scoring your leads in under two minutes.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center rounded-md bg-white text-ink font-body font-medium text-base h-12 px-6 transition-all duration-fast hover:bg-paper focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-ink"
+              className="inline-flex items-center justify-center bg-white text-black font-body font-medium text-base h-12 px-7 rounded-md transition-colors duration-fast hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
             >
               Start Free Trial
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center rounded-md border border-white/20 text-white/80 font-body font-medium text-sm h-12 px-5 transition-all duration-fast hover:border-white/40 hover:text-white"
+              className="inline-flex items-center justify-center border border-zinc-700 text-zinc-300 font-body font-medium text-sm h-12 px-7 rounded-md transition-colors duration-fast hover:border-zinc-500 hover:text-white"
             >
               View Pricing
             </Link>
           </div>
-          <p className="mt-4 text-sm text-stone-light">
+          <p className="mt-4 text-sm text-zinc-500">
             30 days free. No credit card. Cancel anytime.
           </p>
         </div>

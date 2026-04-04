@@ -10,7 +10,7 @@ const EFFECTIVE_DATE = 'March 20, 2026';
 
 export default function TermsPage(): React.ReactElement {
   return (
-    <div className="max-w-prose mx-auto px-6 py-16">
+    <div className="bg-white max-w-prose mx-auto px-6 py-16">
       <h1 className="font-display text-3xl font-semibold text-ink">Terms of Service</h1>
       <p className="mt-2 text-sm text-stone">Effective date: {EFFECTIVE_DATE}</p>
 

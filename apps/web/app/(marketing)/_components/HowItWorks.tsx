@@ -13,8 +13,11 @@ const ILLUSTRATIONS = [
 
 export function HowItWorks(): React.ReactElement {
   return (
-    <section id="how-it-works" className="py-24 px-6 bg-surface-alt border-y border-border">
+    <section id="how-it-works" className="py-24 px-6 bg-white">
       <div className="max-w-content mx-auto">
+        <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+          How it works
+        </p>
         <h2 className="font-display text-3xl font-semibold text-ink">
           Three steps. Two minutes.
         </h2>
@@ -22,9 +25,9 @@ export function HowItWorks(): React.ReactElement {
           {STEPS.map((step, index) => {
             const Illustration = ILLUSTRATIONS[index];
             return (
-              <div key={step.num} className={`animate-on-enter stagger-${index + 1}`}>
+              <div key={step.num} className={`animate-on-enter stagger-${String(index + 1)}`}>
                 {Illustration !== undefined && (
-                  <div className="mb-5 rounded-md border border-border bg-surface overflow-hidden">
+                  <div className="mb-5 rounded-md border border-border bg-surface-alt overflow-hidden">
                     <Illustration />
                   </div>
                 )}

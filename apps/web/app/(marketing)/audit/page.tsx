@@ -392,7 +392,7 @@ function BeforeAfterSection({ details }: { readonly details: AuditDetails }): Re
   const hasForm = details.formCount > 0;
 
   return (
-    <section className="py-24 px-6">
+    <section className="py-24 px-6 bg-white">
       <div className="max-w-content mx-auto">
         <h2 className="font-display text-3xl font-semibold text-ink text-center">
           Before and after.
@@ -548,13 +548,14 @@ export default function AuditPage(): React.ReactElement {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="pt-32 pb-24 px-6">
+      <section className="bg-black pt-32 pb-24 px-6">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <h1 className="font-display text-5xl font-semibold text-ink leading-tight">
+            <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-5">Free website audit</p>
+            <h1 className="font-display text-5xl font-semibold text-white leading-tight">
               Your contact form is losing you money.
             </h1>
-            <p className="mt-6 text-lg text-stone leading-relaxed max-w-[520px]">
+            <p className="mt-6 text-lg text-zinc-400 leading-relaxed max-w-[520px]">
               Enter your URL below. We will crawl your site, analyze your forms, and score
               your lead capture setup across three categories. Free, instant, no signup.
             </p>
@@ -567,7 +568,7 @@ export default function AuditPage(): React.ReactElement {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="yoursite.com"
-                  className="input-field flex-1"
+                  className="flex-1 h-12 px-3 border border-zinc-700 rounded-sm bg-zinc-900 text-white text-base font-body placeholder:text-zinc-600 transition-colors duration-fast focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none disabled:opacity-50"
                   disabled={state === 'loading'}
                 />
                 <input
@@ -575,7 +576,7 @@ export default function AuditPage(): React.ReactElement {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="input-field flex-1"
+                  className="flex-1 h-12 px-3 border border-zinc-700 rounded-sm bg-zinc-900 text-white text-base font-body placeholder:text-zinc-600 transition-colors duration-fast focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 focus:outline-none disabled:opacity-50"
                   disabled={state === 'loading'}
                 />
               </div>
@@ -586,24 +587,24 @@ export default function AuditPage(): React.ReactElement {
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded-sm border-border text-signal focus:ring-signal flex-shrink-0"
+                  className="mt-0.5 w-4 h-4 rounded-sm border-zinc-600 bg-zinc-900 text-white focus:ring-zinc-500 flex-shrink-0"
                   disabled={state === 'loading'}
                 />
-                <span className="text-xs text-stone leading-relaxed">
+                <span className="text-xs text-zinc-500 leading-relaxed">
                   I authorize HawkLeads to crawl the publicly accessible pages of this website
                   (homepage, /contact, /contact-us, /get-in-touch, /get-started) to analyze
                   forms, input fields, and page structure. No data is modified. Results are
                   stored and sent to your email if provided. By proceeding you agree to our{' '}
-                  <a href="/terms" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Terms</a>
+                  <a href="/terms" className="text-emerald-400 hover:text-emerald-300 underline" target="_blank" rel="noopener noreferrer">Terms</a>
                   {' '}and{' '}
-                  <a href="/privacy" className="text-signal hover:text-signal-hover underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+                  <a href="/privacy" className="text-emerald-400 hover:text-emerald-300 underline" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
                 </span>
               </label>
 
               <button
                 type="submit"
                 disabled={state === 'loading' || url.trim().length === 0 || !consent}
-                className="btn-primary-lg w-full mt-4"
+                className="inline-flex items-center justify-center rounded-md bg-white text-black font-body font-medium text-base h-12 px-7 w-full mt-4 transition-all duration-fast hover:bg-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Get Your Score
               </button>
@@ -613,40 +614,40 @@ export default function AuditPage(): React.ReactElement {
               <p className="mt-3 text-sm text-danger">{errorMessage}</p>
             )}
 
-            <p className="mt-3 text-sm text-stone-light">
+            <p className="mt-3 text-sm text-zinc-600">
               We will send the full report to your email. No spam.
             </p>
           </div>
 
           {/* Right side: what we check */}
           <div className="hidden lg:block">
-            <div className="card">
-              <h3 className="font-body text-sm font-semibold text-ink mb-4 uppercase tracking-wide">What we analyze</h3>
+            <div className="border border-zinc-800 bg-zinc-900 rounded-md p-5">
+              <h3 className="font-body text-sm font-semibold text-zinc-300 mb-4 uppercase tracking-wide">What we analyze</h3>
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-4xl font-light text-border-dark select-none">01</span>
-                    <span className="font-display text-base font-semibold text-ink">Qualification</span>
+                    <span className="font-mono text-4xl font-light text-zinc-700 select-none">01</span>
+                    <span className="font-display text-base font-semibold text-white">Qualification</span>
                   </div>
-                  <p className="text-sm text-stone ml-12">
+                  <p className="text-sm text-zinc-500 ml-12">
                     Do your forms ask about budget, timeline, service type, or company size?
                   </p>
                 </div>
-                <div className="border-t border-border pt-4">
+                <div className="border-t border-zinc-800 pt-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-4xl font-light text-border-dark select-none">02</span>
-                    <span className="font-display text-base font-semibold text-ink">Speed</span>
+                    <span className="font-mono text-4xl font-light text-zinc-700 select-none">02</span>
+                    <span className="font-display text-base font-semibold text-white">Speed</span>
                   </div>
-                  <p className="text-sm text-stone ml-12">
+                  <p className="text-sm text-zinc-500 ml-12">
                     Are leads captured electronically or stuck in mailto links and voicemail?
                   </p>
                 </div>
-                <div className="border-t border-border pt-4">
+                <div className="border-t border-zinc-800 pt-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-4xl font-light text-border-dark select-none">03</span>
-                    <span className="font-display text-base font-semibold text-ink">Routing</span>
+                    <span className="font-mono text-4xl font-light text-zinc-700 select-none">03</span>
+                    <span className="font-display text-base font-semibold text-white">Routing</span>
                   </div>
-                  <p className="text-sm text-stone ml-12">
+                  <p className="text-sm text-zinc-500 ml-12">
                     Can leads be automatically sorted and assigned to the right team member?
                   </p>
                 </div>
@@ -661,27 +662,27 @@ export default function AuditPage(): React.ReactElement {
 
       {/* ── Stats (idle only) ── */}
       {state === 'idle' && (
-        <section className="py-16 px-6 bg-surface-alt border-y border-border">
+        <section className="py-16 px-6 bg-black">
           <div className="max-w-content mx-auto">
-            <h2 className="font-display text-2xl font-semibold text-ink text-center mb-10">
+            <h2 className="font-display text-2xl font-semibold text-white text-center mb-10">
               Most businesses fail at lead capture. Here is why.
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 text-center">
               <div>
-                <p className="font-display text-5xl font-bold text-ink">78%</p>
-                <p className="mt-2 text-sm text-stone max-w-[240px] mx-auto">
+                <p className="font-display text-5xl font-bold text-white">78%</p>
+                <p className="mt-2 text-sm text-zinc-500 max-w-[240px] mx-auto">
                   of contact forms collect only name and email. No budget, no timeline, no way to prioritize.
                 </p>
               </div>
               <div>
-                <p className="font-display text-5xl font-bold text-ink">5 min</p>
-                <p className="mt-2 text-sm text-stone max-w-[240px] mx-auto">
+                <p className="font-display text-5xl font-bold text-white">5 min</p>
+                <p className="mt-2 text-sm text-zinc-500 max-w-[240px] mx-auto">
                   is the window to respond before a lead goes cold. Most businesses take hours or days.
                 </p>
               </div>
               <div>
-                <p className="font-display text-5xl font-bold text-ink">0%</p>
-                <p className="mt-2 text-sm text-stone max-w-[240px] mx-auto">
+                <p className="font-display text-5xl font-bold text-white">0%</p>
+                <p className="mt-2 text-sm text-zinc-500 max-w-[240px] mx-auto">
                   of standard forms route leads to the right person. Every inquiry hits the same inbox.
                 </p>
               </div>
@@ -694,7 +695,7 @@ export default function AuditPage(): React.ReactElement {
       {state === 'success' && result && (
         <>
           {/* Overall score hero */}
-          <section ref={resultsRef} className="py-24 px-6 bg-ink">
+          <section ref={resultsRef} className="py-24 px-6 bg-black">
             <div className="max-w-content mx-auto text-center">
               <p className="text-sm text-stone-light font-body mb-2">Lead Capture Score</p>
               <h2 className="font-display text-3xl font-semibold text-white mb-2">
@@ -723,7 +724,7 @@ export default function AuditPage(): React.ReactElement {
           </section>
 
           {/* Category scores */}
-          <section className="py-24 px-6">
+          <section className="py-24 px-6 bg-white">
             <div className="max-w-content mx-auto">
               <h2 className="font-display text-3xl font-semibold text-ink text-center mb-10">
                 Your scores.
@@ -753,7 +754,7 @@ export default function AuditPage(): React.ReactElement {
 
           {/* Findings (skip for HawkLeads sites — covered in the "nailed it" section) */}
           {result.details.findings.length > 0 && !result.details.hasHawkLeads && (
-            <section className="py-24 px-6 bg-surface-alt border-y border-border">
+            <section className="py-24 px-6 bg-white">
               <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
                   <h2 className="font-display text-3xl font-semibold text-ink">
@@ -780,7 +781,7 @@ export default function AuditPage(): React.ReactElement {
           )}
 
           {/* Stats row */}
-          <section className="py-16 px-6">
+          <section className="py-16 px-6 bg-white">
             <div className="max-w-content mx-auto">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6 text-center">
                 <div>
@@ -806,7 +807,7 @@ export default function AuditPage(): React.ReactElement {
           {result.details.hasHawkLeads ? (
             <>
               {/* ── Perfect score: what you're doing right ── */}
-              <section className="py-24 px-6 bg-surface-alt border-y border-border">
+              <section className="py-24 px-6 bg-white">
                 <div className="max-w-content mx-auto">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
@@ -852,7 +853,7 @@ export default function AuditPage(): React.ReactElement {
               </section>
 
               {/* ── Share CTA ── */}
-              <section className="bg-ink py-24 px-6">
+              <section className="bg-black py-24 px-6">
                 <div className="max-w-content mx-auto text-center">
                   <h2 className="font-display text-4xl font-semibold text-white">
                     Know someone still using a basic contact form?
@@ -885,7 +886,7 @@ export default function AuditPage(): React.ReactElement {
               <BeforeAfterSection details={result.details} />
 
               {/* Final CTA */}
-              <section className="bg-ink py-24 px-6">
+              <section className="bg-black py-24 px-6">
                 <div className="max-w-content mx-auto text-center">
                   <h2 className="font-display text-4xl font-semibold text-white">
                     Fix this in 2 minutes.

@@ -27,18 +27,21 @@ const ILLUSTRATIONS: ReadonlyArray<(() => ReactElement) | undefined> = [
 
 export function FeaturesSection(): React.ReactElement {
   return (
-    <section className="py-24 px-6 bg-surface-alt border-y border-border">
+    <section className="py-24 px-6 bg-white">
       <div className="max-w-content mx-auto">
+        <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
+          Features
+        </p>
         <h2 className="font-display text-3xl font-semibold text-ink">
           What you get.
         </h2>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
           {FEATURES.map((feature, index) => {
             const Illustration = ILLUSTRATIONS[index];
             return (
               <div
                 key={feature.title}
-                className={`card animate-on-enter stagger-${String((index % 4) + 1)}`}
+                className={`bg-white border border-border rounded-md p-5 animate-on-enter stagger-${String((index % 4) + 1)}`}
               >
                 {Illustration !== undefined && (
                   <div className="mb-4 -mx-5 -mt-5 rounded-t-md border-b border-border bg-surface-alt overflow-hidden">

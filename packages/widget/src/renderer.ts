@@ -165,6 +165,103 @@ function getTriggerIcon(type: WidgetTheme['triggerIcon']): SVGElement | null {
   }
 }
 
+// ── Contrast Detection Helpers ─────────────────────────────────────────────
+function parseColor(color: string): [number, number, number] | null {
+  // Parse hex: #RGB, #RRGGBB
+  const hexMatch = /^#([0-9a-f]{3,8})$/i.exec(color.trim());
+  if (hexMatch) {
+    const hex = hexMatch[1];
+    if (!hex) return null;
+    if (hex.length === 3) {
+      const c0 = hex.charAt(0);
+      const c1 = hex.charAt(1);
+      const c2 = hex.charAt(2);
+      const r = parseInt(c0 + c0, 16);
+      const g = parseInt(c1 + c1, 16);
+      const b = parseInt(c2 + c2, 16);
+      if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+      return [r, g, b];
+    }
+    if (hex.length >= 6) {
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+      return [r, g, b];
+    }
+    return null;
+  }
+
+  // Parse rgb(r, g, b) or rgba(r, g, b, a)
+  const rgbMatch = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i.exec(color);
+  if (rgbMatch) {
+    const r = parseInt(rgbMatch[1] ?? '0', 10);
+    const g = parseInt(rgbMatch[2] ?? '0', 10);
+    const b = parseInt(rgbMatch[3] ?? '0', 10);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+    return [r, g, b];
+  }
+
+  return null;
+}
+
+function parseAlpha(color: string): number {
+  const rgbaMatch = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*([\d.]+)\s*\)/i.exec(color);
+  if (rgbaMatch && rgbaMatch[1] !== undefined) {
+    const a = parseFloat(rgbaMatch[1]);
+    return isNaN(a) ? 1 : a;
+  }
+  // If it's "transparent", alpha is 0
+  if (color.trim().toLowerCase() === 'transparent') return 0;
+  return 1;
+}
+
+function relativeLuminance(r: number, g: number, b: number): number {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * (rs ?? 0) + 0.7152 * (gs ?? 0) + 0.0722 * (bs ?? 0);
+}
+
+function contrastRatio(l1: number, l2: number): number {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+/** Walk up from an element to find the first non-transparent background color. */
+function sampleBackgroundAt(x: number, y: number): [number, number, number] | null {
+  try {
+    const target = document.elementFromPoint(x, y);
+    if (!target) return null;
+
+    let current: Element | null = target;
+    while (current && current !== document.documentElement) {
+      const style = getComputedStyle(current);
+      const bg = style.backgroundColor;
+      if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') {
+        const alpha = parseAlpha(bg);
+        if (alpha > 0.3) {
+          return parseColor(bg);
+        }
+      }
+      current = current.parentElement;
+    }
+
+    // If we reached the root, sample the documentElement / body
+    const bodyBg = getComputedStyle(document.body).backgroundColor;
+    if (bodyBg && bodyBg !== 'transparent' && bodyBg !== 'rgba(0, 0, 0, 0)') {
+      return parseColor(bodyBg);
+    }
+
+    // Default: assume white page background
+    return [255, 255, 255];
+  } catch {
+    return null;
+  }
+}
+
 // ── Helper: Create Element ─────────────────────────────────────────────────
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -211,6 +308,10 @@ export class WidgetRenderer {
   // Focus trap
   private previousActiveElement: Element | null = null;
   private boundKeyHandler: ((e: KeyboardEvent) => void) | null = null;
+
+  // Contrast adaptation
+  private contrastAdapted = false;
+  private resizeHandler: (() => void) | null = null;
 
   constructor(host: HTMLElement, callbacks: RendererCallbacks) {
     this.callbacks = callbacks;
@@ -263,6 +364,10 @@ export class WidgetRenderer {
     requestAnimationFrame(() => {
       animateTriggerEntrance(btn);
     });
+
+    // Detect background contrast after button is positioned
+    this.scheduleContrastDetection();
+    this.attachResizeListener();
   }
 
   // ── Show/Hide Trigger ────────────────────────────────────────────────
@@ -276,6 +381,94 @@ export class WidgetRenderer {
     if (this.triggerEl) {
       animateTriggerHide(this.triggerEl);
     }
+  }
+
+  // ── Contrast Detection ──────────────────────────────────────────────
+  private detectAndAdaptContrast(): void {
+    if (!this.triggerEl || !this.config) return;
+
+    try {
+      const btn = this.triggerEl;
+      const rect = btn.getBoundingClientRect();
+
+      // If button is not yet laid out, skip
+      if (rect.width === 0 || rect.height === 0) return;
+
+      // Sample the center of where the trigger sits
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Temporarily hide the widget host so elementFromPoint hits the page behind it
+      const host = this.shadow.host as HTMLElement;
+      const origPointerEvents = host.style.pointerEvents;
+      const origVisibility = host.style.visibility;
+      host.style.visibility = 'hidden';
+      host.style.pointerEvents = 'none';
+
+      const pageBg = sampleBackgroundAt(centerX, centerY);
+
+      // Restore host visibility
+      host.style.visibility = origVisibility;
+      host.style.pointerEvents = origPointerEvents;
+
+      if (!pageBg) return;
+
+      const buttonColor = parseColor(this.config.theme.primaryColor);
+      if (!buttonColor) return;
+
+      const pageLum = relativeLuminance(pageBg[0], pageBg[1], pageBg[2]);
+      const buttonLum = relativeLuminance(buttonColor[0], buttonColor[1], buttonColor[2]);
+
+      const ratio = contrastRatio(pageLum, buttonLum);
+
+      // If contrast is adequate (3:1 or better), no adaptation needed
+      if (ratio >= 3) {
+        // If we previously adapted but no longer need to, revert
+        if (this.contrastAdapted) {
+          btn.style.backgroundColor = '';
+          btn.style.color = '';
+          this.contrastAdapted = false;
+        }
+        return;
+      }
+
+      // Low contrast detected: adapt the button
+      const pageIsDark = pageLum < 0.5;
+
+      if (pageIsDark) {
+        // Dark background + dark button: switch to white bg, dark text
+        btn.style.backgroundColor = '#FFFFFF';
+        btn.style.color = '#0F172A';
+      } else {
+        // Light background + light button: switch to dark bg, white text
+        btn.style.backgroundColor = '#0F172A';
+        btn.style.color = '#FFFFFF';
+      }
+
+      this.contrastAdapted = true;
+    } catch {
+      // Contrast detection is non-blocking; fail silently
+    }
+  }
+
+  private scheduleContrastDetection(): void {
+    // Use two rAF to ensure the trigger is fully rendered and positioned
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.detectAndAdaptContrast();
+      });
+    });
+  }
+
+  private attachResizeListener(): void {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    this.resizeHandler = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        this.detectAndAdaptContrast();
+      }, 300);
+    };
+    window.addEventListener('resize', this.resizeHandler, { passive: true });
   }
 
   // Flag for return visitor welcome
@@ -1358,6 +1551,10 @@ export class WidgetRenderer {
   // ── Destroy ──────────────────────────────────────────────────────────
   destroy(): void {
     this.disableFocusTrap();
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+      this.resizeHandler = null;
+    }
     while (this.shadow.firstChild) {
       this.shadow.removeChild(this.shadow.firstChild);
     }
@@ -1368,5 +1565,6 @@ export class WidgetRenderer {
     this.contentEl = null;
     this.backBtn = null;
     this.ariaLiveRegion = null;
+    this.contrastAdapted = false;
   }
 }
