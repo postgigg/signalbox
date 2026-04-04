@@ -170,7 +170,7 @@ export class BehaviorTracker {
   }
 
   getSessionData(): BehavioralSessionData {
-    const timeOnSite = Math.round((Date.now() - this.startedAt) / 1000);
+    const timeOnSite = Math.min(86400, Math.round((Date.now() - this.startedAt) / 1000));
     return {
       pagesViewed: this.pagesViewed,
       pageUrls: [...this.pageUrls],
