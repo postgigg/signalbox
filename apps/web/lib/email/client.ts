@@ -49,7 +49,7 @@ export async function sendEmail(
 ): Promise<SendEmailResult> {
   const resend = getResend();
 
-  const from = options.from ?? `${APP_NAME} <${NO_REPLY_EMAIL}>`;
+  const from = options.from ?? process.env.EMAIL_FROM ?? `${APP_NAME} <${NO_REPLY_EMAIL}>`;
 
   try {
     const emailPayload: Parameters<typeof resend.emails.send>[0] = {

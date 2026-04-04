@@ -84,7 +84,7 @@ function buildNotificationHtml(lead: FailedNotificationRow): string {
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.io>';
 
   const fiveMinutesAgo = new Date(Date.now() - MIN_AGE_MINUTES * 60 * 1000).toISOString();
   const twentyFourHoursAgo = new Date(Date.now() - RETRY_WINDOW_HOURS * 60 * 60 * 1000).toISOString();

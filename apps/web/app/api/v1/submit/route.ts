@@ -439,7 +439,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           submitted: true,
           submission_id: submission.id,
         })
-    ).catch(() => { /* visitor session insert failure is non-blocking */ });
+    ).catch((err: unknown) => {
+      console.error('[submit] Visitor session insert failed:', err instanceof Error ? err.message : String(err));
+    });
   }
 
   // 16. Atomically increment widget submission_count (prevents race conditions)
@@ -564,8 +566,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
               .eq('id', submission.id);
           });
       })
-      .catch(() => {
-        // Email delivery failure — non-blocking
+      .catch((err: unknown) => {
+        console.error('[submit] Email delivery failed:', err instanceof Error ? err.message : String(err));
       });
   }
 
@@ -635,8 +637,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           ruleName: ruleResult.data.name,
         });
       })
-      .catch(() => {
-        // Assignee notification failure — non-blocking
+      .catch((err: unknown) => {
+        console.error('[submit] Assignee notification failed:', err instanceof Error ? err.message : String(err));
       });
   }
 
@@ -669,16 +671,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           });
         }
       })
-      .catch(() => {
-        // Slack delivery failure — non-blocking
+      .catch((err: unknown) => {
+        console.error('[submit] Slack notification failed:', err instanceof Error ? err.message : String(err));
       });
   }
 
   // 19b. Enroll in drip sequence for warm/cold leads (Pro+ only)
   if ((leadTier === 'warm' || leadTier === 'cold') && planLimits.dripSequences) {
     const dripTier: 'warm' | 'cold' = leadTier;
-    enrollInDripSequence(admin, account.id, widget.id, submission.id, dripTier).catch(() => {
-      // Drip enrollment failure — non-blocking
+    enrollInDripSequence(admin, account.id, widget.id, submission.id, dripTier).catch((err: unknown) => {
+      console.error('[submit] Drip enrollment failed:', err instanceof Error ? err.message : String(err));
     });
   }
 
@@ -693,8 +695,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     rawScore,
     answers: denormalized,
     createdAt: new Date().toISOString(),
-  }).catch(() => {
-    // Webhook delivery failure — non-blocking
+  }).catch((err: unknown) => {
+    console.error('[submit] Webhook delivery failed:', err instanceof Error ? err.message : String(err));
   });
 
   // 20. Auto-reply confirmation email to the visitor
@@ -717,8 +719,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       text: rendered.text,
       ...(account.notification_email ? { replyTo: account.notification_email } : {}),
       tags: [{ name: 'type', value: 'auto_reply' }],
-    }).catch(() => {
-      // Auto-reply delivery failure — non-blocking
+    }).catch((err: unknown) => {
+      console.error('[submit] Auto-reply delivery failed:', err instanceof Error ? err.message : String(err));
     });
   }
 

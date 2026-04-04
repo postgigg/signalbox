@@ -81,7 +81,7 @@ function buildFollowupHtml(lead: HotLeadRow): string {
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.io>';
 
   // Fetch all non-deleted accounts that have notification emails set
   const { data: activeAccounts, error: activeError } = await supabase

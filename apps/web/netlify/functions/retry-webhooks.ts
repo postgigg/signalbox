@@ -208,7 +208,7 @@ async function sendWebhookFailureEmail(
 export default async function handler(): Promise<void> {
   const supabase = createAdminClient();
   const resend = createResendClient();
-  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.app>';
+  const fromAddress = process.env.EMAIL_FROM ?? 'HawkLeads <noreply@hawkleads.io>';
 
   // Find webhook endpoints that have failed but are still retryable,
   // and whose backoff window has passed
