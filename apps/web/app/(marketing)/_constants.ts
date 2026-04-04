@@ -1,7 +1,7 @@
 export const STATS = [
-  { number: '42%', body: 'of sales reps say bad lead quality is their biggest problem, per Gleanster Research. HawkLeads fixes what lands in your inbox.' },
-  { number: '5min', body: 'is the window to reach a lead before your odds drop 10x, per Harvard Business Review. Every minute counts.' },
-  { number: '75%', body: 'of inbound leads are not ready for sales, per Gleanster Research. Score them first so you only call the ones that are.' },
+  { number: '42%', body: 'of sales reps say lead quality is their top problem. (Gleanster)' },
+  { number: '5min', body: 'to reach a lead before your odds drop 10x. (Harvard Business Review)' },
+  { number: '75%', body: 'of inbound leads are not sales-ready. Score before you call. (Gleanster)' },
 ] as const;
 
 export const STEPS = [
@@ -131,12 +131,6 @@ export const PLANS: readonly PricingPlan[] = [
   },
 ] as const;
 
-export const TEMPLATES_PREVIEW = [
-  { name: 'Home Services', steps: 4, topics: 'Service type, timeline, property size, budget' },
-  { name: 'Legal', steps: 3, topics: 'Case type, urgency, consultation preference' },
-  { name: 'Real Estate', steps: 4, topics: 'Buy/sell, property type, price range, timeline' },
-] as const;
-
 export interface FaqItem {
   readonly question: string;
   readonly answer: string;
@@ -159,35 +153,29 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
       'Every answer is scored based on weights you configure. The total produces a 0 to 100 score and a tier: hot, warm, or cold. Hot leads trigger an instant email with the score, all their answers, and their contact info. Everything appears in your dashboard as a prioritized call list. Webhooks fire in parallel so your CRM is updated within seconds.',
   },
   {
-    question: 'Does it integrate with my CRM?',
-    answer:
-      'All plans include webhook integrations. When a lead submits, a signed webhook fires to any URL you configure with the full payload: score, tier, answers, contact info, and UTM data. Connect to Salesforce, HubSpot, Zapier, Make, or any tool that accepts HTTP. Pro plans add lead routing rules to auto-assign leads to the right team member based on score or answers.',
-  },
-  {
     question: 'How is the score calculated?',
     answer:
       'You assign a weight (0 to 100) to each answer option in your flow. When a visitor completes the widget, their answer weights are summed and normalized to a 0 to 100 scale. You set the thresholds for hot, warm, and cold tiers. A visitor who picks "budget over $10k" and "timeline this week" will score higher than one who picks "just browsing." You control the math entirely.',
-  },
-  {
-    question: 'Is there a contract?',
-    answer:
-      'No. All plans are month-to-month. Cancel anytime from your billing settings. When you cancel, your access continues through the end of the current billing period. Annual billing is available and saves 17%. Your data is retained for 90 days after cancellation.',
-  },
-  {
-    question: 'What if I need more than 25 widgets?',
-    answer:
-      'Contact us at support@hawkleads.io for custom pricing. We can accommodate higher widget counts, custom SLAs, and dedicated support for enterprise needs.',
   },
   {
     question: 'Will adding steps to my form reduce submissions?',
     answer:
       'Yes, intentionally. You will get fewer submissions, but every single one comes pre-qualified with budget, timeline, and service details. Businesses using HawkLeads typically see 20-30% fewer total submissions but 2-3x more qualified conversations. The math works: 40 random leads and 6 closes becomes 30 qualified leads and 8 closes. Fewer forms, more revenue.',
   },
-  {
-    question: 'What if a lead scores low but turns out to be valuable?',
-    answer:
-      'Every lead is visible in your dashboard regardless of score. Scoring sorts your call list, it does not delete anyone. A lead that scores 15 is still there, just further down the list. If you spot a low-scoring lead that looks promising, one click promotes them. Over time, adjusting your score weights makes this rarer. But the safety net is always there: nothing is ever hidden or discarded.',
-  },
+] as const;
+
+export const TRUST_METRICS = [
+  { number: '2 min', label: 'Average setup time' },
+  { number: '<25KB', label: 'Widget bundle size' },
+  { number: '99.9%', label: 'API uptime' },
+  { number: '0', label: 'Third-party trackers' },
+] as const;
+
+export const TRUST_GUARANTEES = [
+  'No credit card to start',
+  'Cancel anytime, no penalty',
+  'Your data deleted on request',
+  'HTTPS everywhere',
 ] as const;
 
 export const COMPARISON_ROWS = [

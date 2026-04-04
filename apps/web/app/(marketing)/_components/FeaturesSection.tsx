@@ -26,17 +26,19 @@ const ILLUSTRATIONS: ReadonlyArray<(() => ReactElement) | undefined> = [
 ];
 
 export function FeaturesSection(): React.ReactElement {
+  const visibleFeatures = FEATURES.slice(0, 6);
+
   return (
     <section className="py-24 px-6 bg-white">
       <div className="max-w-content mx-auto">
         <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">
-          Features
+          Capabilities
         </p>
         <h2 className="font-display text-3xl font-semibold text-ink">
-          What you get.
+          Score, route, and close. All from one widget.
         </h2>
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-          {FEATURES.map((feature, index) => {
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {visibleFeatures.map((feature, index) => {
             const Illustration = ILLUSTRATIONS[index];
             return (
               <div
@@ -58,6 +60,14 @@ export function FeaturesSection(): React.ReactElement {
             );
           })}
         </div>
+        <p className="mt-8 text-center">
+          <a
+            href="/why-hawkleads"
+            className="text-sm text-stone font-medium underline hover:text-ink transition-colors duration-fast"
+          >
+            See all features
+          </a>
+        </p>
       </div>
     </section>
   );

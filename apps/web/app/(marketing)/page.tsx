@@ -6,14 +6,15 @@ import { useState, useCallback, useRef } from 'react';
 import { useInViewAnimations } from '@/lib/use-in-view';
 
 import { AnthemPlayer } from './_components/AnthemPlayer';
+import { BeforeAfter } from './_components/BeforeAfter';
 import { HowItWorks } from './_components/HowItWorks';
 import { FeaturesSection } from './_components/FeaturesSection';
-import { TrustSignals } from './_components/TrustSignals';
+import { IndustryHooks } from './_components/IndustryHooks';
 import { FaqAccordion } from './_components/FaqAccordion';
 import { PricingToggle } from './_components/PricingToggle';
 import { HeroIllustration } from './_components/HeroIllustration';
 import { IndustryCarousel } from './_components/IndustryCarousel';
-import { STATS, PLANS, COMPARISON_ROWS, TEMPLATES_PREVIEW } from './_constants';
+import { STATS, PLANS, COMPARISON_ROWS, TRUST_GUARANTEES } from './_constants';
 
 export default function LandingPage(): React.ReactElement {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -29,6 +30,11 @@ export default function LandingPage(): React.ReactElement {
 
   return (
     <div>
+      {/* ══════════════════════════════════════════
+          ACT 1 — THE PROBLEM (dark)
+          Hook them with pain, back it with data
+          ══════════════════════════════════════════ */}
+
       {/* ── Hero ── */}
       <section className="bg-black pt-36 pb-20 px-6">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -74,11 +80,18 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
-      <IndustryCarousel />
+      {/* ══════════════════════════════════════════
+          ACT 2 — THE TRANSFORMATION (white)
+          Show what changes when they use HawkLeads
+          ══════════════════════════════════════════ */}
 
-      <HowItWorks />
+      <BeforeAfter />
 
-      {/* ── Widget Preview ── */}
+      {/* ══════════════════════════════════════════
+          ACT 3 — THE PRODUCT (dark)
+          Make it tangible. Show the widget.
+          ══════════════════════════════════════════ */}
+
       <section className="bg-black py-24 px-6">
         <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-on-enter">
@@ -99,9 +112,32 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
+      {/* ══════════════════════════════════════════
+          ACT 4 — THE EASE (white)
+          Remove friction. Show it takes 2 minutes.
+          ══════════════════════════════════════════ */}
+
+      <HowItWorks />
+
+      {/* ══════════════════════════════════════════
+          ACT 5 — THE RELEVANCE (dark)
+          "This is built for MY industry"
+          ══════════════════════════════════════════ */}
+
+      <IndustryHooks />
+
+      {/* ══════════════════════════════════════════
+          ACT 6 — THE SUBSTANCE (white)
+          Show depth. Prove it is not a toy.
+          ══════════════════════════════════════════ */}
+
       <FeaturesSection />
 
-      {/* ── Comparison ── */}
+      {/* ══════════════════════════════════════════
+          ACT 7 — THE CONTRAST (dark)
+          Why this beats what they have now
+          ══════════════════════════════════════════ */}
+
       <section className="bg-black py-24 px-6">
         <div className="max-w-content mx-auto">
           <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">Why not just a form</p>
@@ -117,8 +153,22 @@ export default function LandingPage(): React.ReactElement {
               <tbody>
                 {COMPARISON_ROWS.map((row) => (
                   <tr key={row.form} className="border-t border-zinc-800">
-                    <td className="py-3.5 px-5 text-zinc-500">{row.form}</td>
-                    <td className="py-3.5 px-5 text-zinc-200 font-medium">{row.hawkleads}</td>
+                    <td className="py-3.5 px-5 text-zinc-500">
+                      <span className="inline-flex items-center gap-2">
+                        <svg className="w-4 h-4 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        {row.form}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5 text-zinc-200 font-medium">
+                      <span className="inline-flex items-center gap-2">
+                        <svg className="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {row.hawkleads}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -127,7 +177,12 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* ── Pricing ── */}
+      {/* ══════════════════════════════════════════
+          ACT 8 — THE DECISION (white)
+          Pricing + trust signals together.
+          Trust right where skepticism peaks.
+          ══════════════════════════════════════════ */}
+
       <section className="py-24 px-6 bg-white">
         <div className="max-w-content mx-auto">
           <div className="text-center">
@@ -138,7 +193,12 @@ export default function LandingPage(): React.ReactElement {
           </div>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PLANS.map((plan, index) => (
-              <div key={plan.name} className={`bg-white border rounded-md p-5 flex flex-col animate-on-enter stagger-${String(index + 1)} ${plan.highlighted ? 'border-ink border-2 ring-1 ring-ink/5' : 'border-border'}`}>
+              <div key={plan.name} className={`bg-white border rounded-md p-5 flex flex-col relative animate-on-enter stagger-${String(index + 1)} ${plan.highlighted ? 'border-ink border-2 ring-1 ring-ink/5' : 'border-border'}`}>
+                {plan.highlighted && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-ink text-white text-xs font-body font-medium px-3 py-1 rounded-md">
+                    Most Popular
+                  </span>
+                )}
                 <h3 className="font-display text-xl font-semibold text-ink">{plan.name}</h3>
                 <p className="mt-1 text-sm text-stone">{plan.description}</p>
                 <div className="mt-4">
@@ -146,6 +206,7 @@ export default function LandingPage(): React.ReactElement {
                   <span className="text-sm text-stone">/mo</span>
                   {isAnnual && <span className="ml-2 text-xs text-stone-light">billed annually</span>}
                 </div>
+                <p className="mt-2 text-xs text-stone">{plan.bestFor}</p>
                 <ul className="mt-5 space-y-2 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-stone">
@@ -158,50 +219,53 @@ export default function LandingPage(): React.ReactElement {
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-sm text-stone">
+
+          {/* Trust guarantees — right where the buy decision happens */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {TRUST_GUARANTEES.map((guarantee) => (
+              <span key={guarantee} className="flex items-center gap-2 text-sm text-stone">
+                <svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                {guarantee}
+              </span>
+            ))}
+          </div>
+
+          <p className="mt-6 text-center text-sm text-stone">
             One extra closed deal per month pays for a full year.{' '}
             <Link href="/pricing" className="underline hover:text-ink transition-colors duration-fast">Compare all features</Link>
           </p>
         </div>
       </section>
 
-      {/* ── Templates ── */}
-      <section className="bg-black py-24 px-6">
-        <div className="max-w-content mx-auto">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-zinc-500 mb-4">Templates</p>
-              <h2 className="font-display text-3xl font-semibold text-white">Start with a template. Go live in two minutes.</h2>
-            </div>
-            <Link href="/templates" className="text-sm text-zinc-400 font-medium hover:text-white transition-colors duration-fast whitespace-nowrap">See all</Link>
-          </div>
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {TEMPLATES_PREVIEW.map((template, index) => (
-              <Link key={template.name} href="/templates" className={`block rounded-md border border-zinc-800 bg-zinc-900 p-5 transition-colors duration-fast hover:border-zinc-700 animate-on-enter stagger-${String(index + 1)}`}>
-                <h3 className="font-body text-base font-semibold text-white">{template.name}</h3>
-                <p className="mt-1 text-sm text-zinc-400">{template.steps} steps</p>
-                <p className="mt-2 text-xs text-zinc-600">{template.topics}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* ══════════════════════════════════════════
+          ACT 9 — LAST OBJECTIONS (white, with divider)
+          Answer the remaining questions
+          ══════════════════════════════════════════ */}
 
-      {/* ── FAQ ── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-content mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div>
+      <section className="pb-24 px-6 bg-white">
+        <div className="max-w-prose mx-auto">
+          <div className="border-t border-border pt-20" />
+          <div className="text-center mb-10">
             <p className="text-xs font-body font-semibold uppercase tracking-[0.15em] text-stone mb-4">FAQ</p>
-            <h2 className="font-display text-3xl font-semibold text-ink">Questions.</h2>
-            <p className="mt-3 text-base text-stone">If yours is not here, reach out. We respond quickly.</p>
+            <h2 className="font-display text-3xl font-semibold text-ink">Common questions, straight answers.</h2>
+            <p className="mt-3 text-base text-stone">
+              If yours is not here, email{' '}
+              <a href="mailto:support@hawkleads.io" className="underline hover:text-ink transition-colors duration-fast">support@hawkleads.io</a>.
+            </p>
           </div>
           <FaqAccordion />
         </div>
       </section>
 
-      <TrustSignals />
+      {/* ══════════════════════════════════════════
+          ACT 10 — THE CLOSE (dark)
+          Industry breadth → urgency → CTA
+          ══════════════════════════════════════════ */}
 
-      {/* ── CTA ── */}
+      <IndustryCarousel />
+
       <section ref={ctaSectionRef} className="bg-black py-24 px-6 relative overflow-hidden">
         <div className="cta-flash-overlay" />
         <div className="cta-bolt-container">

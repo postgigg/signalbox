@@ -3,7 +3,7 @@ import { BeforeIllustration, AfterIllustration } from './BeforeAfterIllustration
 
 export function BeforeAfter(): React.ReactElement {
   return (
-    <section className="py-24 px-6">
+    <section className="py-24 px-6 bg-white">
       <div className="max-w-content mx-auto">
         <h2 className="font-display text-3xl font-semibold text-ink text-center">
           Before and after.
