@@ -43,6 +43,7 @@ const FEATURES = [
   { title: 'Lead routing', body: 'Auto-assign leads based on score, tier, or answers.' },
   { title: 'Multi-client dashboard', body: 'Organize widgets by client. Switch contexts instantly.' },
   { title: 'A/B testing', body: 'Test questions across client sites. Data picks the winner.' },
+  { title: 'Booking calendar', body: 'Hot leads book calls directly inside the widget. No external tools needed.' },
   { title: 'Priority support', body: '4-hour response during business hours.' },
 ] as const;
 

@@ -32,6 +32,7 @@ export interface PlanConfig {
     predictiveScoring: boolean;
     advancedRouting: boolean;
     maxRoutingRules: number;
+    booking: boolean;
   };
 }
 
@@ -66,6 +67,7 @@ export const PLANS: Record<string, PlanConfig> = {
       predictiveScoring: false,
       advancedRouting: false,
       maxRoutingRules: 0,
+      booking: false,
     },
   },
   trial: {
@@ -98,6 +100,7 @@ export const PLANS: Record<string, PlanConfig> = {
       predictiveScoring: false,
       advancedRouting: false,
       maxRoutingRules: 0,
+      booking: false,
     },
   },
   starter: {
@@ -130,6 +133,7 @@ export const PLANS: Record<string, PlanConfig> = {
       predictiveScoring: false,
       advancedRouting: false,
       maxRoutingRules: 0,
+      booking: false,
     },
   },
   pro: {
@@ -162,6 +166,7 @@ export const PLANS: Record<string, PlanConfig> = {
       predictiveScoring: true,
       advancedRouting: true,
       maxRoutingRules: 15,
+      booking: true,
     },
   },
   agency: {
@@ -194,6 +199,7 @@ export const PLANS: Record<string, PlanConfig> = {
       predictiveScoring: true,
       advancedRouting: true,
       maxRoutingRules: 50,
+      booking: true,
     },
   },
 } as const;
@@ -462,6 +468,16 @@ export const RATE_LIMITS = {
     tokens: 10,
     window: '1 m' as const,
     prefix: 'rl:shopify_gdpr',
+  },
+  booking_slots: {
+    tokens: 30,
+    window: '1 m' as const,
+    prefix: 'rl:booking_slots',
+  },
+  booking_create: {
+    tokens: 10,
+    window: '1 m' as const,
+    prefix: 'rl:booking_create',
   },
 } as const;
 

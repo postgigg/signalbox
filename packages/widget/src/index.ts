@@ -5,9 +5,11 @@ import type {
   ConfirmationConfig,
   ValidationErrors,
   FlowStep,
+  BookingConfig,
+  SlotsResponse,
 } from './types';
 import { WidgetStateMachine } from './state';
-import { fetchConfig, submitForm, WidgetApiError } from './api';
+import { fetchConfig, submitForm, fetchSlots, createBooking, WidgetApiError } from './api';
 import { WidgetRenderer } from './renderer';
 import { validateContact, hasErrors } from './validators';
 import { BehaviorTracker } from './tracker';
@@ -275,8 +277,8 @@ class HawkLeadsWidget {
 
   private handleClose(): void {
     const state = this.machine.getState();
-    if (state === 'open' || state === 'complete' || state === 'error') {
-      // Track abandonment if closing mid-flow (not on complete/error)
+    if (state === 'open' || state === 'complete' || state === 'error' || state === 'booking') {
+      // Track abandonment if closing mid-flow (not on complete/error/booking)
       if (state === 'open') {
         const ctx = this.machine.getContext();
         trackEvent(this.apiUrl, this.widgetKey, 'step_abandon', ctx.currentStepIndex, this.abTestId, this.abVariant);
@@ -286,6 +288,10 @@ class HawkLeadsWidget {
         this.machine.reset();
       } else if (state === 'error') {
         this.machine.retry();
+      } else if (state === 'booking') {
+        // Skip booking and close
+        this.machine.bookingSkipped();
+        this.machine.reset();
       } else {
         this.machine.close();
       }
@@ -423,6 +429,19 @@ class HawkLeadsWidget {
 
       const result = await submitForm(payload, this.apiUrl);
 
+      // Check if booking is available for this lead
+      if (result.booking?.enabled && result.id && !result.gated) {
+        const bookingConfig: BookingConfig = {
+          enabled: true,
+          headingText: result.booking.headingText,
+          slotDuration: result.booking.slotDuration,
+          timezone: result.booking.timezone,
+        };
+        this.machine.bookingAvailable(result.tier, result.id, bookingConfig);
+        void this.renderBookingView(bookingConfig, result.id);
+        return;
+      }
+
       this.machine.submitSuccess(result.tier);
 
       // Show confirmation based on tier
@@ -446,6 +465,95 @@ class HawkLeadsWidget {
       }
       this.machine.submitFailed(message);
       this.renderer.renderError(message);
+    }
+  }
+
+  // ── Booking Flow ──────────────────────────────────────────────────────
+  private async renderBookingView(
+    bookingConfig: BookingConfig,
+    submissionId: string,
+    errorMessage?: string
+  ): Promise<void> {
+    // Show loading state
+    this.renderer.renderBookingLoading(bookingConfig.headingText);
+
+    try {
+      const slotsResponse: SlotsResponse = await fetchSlots(
+        this.widgetKey,
+        this.apiUrl,
+        undefined,
+        7,
+        submissionId
+      );
+
+      this.renderer.renderBooking(
+        bookingConfig.headingText,
+        slotsResponse.timezone,
+        slotsResponse.slots,
+        (startsAt: string) => {
+          void this.handleSlotConfirmed(startsAt, submissionId, bookingConfig);
+        },
+        () => this.handleBookingSkip(),
+        errorMessage
+      );
+    } catch {
+      // If slots fail to load, skip to normal confirmation
+      this.handleBookingSkip();
+    }
+  }
+
+  private async handleSlotConfirmed(
+    startsAt: string,
+    submissionId: string,
+    bookingConfig: BookingConfig
+  ): Promise<void> {
+    const ctx = this.machine.getContext();
+    if (ctx.state !== 'booking') return;
+
+    try {
+      const result = await createBooking(this.widgetKey, this.apiUrl, {
+        submissionId,
+        startsAt,
+        visitorName: ctx.contact.name,
+        visitorEmail: ctx.contact.email,
+        visitorPhone: ctx.contact.phone,
+      });
+
+      this.machine.bookingConfirmed(result);
+
+      // Show booking confirmation with date/time details
+      const settings = ctx.config
+        ? (ctx.config as unknown as Record<string, unknown>)
+        : null;
+      const confirmText = settings ? 'Your call is booked.' : 'Your call is booked.';
+      this.renderer.renderBookingConfirmation(
+        confirmText,
+        result.startsAt,
+        result.timezone,
+        bookingConfig.slotDuration
+      );
+    } catch (err) {
+      if (err instanceof WidgetApiError && err.code === 'SLOT_TAKEN') {
+        // Re-render booking view with error message and fresh slots
+        void this.renderBookingView(bookingConfig, submissionId, err.message);
+        return;
+      }
+      // On other errors, skip to normal confirmation
+      this.handleBookingSkip();
+    }
+  }
+
+  private handleBookingSkip(): void {
+    const ctx = this.machine.getContext();
+    if (ctx.state !== 'booking') return;
+
+    this.machine.bookingSkipped();
+
+    // Show normal tier-based confirmation
+    if (ctx.config && ctx.resultTier) {
+      const confirmConfig: ConfirmationConfig =
+        ctx.config.confirmation[ctx.resultTier];
+      this.renderer.renderConfirmation(confirmConfig);
     }
   }
 

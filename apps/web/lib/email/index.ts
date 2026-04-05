@@ -21,6 +21,10 @@ export {
   renderLeadAssigned,
   renderTeamInvite,
   renderSubmissionConfirmation,
+  renderBookingConfirmation,
+  renderBookingAlert,
+  renderBookingReminder,
+  renderBookingRescheduled,
 } from './templates';
 
 export interface NewLeadEmailParams {

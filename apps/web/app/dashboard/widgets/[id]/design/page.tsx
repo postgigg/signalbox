@@ -141,6 +141,27 @@ export default function WidgetDesignPage(): React.ReactElement {
     sun: null,
   });
   const [offlineMessage, setOfflineMessage] = useState('We are currently closed. Leave your details and we will get back to you first thing.');
+
+  // Booking settings
+  const [bookingEnabled, setBookingEnabled] = useState(false);
+  const [bookingTiers, setBookingTiers] = useState<string[]>(['hot']);
+  const [bookingSlotDuration, setBookingSlotDuration] = useState(30);
+  const [bookingBuffer, setBookingBuffer] = useState(15);
+  const [bookingMinNotice, setBookingMinNotice] = useState(2);
+  const [bookingMaxAdvance, setBookingMaxAdvance] = useState(14);
+  const [bookingTimezone, setBookingTimezone] = useState('America/New_York');
+  const [bookingHeading, setBookingHeading] = useState('Book a call with our team');
+  const [bookingConfirmText, setBookingConfirmText] = useState('Your call is booked.');
+  const [bookingSchedule, setBookingSchedule] = useState<Record<string, { start: string; end: string } | null>>({
+    mon: { start: '09:00', end: '17:00' },
+    tue: { start: '09:00', end: '17:00' },
+    wed: { start: '09:00', end: '17:00' },
+    thu: { start: '09:00', end: '17:00' },
+    fri: { start: '09:00', end: '17:00' },
+    sat: null,
+    sun: null,
+  });
+
   const [previewContact, setPreviewContact] = useState(false);
   const [previewConfirmation, setPreviewConfirmation] = useState(false);
   const [previewLayout, setPreviewLayout] = useState(false);
@@ -284,6 +305,31 @@ export default function WidgetDesignPage(): React.ReactElement {
             if (savedBH.offlineMessage) setOfflineMessage(savedBH.offlineMessage);
           }
 
+          // Load booking settings if on pro/agency plan
+          if (accountData && (accountData.plan === 'pro' || accountData.plan === 'agency')) {
+            try {
+              const bookingRes = await fetch(`/api/v1/widgets/${widgetId}/booking-settings`);
+              if (bookingRes.ok) {
+                const bookingData = await bookingRes.json() as { settings: Record<string, unknown> };
+                const bs = bookingData.settings;
+                if (typeof bs.enabled === 'boolean') setBookingEnabled(bs.enabled);
+                if (Array.isArray(bs.tiers)) setBookingTiers(bs.tiers as string[]);
+                if (typeof bs.slot_duration_minutes === 'number') setBookingSlotDuration(bs.slot_duration_minutes);
+                if (typeof bs.buffer_minutes === 'number') setBookingBuffer(bs.buffer_minutes);
+                if (typeof bs.min_notice_hours === 'number') setBookingMinNotice(bs.min_notice_hours);
+                if (typeof bs.max_advance_days === 'number') setBookingMaxAdvance(bs.max_advance_days);
+                if (typeof bs.timezone === 'string') setBookingTimezone(bs.timezone);
+                if (typeof bs.heading_text === 'string') setBookingHeading(bs.heading_text);
+                if (typeof bs.confirm_text === 'string') setBookingConfirmText(bs.confirm_text);
+                if (bs.schedule && typeof bs.schedule === 'object') {
+                  setBookingSchedule(bs.schedule as Record<string, { start: string; end: string } | null>);
+                }
+              }
+            } catch {
+              // Booking settings load failed, use defaults
+            }
+          }
+
           const savedConfirmation = widget.confirmation as Record<string, { headline?: string; body?: string; ctaText?: string; ctaUrl?: string }> | null;
           if (savedConfirmation) {
             setConfirmation((prev) => ({
@@ -353,10 +399,33 @@ export default function WidgetDesignPage(): React.ReactElement {
         })
         .eq('id', widgetId);
 
-      if (!error) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+      if (error) {
+        setSaving(false);
+        return;
       }
+
+      // Save booking settings if on pro/agency plan
+      if (accountPlan === 'pro' || accountPlan === 'agency') {
+        await fetch(`/api/v1/widgets/${widgetId}/booking-settings`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            enabled: bookingEnabled,
+            tiers: bookingTiers,
+            slotDurationMinutes: bookingSlotDuration,
+            bufferMinutes: bookingBuffer,
+            minNoticeHours: bookingMinNotice,
+            maxAdvanceDays: bookingMaxAdvance,
+            timezone: bookingTimezone,
+            schedule: bookingSchedule,
+            headingText: bookingHeading,
+            confirmText: bookingConfirmText,
+          }),
+        }).catch(() => { /* booking settings save is best effort */ });
+      }
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
     } catch {
       // Save failed
     } finally {
@@ -736,6 +805,210 @@ export default function WidgetDesignPage(): React.ReactElement {
               )}
             </div>
           </div>
+
+          {/* Booking Settings (Pro/Agency only) */}
+          {(accountPlan === 'pro' || accountPlan === 'agency') && (
+            <div className="card">
+              <h3 className="font-body text-sm font-semibold text-ink mb-4">Booking Calendar</h3>
+              <div className="space-y-4">
+                <label className="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <span className="text-sm text-ink font-body">Enable booking calendar</span>
+                    <p className="text-xs text-stone mt-0.5">
+                      Hot leads can book a call directly in the widget after submitting.
+                    </p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={bookingEnabled}
+                    onChange={(e) => setBookingEnabled(e.target.checked)}
+                    className="rounded-sm border-border text-signal focus:ring-signal"
+                  />
+                </label>
+
+                {bookingEnabled && (
+                  <>
+                    {/* Tiers */}
+                    <div>
+                      <label className="input-label">Show booking to tiers</label>
+                      <div className="flex gap-4">
+                        {(['hot', 'warm', 'cold'] as const).map((tier) => (
+                          <label key={tier} className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={bookingTiers.includes(tier)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setBookingTiers((prev) => [...prev, tier]);
+                                } else {
+                                  setBookingTiers((prev) => prev.filter((t) => t !== tier));
+                                }
+                              }}
+                              className="rounded-sm border-border text-signal focus:ring-signal"
+                            />
+                            {tier.charAt(0).toUpperCase() + tier.slice(1)}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Slot Duration */}
+                    <div>
+                      <label htmlFor="bookingDuration" className="input-label">Slot duration</label>
+                      <select
+                        id="bookingDuration"
+                        value={bookingSlotDuration}
+                        onChange={(e) => setBookingSlotDuration(Number(e.target.value))}
+                        className="input-field h-10 text-sm"
+                      >
+                        <option value={15}>15 minutes</option>
+                        <option value={30}>30 minutes</option>
+                        <option value={45}>45 minutes</option>
+                        <option value={60}>60 minutes</option>
+                      </select>
+                    </div>
+
+                    {/* Buffer */}
+                    <div>
+                      <label htmlFor="bookingBuffer" className="input-label">Buffer between slots (minutes)</label>
+                      <input
+                        id="bookingBuffer"
+                        type="number"
+                        value={bookingBuffer}
+                        onChange={(e) => setBookingBuffer(Number(e.target.value))}
+                        className="input-field h-10 text-sm"
+                        min={0}
+                        max={60}
+                      />
+                    </div>
+
+                    {/* Min notice */}
+                    <div>
+                      <label htmlFor="bookingMinNotice" className="input-label">Minimum notice (hours)</label>
+                      <input
+                        id="bookingMinNotice"
+                        type="number"
+                        value={bookingMinNotice}
+                        onChange={(e) => setBookingMinNotice(Number(e.target.value))}
+                        className="input-field h-10 text-sm"
+                        min={1}
+                        max={72}
+                      />
+                    </div>
+
+                    {/* Max advance */}
+                    <div>
+                      <label htmlFor="bookingMaxAdvance" className="input-label">Max days in advance</label>
+                      <input
+                        id="bookingMaxAdvance"
+                        type="number"
+                        value={bookingMaxAdvance}
+                        onChange={(e) => setBookingMaxAdvance(Number(e.target.value))}
+                        className="input-field h-10 text-sm"
+                        min={1}
+                        max={60}
+                      />
+                    </div>
+
+                    {/* Timezone */}
+                    <div>
+                      <label htmlFor="bookingTz" className="input-label">Timezone</label>
+                      <select
+                        id="bookingTz"
+                        value={bookingTimezone}
+                        onChange={(e) => setBookingTimezone(e.target.value)}
+                        className="input-field h-10 text-sm"
+                      >
+                        {BH_TIMEZONES.map((tz) => (
+                          <option key={tz} value={tz}>{tz.replace(/_/g, ' ')}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Heading text */}
+                    <div>
+                      <label htmlFor="bookingHeading" className="input-label">Heading text</label>
+                      <input
+                        id="bookingHeading"
+                        type="text"
+                        value={bookingHeading}
+                        onChange={(e) => setBookingHeading(e.target.value)}
+                        className="input-field h-10 text-sm"
+                        maxLength={200}
+                      />
+                    </div>
+
+                    {/* Confirmation text */}
+                    <div>
+                      <label htmlFor="bookingConfirmText" className="input-label">Confirmation text</label>
+                      <input
+                        id="bookingConfirmText"
+                        type="text"
+                        value={bookingConfirmText}
+                        onChange={(e) => setBookingConfirmText(e.target.value)}
+                        className="input-field h-10 text-sm"
+                        maxLength={200}
+                      />
+                    </div>
+
+                    {/* Booking schedule */}
+                    <div>
+                      <label className="input-label mb-2">Booking availability</label>
+                      <div className="space-y-2">
+                        {Object.entries(DAY_LABELS).map(([key, label]) => {
+                          const daySchedule = bookingSchedule[key];
+                          const isEnabled = daySchedule !== null && daySchedule !== undefined;
+                          return (
+                            <div key={key} className="flex items-center gap-3">
+                              <input
+                                type="checkbox"
+                                checked={isEnabled}
+                                onChange={(e) => {
+                                  setBookingSchedule((prev) => ({
+                                    ...prev,
+                                    [key]: e.target.checked ? { start: '09:00', end: '17:00' } : null,
+                                  }));
+                                }}
+                                className="rounded-sm border-border text-signal focus:ring-signal"
+                              />
+                              <span className="text-sm text-ink w-24">{label}</span>
+                              {isEnabled && daySchedule && (
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="time"
+                                    value={daySchedule.start}
+                                    onChange={(e) => {
+                                      setBookingSchedule((prev) => ({
+                                        ...prev,
+                                        [key]: { start: e.target.value, end: daySchedule.end },
+                                      }));
+                                    }}
+                                    className="input-field h-8 text-xs px-2 w-28"
+                                  />
+                                  <span className="text-xs text-stone">to</span>
+                                  <input
+                                    type="time"
+                                    value={daySchedule.end}
+                                    onChange={(e) => {
+                                      setBookingSchedule((prev) => ({
+                                        ...prev,
+                                        [key]: { start: daySchedule.start, end: e.target.value },
+                                      }));
+                                    }}
+                                    className="input-field h-8 text-xs px-2 w-28"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Confirmation Messages */}
           <div className="card" ref={confirmationSectionRef}>

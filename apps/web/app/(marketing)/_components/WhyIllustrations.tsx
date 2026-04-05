@@ -317,7 +317,72 @@ export function SolutionCallListIllustration(): React.ReactElement {
   );
 }
 
-/* ── Solution 3: Automated Nurture ── */
+/* ── Solution 3: Booking Calendar ── */
+export function SolutionBookingIllustration(): React.ReactElement {
+  return (
+    <div className="step-illustration" aria-hidden="true">
+      <svg viewBox="0 0 480 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+        {/* Widget frame */}
+        <rect x="40" y="16" width="400" height="208" rx="8" fill="#18181B" stroke="#27272A" strokeWidth="1.5" />
+        <rect x="40" y="16" width="400" height="30" rx="8" fill="#18181B" />
+        <rect x="40" y="44" width="400" height="1" fill="#27272A" />
+        <text x="58" y="36" fontSize="10" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600">Book a call with our team</text>
+
+        {/* Date strip */}
+        <g className="why-booking-dates">
+          <rect x="56" y="56" width="56" height="44" rx="6" fill="#27272A" stroke="#27272A" strokeWidth="1.5" />
+          <text x="84" y="72" fontSize="8" fontFamily="var(--font-body)" fill="#71717A" fontWeight="500" textAnchor="middle">MON</text>
+          <text x="84" y="90" fontSize="14" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="600" textAnchor="middle">7</text>
+
+          <rect x="120" y="56" width="56" height="44" rx="6" fill="#2563EB" opacity="0.15" stroke="#2563EB" strokeWidth="1.5" />
+          <text x="148" y="72" fontSize="8" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="500" textAnchor="middle">TUE</text>
+          <text x="148" y="90" fontSize="14" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="700" textAnchor="middle">8</text>
+
+          <rect x="184" y="56" width="56" height="44" rx="6" fill="#27272A" stroke="#27272A" strokeWidth="1.5" />
+          <text x="212" y="72" fontSize="8" fontFamily="var(--font-body)" fill="#71717A" fontWeight="500" textAnchor="middle">WED</text>
+          <text x="212" y="90" fontSize="14" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="600" textAnchor="middle">9</text>
+
+          <rect x="248" y="56" width="56" height="44" rx="6" fill="#27272A" stroke="#27272A" strokeWidth="1.5" />
+          <text x="276" y="72" fontSize="8" fontFamily="var(--font-body)" fill="#71717A" fontWeight="500" textAnchor="middle">THU</text>
+          <text x="276" y="90" fontSize="14" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="600" textAnchor="middle">10</text>
+
+          <rect x="312" y="56" width="56" height="44" rx="6" fill="#27272A" stroke="#27272A" strokeWidth="1.5" />
+          <text x="340" y="72" fontSize="8" fontFamily="var(--font-body)" fill="#71717A" fontWeight="500" textAnchor="middle">FRI</text>
+          <text x="340" y="90" fontSize="14" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="600" textAnchor="middle">11</text>
+        </g>
+
+        {/* Time slots */}
+        <g className="why-booking-slots">
+          <rect x="56" y="110" width="168" height="32" rx="6" fill="#1C1C1F" stroke="#27272A" strokeWidth="1.5" />
+          <text x="140" y="130" fontSize="11" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="500" textAnchor="middle">9:00 AM</text>
+
+          <rect x="232" y="110" width="168" height="32" rx="6" fill="#2563EB" opacity="0.15" stroke="#2563EB" strokeWidth="1.5" />
+          <text x="316" y="130" fontSize="11" fontFamily="var(--font-body)" fill="#2563EB" fontWeight="600" textAnchor="middle">9:30 AM</text>
+
+          <rect x="56" y="150" width="168" height="32" rx="6" fill="#1C1C1F" stroke="#27272A" strokeWidth="1.5" />
+          <text x="140" y="170" fontSize="11" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="500" textAnchor="middle">10:00 AM</text>
+
+          <rect x="232" y="150" width="168" height="32" rx="6" fill="#1C1C1F" stroke="#27272A" strokeWidth="1.5" />
+          <text x="316" y="170" fontSize="11" fontFamily="var(--font-body)" fill="#A1A1AA" fontWeight="500" textAnchor="middle">10:30 AM</text>
+        </g>
+
+        {/* Confirm button */}
+        <g className="why-booking-confirm">
+          <rect x="56" y="192" width="344" height="24" rx="6" fill="#2563EB" />
+          <text x="228" y="208" fontSize="10" fontFamily="var(--font-body)" fill="#FFFFFF" fontWeight="600" textAnchor="middle">Confirm: Tue Apr 8, 9:30 AM</text>
+        </g>
+
+        {/* Hot badge floating top-right */}
+        <g className="why-booking-hot">
+          <rect x="376" y="56" width="50" height="22" rx="11" fill="#DC2626" opacity="0.15" />
+          <text x="389" y="71" fontSize="9" fontFamily="var(--font-body)" fill="#DC2626" fontWeight="600">Hot 92</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ── Solution 4: Automated Nurture ── */
 export function SolutionNurtureIllustration(): React.ReactElement {
   return (
     <div className="step-illustration" aria-hidden="true">

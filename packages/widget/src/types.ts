@@ -5,6 +5,7 @@ export type WidgetState =
   | 'ready'
   | 'open'
   | 'submitting'
+  | 'booking'
   | 'complete'
   | 'error'
   | 'disabled';
@@ -155,6 +156,56 @@ export interface SubmitPayload {
 
 export interface SubmitResponse {
   tier: 'hot' | 'warm' | 'cold';
+  id?: string;
+  score?: number;
+  gated?: boolean;
+  booking?: {
+    enabled: boolean;
+    headingText: string;
+    slotDuration: number;
+    timezone: string;
+  };
+}
+
+// ── Booking Types ────────────────────────────────────────────────────────
+export interface BookingConfig {
+  enabled: boolean;
+  headingText: string;
+  slotDuration: number;
+  timezone: string;
+}
+
+export interface BookingTimeSlot {
+  start: string;
+  end: string;
+  startsAt: string;
+  endsAt: string;
+}
+
+export interface BookingDaySlots {
+  date: string;
+  dayLabel: string;
+  slots: BookingTimeSlot[];
+}
+
+export interface SlotsResponse {
+  timezone: string;
+  slots: BookingDaySlots[];
+}
+
+export interface CreateBookingPayload {
+  submissionId: string;
+  startsAt: string;
+  visitorName: string;
+  visitorEmail: string;
+  visitorPhone?: string;
+}
+
+export interface BookingResponse {
+  bookingId: string;
+  startsAt: string;
+  endsAt: string;
+  timezone: string;
 }
 
 // ── Validation ─────────────────────────────────────────────────────────────
@@ -175,6 +226,9 @@ export interface WidgetContext {
   errorMessage: string;
   loadedAt: number;
   resultTier: 'hot' | 'warm' | 'cold' | null;
+  submissionId: string | null;
+  bookingConfig: BookingConfig | null;
+  bookingResult: BookingResponse | null;
 }
 
 // ── Global Config ──────────────────────────────────────────────────────────

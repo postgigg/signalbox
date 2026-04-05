@@ -19,6 +19,7 @@ const PLAN_FEATURES = [
   { feature: 'Lead routing rules', free: false, starter: false, pro: true, agency: true },
   { feature: 'A/B testing', free: false, starter: false, pro: true, agency: true },
   { feature: 'Drip email sequences', free: false, starter: false, pro: true, agency: true },
+  { feature: 'Booking calendar', free: false, starter: false, pro: true, agency: true },
   { feature: 'API access', free: false, starter: false, pro: true, agency: true },
   { feature: 'Remove branding', free: false, starter: false, pro: true, agency: true },
   { feature: 'Shared analytics links', free: false, starter: false, pro: false, agency: true },
@@ -338,6 +339,7 @@ export default function PricingPage(): React.ReactElement {
                 <li className="flex items-center gap-2 text-sm text-stone font-body"><CheckIcon /> Lead routing rules</li>
                 <li className="flex items-center gap-2 text-sm text-stone font-body"><CheckIcon /> A/B testing</li>
                 <li className="flex items-center gap-2 text-sm text-stone font-body"><CheckIcon /> Drip email sequences</li>
+                <li className="flex items-center gap-2 text-sm text-stone font-body"><CheckIcon /> Booking calendar</li>
                 <li className="flex items-center gap-2 text-sm text-stone font-body"><CheckIcon /> Advanced analytics</li>
               </ul>
               <button

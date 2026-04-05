@@ -59,6 +59,10 @@ export const FEATURES = [
     title: 'Show clients the proof.',
     body: 'Generate a read-only dashboard link per client. Submissions, scores, tier breakdowns. Real time. No login needed.',
   },
+  {
+    title: 'Hot leads book themselves.',
+    body: 'Your highest-scored leads see a booking calendar right inside the widget. They pick a time, you get an alert, the call is on your calendar. No back-and-forth emails. No lost momentum.',
+  },
 ] as const;
 
 export interface PricingPlan {
@@ -110,6 +114,7 @@ export const PLANS: readonly PricingPlan[] = [
       'Lead routing rules',
       'A/B testing',
       'Drip email sequences',
+      'Booking calendar',
       'Advanced analytics',
     ],
     highlighted: true,
@@ -183,6 +188,7 @@ export const COMPARISON_ROWS = [
   { form: 'No idea who is serious', hawkleads: 'Budget, timeline, and intent before you dial' },
   { form: 'Your competitor calls first', hawkleads: 'Instant alerts. You call first.' },
   { form: '$0 insight into lead quality', hawkleads: 'Know the dollar value before you pick up' },
+  { form: 'Hot lead emails you back 3 days later', hawkleads: 'Hot leads book a call before they leave' },
 ] as const;
 
 export const INDUSTRY_HOOKS = [

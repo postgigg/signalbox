@@ -1100,6 +1100,270 @@ export class WidgetRenderer {
     return field;
   }
 
+  // ── Render Booking Calendar ──────────────────────────────────────────
+  renderBooking(
+    headingText: string,
+    timezone: string,
+    days: Array<{ date: string; dayLabel: string; slots: Array<{ start: string; startsAt: string }> }>,
+    onSlotConfirmed: (startsAt: string) => void,
+    onSkip: () => void,
+    errorMessage?: string,
+    isConfirming?: boolean
+  ): void {
+    if (!this.contentEl) return;
+
+    // Hide back button, update progress
+    if (this.backBtn) this.backBtn.style.visibility = 'hidden';
+    if (this.stepCounter) this.stepCounter.textContent = 'Book';
+    if (this.progressBar) {
+      this.progressBar.style.width = '100%';
+    }
+
+    this.contentEl.textContent = '';
+
+    const wrapper = el('div', 'sb-booking');
+
+    // Heading
+    const heading = el('h2', 'sb-booking__heading');
+    heading.textContent = headingText;
+    wrapper.appendChild(heading);
+
+    if (days.length === 0) {
+      const empty = el('div', 'sb-booking__empty');
+      empty.textContent = 'No times available right now.';
+      wrapper.appendChild(empty);
+      const skipBtn = el('button', 'sb-booking__skip');
+      skipBtn.textContent = 'Skip booking';
+      skipBtn.addEventListener('click', onSkip);
+      wrapper.appendChild(skipBtn);
+      this.contentEl.appendChild(wrapper);
+      return;
+    }
+
+    let selectedDateIndex = 0;
+    let selectedSlotStartsAt: string | null = null;
+
+    // Find first day with available slots
+    for (let i = 0; i < days.length; i++) {
+      const day = days[i];
+      if (day && day.slots.length > 0) {
+        selectedDateIndex = i;
+        break;
+      }
+    }
+
+    // Date strip
+    const dateStrip = el('div', 'sb-date-strip');
+
+    const prevBtn = el('button', 'sb-date-nav', { 'aria-label': 'Previous dates' });
+    const prevSvg = createSvg('0 0 24 24', svgPath('M15 18l-6-6 6-6'));
+    prevBtn.appendChild(prevSvg);
+    dateStrip.appendChild(prevBtn);
+
+    const scrollContainer = el('div', 'sb-date-strip__scroll');
+    dateStrip.appendChild(scrollContainer);
+
+    const nextBtn = el('button', 'sb-date-nav', { 'aria-label': 'Next dates' });
+    const nextSvg = createSvg('0 0 24 24', svgPath('M9 18l6-6-6-6'));
+    nextBtn.appendChild(nextSvg);
+    dateStrip.appendChild(nextBtn);
+
+    wrapper.appendChild(dateStrip);
+
+    // Time list container
+    const timeList = el('div', 'sb-time-list');
+    wrapper.appendChild(timeList);
+
+    // Error message area
+    const errorEl = el('div', 'sb-booking__error');
+    if (errorMessage) {
+      errorEl.textContent = errorMessage;
+    }
+    errorEl.style.display = errorMessage ? 'block' : 'none';
+    wrapper.appendChild(errorEl);
+
+    // Confirm button
+    const confirmBtn = el('button', 'sb-booking__confirm');
+    confirmBtn.textContent = 'Confirm booking';
+    confirmBtn.disabled = true;
+    confirmBtn.style.display = 'none';
+    wrapper.appendChild(confirmBtn);
+
+    // Skip button
+    const skipBtn = el('button', 'sb-booking__skip');
+    skipBtn.textContent = 'Skip booking';
+    skipBtn.addEventListener('click', onSkip);
+    wrapper.appendChild(skipBtn);
+
+    this.contentEl.appendChild(wrapper);
+
+    // Render functions
+    const renderDateButtons = (): void => {
+      scrollContainer.textContent = '';
+      for (let i = 0; i < days.length; i++) {
+        const day = days[i];
+        if (!day) continue;
+        const btn = el('button', `sb-date-btn${i === selectedDateIndex ? ' sb-date-btn--active' : ''}`);
+
+        // Parse dayLabel like "Mon, Apr 7"
+        const parts = day.dayLabel.split(',');
+        const dayName = el('span', 'sb-date-btn__day');
+        dayName.textContent = (parts[0] ?? '').trim();
+        btn.appendChild(dayName);
+
+        const dateNum = el('span', 'sb-date-btn__num');
+        dateNum.textContent = (parts[1] ?? '').trim();
+        btn.appendChild(dateNum);
+
+        if (day.slots.length === 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'default';
+        }
+
+        btn.addEventListener('click', () => {
+          if (day.slots.length === 0) return;
+          selectedDateIndex = i;
+          selectedSlotStartsAt = null;
+          confirmBtn.disabled = true;
+          confirmBtn.style.display = 'none';
+          renderDateButtons();
+          renderTimeSlots();
+        });
+        scrollContainer.appendChild(btn);
+      }
+    };
+
+    const renderTimeSlots = (): void => {
+      timeList.textContent = '';
+      const day = days[selectedDateIndex];
+      if (!day || day.slots.length === 0) {
+        const empty = el('div', 'sb-booking__empty');
+        empty.textContent = 'No times available for this date.';
+        timeList.appendChild(empty);
+        return;
+      }
+
+      for (const slot of day.slots) {
+        const btn = el('button', `sb-time-btn${selectedSlotStartsAt === slot.startsAt ? ' sb-time-btn--selected' : ''}`);
+        btn.textContent = slot.start;
+        btn.addEventListener('click', () => {
+          selectedSlotStartsAt = slot.startsAt;
+          confirmBtn.disabled = false;
+          confirmBtn.style.display = 'block';
+
+          // Format confirm button text
+          const startDate = new Date(slot.startsAt);
+          const label = new Intl.DateTimeFormat('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZone: timezone,
+          }).format(startDate);
+          confirmBtn.textContent = `Confirm: ${label}`;
+
+          renderTimeSlots();
+        });
+        timeList.appendChild(btn);
+      }
+    };
+
+    // Scroll navigation
+    prevBtn.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: -120, behavior: 'smooth' });
+    });
+    nextBtn.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: 120, behavior: 'smooth' });
+    });
+
+    // Confirm handler
+    confirmBtn.addEventListener('click', () => {
+      if (!selectedSlotStartsAt || isConfirming) return;
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Booking...';
+      onSlotConfirmed(selectedSlotStartsAt);
+    });
+
+    renderDateButtons();
+    renderTimeSlots();
+  }
+
+  renderBookingLoading(headingText: string): void {
+    if (!this.contentEl) return;
+    if (this.backBtn) this.backBtn.style.visibility = 'hidden';
+    if (this.stepCounter) this.stepCounter.textContent = 'Book';
+
+    this.contentEl.textContent = '';
+    const wrapper = el('div', 'sb-booking');
+
+    const heading = el('h2', 'sb-booking__heading');
+    heading.textContent = headingText;
+    wrapper.appendChild(heading);
+
+    const loading = el('div', 'sb-booking__loading');
+    const spinner = el('div', 'sb-booking__loading-spinner');
+    loading.appendChild(spinner);
+    wrapper.appendChild(loading);
+
+    this.contentEl.appendChild(wrapper);
+  }
+
+  renderBookingConfirmation(
+    confirmText: string,
+    startsAt: string,
+    timezone: string,
+    _durationMinutes: number
+  ): void {
+    if (!this.contentEl) return;
+
+    if (this.backBtn) this.backBtn.style.visibility = 'hidden';
+    if (this.progressBar) {
+      this.progressBar.style.width = '100%';
+    }
+    if (this.stepCounter) this.stepCounter.textContent = 'Complete';
+
+    this.contentEl.textContent = '';
+
+    const wrapper = el('div', 'sb-confirmation');
+
+    const checkCircle = el('div', 'sb-confirmation__check');
+    checkCircle.appendChild(iconCheck());
+    wrapper.appendChild(checkCircle);
+
+    const headline = el('h2', 'sb-confirmation__headline');
+    headline.textContent = confirmText;
+    wrapper.appendChild(headline);
+
+    // Format booking details
+    const start = new Date(startsAt);
+    const dateLabel = new Intl.DateTimeFormat('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      timeZone: timezone,
+    }).format(start);
+    const timeLabel = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: timezone,
+    }).format(start);
+    const tzAbbr = new Intl.DateTimeFormat('en-US', {
+      timeZoneName: 'short',
+      timeZone: timezone,
+    }).formatToParts(start).find((p) => p.type === 'timeZoneName')?.value ?? timezone;
+
+    const body = el('p', 'sb-confirmation__body');
+    body.textContent = `${dateLabel} at ${timeLabel} (${tzAbbr})`;
+    wrapper.appendChild(body);
+
+    this.contentEl.appendChild(wrapper);
+    animateConfirmation(wrapper);
+    this.launchConfetti();
+  }
+
   // ── Render Confirmation ──────────────────────────────────────────────
   renderConfirmation(confirmConfig: ConfirmationConfig): void {
     if (!this.contentEl) return;

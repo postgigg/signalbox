@@ -4,6 +4,8 @@ import type {
   WidgetConfig,
   WidgetAnswer,
   ContactInfo,
+  BookingConfig,
+  BookingResponse,
 } from './types';
 
 // ── Transition Map ─────────────────────────────────────────────────────────
@@ -17,6 +19,10 @@ type TransitionEvent =
   | 'SUBMIT'
   | 'SUBMIT_SUCCESS'
   | 'SUBMIT_FAILED'
+  | 'BOOKING_AVAILABLE'
+  | 'BOOKING_CONFIRMED'
+  | 'BOOKING_SKIPPED'
+  | 'BOOKING_FAILED'
   | 'RESET'
   | 'RETRY';
 
@@ -39,6 +45,13 @@ const TRANSITIONS: Record<WidgetState, Partial<Record<TransitionEvent, WidgetSta
   submitting: {
     SUBMIT_SUCCESS: 'complete',
     SUBMIT_FAILED: 'error',
+    BOOKING_AVAILABLE: 'booking',
+  },
+  booking: {
+    BOOKING_CONFIRMED: 'complete',
+    BOOKING_SKIPPED: 'complete',
+    BOOKING_FAILED: 'complete',
+    CLOSE: 'ready',
   },
   complete: {
     RESET: 'ready',
@@ -72,6 +85,9 @@ export class WidgetStateMachine {
       errorMessage: '',
       loadedAt: 0,
       resultTier: null,
+      submissionId: null,
+      bookingConfig: null,
+      bookingResult: null,
     };
   }
 
@@ -131,6 +147,9 @@ export class WidgetStateMachine {
     this.ctx.contact = { name: '', email: '' };
     this.ctx.errorMessage = '';
     this.ctx.resultTier = null;
+    this.ctx.submissionId = null;
+    this.ctx.bookingConfig = null;
+    this.ctx.bookingResult = null;
     return this.transition('CONFIG_LOADED');
   }
 
@@ -151,6 +170,9 @@ export class WidgetStateMachine {
       this.ctx.contact = { name: '', email: '' };
       this.ctx.resultTier = null;
       this.ctx.errorMessage = '';
+      this.ctx.submissionId = null;
+      this.ctx.bookingConfig = null;
+      this.ctx.bookingResult = null;
     }
     return this.transition('OPEN');
   }
@@ -213,6 +235,30 @@ export class WidgetStateMachine {
     return this.transition('SUBMIT_FAILED');
   }
 
+  bookingAvailable(
+    tier: 'hot' | 'warm' | 'cold',
+    submissionId: string,
+    bookingConfig: BookingConfig
+  ): boolean {
+    this.ctx.resultTier = tier;
+    this.ctx.submissionId = submissionId;
+    this.ctx.bookingConfig = bookingConfig;
+    return this.transition('BOOKING_AVAILABLE');
+  }
+
+  bookingConfirmed(result: BookingResponse): boolean {
+    this.ctx.bookingResult = result;
+    return this.transition('BOOKING_CONFIRMED');
+  }
+
+  bookingSkipped(): boolean {
+    return this.transition('BOOKING_SKIPPED');
+  }
+
+  bookingFailed(): boolean {
+    return this.transition('BOOKING_FAILED');
+  }
+
   retry(): boolean {
     this.ctx.errorMessage = '';
     return this.transition('RETRY');
@@ -224,6 +270,9 @@ export class WidgetStateMachine {
     this.ctx.contact = { name: '', email: '' };
     this.ctx.errorMessage = '';
     this.ctx.resultTier = null;
+    this.ctx.submissionId = null;
+    this.ctx.bookingConfig = null;
+    this.ctx.bookingResult = null;
     return this.transition('RESET');
   }
 }

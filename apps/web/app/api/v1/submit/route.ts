@@ -724,13 +724,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   }
 
-  return corsJson(
-    {
-      message: 'Submission received',
-      id: submission.id,
-      tier: leadTier,
-      score: leadScore,
-    },
-    { status: 201 },
-  );
+  // 21. Check booking settings for this widget
+  let bookingData: { enabled: boolean; headingText: string; slotDuration: number; timezone: string } | undefined;
+
+  if (planLimits.booking) {
+    const { data: bookingSettings } = await admin
+      .from('booking_settings')
+      .select('enabled, tiers, heading_text, slot_duration_minutes, timezone')
+      .eq('widget_id', widget.id)
+      .single();
+
+    if (
+      bookingSettings?.enabled &&
+      Array.isArray(bookingSettings.tiers) &&
+      (bookingSettings.tiers as string[]).includes(leadTier)
+    ) {
+      bookingData = {
+        enabled: true,
+        headingText: bookingSettings.heading_text,
+        slotDuration: bookingSettings.slot_duration_minutes,
+        timezone: bookingSettings.timezone,
+      };
+    }
+  }
+
+  const responseBody: Record<string, unknown> = {
+    message: 'Submission received',
+    id: submission.id,
+    tier: leadTier,
+    score: leadScore,
+  };
+
+  if (bookingData) {
+    responseBody.booking = bookingData;
+  }
+
+  return corsJson(responseBody, { status: 201 });
 }

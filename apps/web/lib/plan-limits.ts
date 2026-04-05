@@ -23,6 +23,7 @@ interface PlanLimits {
   predictiveScoring: boolean;
   advancedRouting: boolean;
   maxRoutingRules: number;
+  booking: boolean;
 }
 
 export function getPlanLimits(plan: Plan): PlanLimits {

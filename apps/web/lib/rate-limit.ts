@@ -181,6 +181,24 @@ export function shopifyGdprLimit(): Ratelimit {
   );
 }
 
+/** Rate limiter for booking slot queries — 30 requests per minute per key. */
+export function bookingSlotsLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.booking_slots.prefix,
+    RATE_LIMITS.booking_slots.tokens,
+    RATE_LIMITS.booking_slots.window
+  );
+}
+
+/** Rate limiter for booking creation — 10 requests per minute per IP. */
+export function bookingCreateLimit(): Ratelimit {
+  return createRateLimiter(
+    RATE_LIMITS.booking_create.prefix,
+    RATE_LIMITS.booking_create.tokens,
+    RATE_LIMITS.booking_create.window
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Helper to check rate limit and build response
 // ---------------------------------------------------------------------------

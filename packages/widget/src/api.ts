@@ -1,4 +1,11 @@
-import type { WidgetConfig, SubmitPayload, SubmitResponse } from './types';
+import type {
+  WidgetConfig,
+  SubmitPayload,
+  SubmitResponse,
+  SlotsResponse,
+  CreateBookingPayload,
+  BookingResponse,
+} from './types';
 
 const TIMEOUT_MS = 15_000;
 
@@ -159,5 +166,84 @@ export async function submitForm(
   }
 
   const data: SubmitResponse = await response.json();
+  return data;
+}
+
+// ── Fetch Booking Slots ─────────────────────────────────────────────────
+export async function fetchSlots(
+  widgetKey: string,
+  apiUrl: string,
+  fromDate?: string,
+  days?: number,
+  submissionId?: string
+): Promise<SlotsResponse> {
+  const params = new URLSearchParams();
+  if (fromDate) params.set('from', fromDate);
+  if (days !== undefined) params.set('days', String(days));
+  if (submissionId) params.set('submissionId', submissionId);
+
+  const url = `${apiUrl}/api/v1/widget/${encodeURIComponent(widgetKey)}/slots?${params.toString()}`;
+
+  let response: Response;
+  try {
+    response = await fetchWithTimeout(url, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
+  } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new WidgetApiError('Request timed out.', 0, 'TIMEOUT');
+    }
+    throw new WidgetApiError('Network error.', 0, 'NETWORK_ERROR');
+  }
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw mapStatusToError(response.status, body);
+  }
+
+  const data: SlotsResponse = await response.json();
+  return data;
+}
+
+// ── Create Booking ──────────────────────────────────────────────────────
+export async function createBooking(
+  widgetKey: string,
+  apiUrl: string,
+  payload: CreateBookingPayload
+): Promise<BookingResponse> {
+  const url = `${apiUrl}/api/v1/widget/${encodeURIComponent(widgetKey)}/book`;
+
+  let response: Response;
+  try {
+    response = await fetchWithTimeout(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new WidgetApiError('Request timed out.', 0, 'TIMEOUT');
+    }
+    throw new WidgetApiError('Network error.', 0, 'NETWORK_ERROR');
+  }
+
+  if (response.status === 409) {
+    throw new WidgetApiError(
+      'This time was just booked, please pick another.',
+      409,
+      'SLOT_TAKEN'
+    );
+  }
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw mapStatusToError(response.status, body);
+  }
+
+  const data: BookingResponse = await response.json();
   return data;
 }

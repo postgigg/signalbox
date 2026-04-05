@@ -915,6 +915,234 @@ export function getStyles(theme: WidgetTheme): string {
   opacity: 0.6;
 }
 
+/* ── Booking Calendar ──────────────────────────────────────────────────── */
+.sb-booking {
+  animation: sb-slideInRight 0.3s ease both;
+}
+
+.sb-booking__heading {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--sb-text);
+}
+
+.sb-date-strip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.sb-date-strip__scroll {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sb-date-strip__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sb-date-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--sb-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sb-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.sb-date-nav:hover {
+  background: var(--sb-hover-bg);
+}
+
+.sb-date-nav svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sb-date-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  padding: 8px 6px;
+  border: 1.5px solid var(--sb-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--sb-text);
+  font-family: var(--sb-font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.sb-date-btn:hover {
+  border-color: var(--sb-accent);
+  background: var(--sb-accent-10);
+}
+
+.sb-date-btn--active {
+  border-color: var(--sb-accent);
+  background: var(--sb-accent-10);
+  font-weight: 600;
+}
+
+.sb-date-btn__day {
+  font-size: 11px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sb-date-btn__num {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.sb-time-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.sb-time-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sb-time-list::-webkit-scrollbar-thumb {
+  background: var(--sb-border);
+  border-radius: 2px;
+}
+
+.sb-time-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid var(--sb-border);
+  border-radius: var(--sb-radius);
+  background: transparent;
+  color: var(--sb-text);
+  font-family: var(--sb-font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.sb-time-btn:hover {
+  border-color: var(--sb-accent);
+  background: var(--sb-accent-10);
+}
+
+.sb-time-btn--selected {
+  border-color: var(--sb-accent);
+  background: var(--sb-accent-10);
+  font-weight: 600;
+}
+
+.sb-booking__confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: var(--sb-radius);
+  background: var(--sb-primary);
+  color: #fff;
+  font-family: var(--sb-font);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-bottom: 8px;
+}
+
+.sb-booking__confirm:hover {
+  opacity: 0.9;
+}
+
+.sb-booking__confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sb-booking__skip {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--sb-font);
+  font-size: 13px;
+  color: var(--sb-text);
+  opacity: 0.5;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+  transition: opacity 0.15s;
+}
+
+.sb-booking__skip:hover {
+  opacity: 0.8;
+}
+
+.sb-booking__empty {
+  text-align: center;
+  padding: 24px 8px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.sb-booking__error {
+  text-align: center;
+  padding: 8px;
+  font-size: 13px;
+  color: #ef4444;
+  margin-bottom: 8px;
+}
+
+.sb-booking__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.sb-booking__loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--sb-border);
+  border-top-color: var(--sb-accent);
+  border-radius: 50%;
+  animation: sb-spin 0.7s linear infinite;
+}
+
 /* ── Disabled State ─────────────────────────────────────────────────────── */
 .sb-disabled {
   display: none;

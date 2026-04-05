@@ -10,6 +10,7 @@ import {
   ProblemSpeedIllustration,
   SolutionScoreIllustration,
   SolutionCallListIllustration,
+  SolutionBookingIllustration,
   SolutionNurtureIllustration,
 } from '../_components/WhyIllustrations';
 
@@ -77,6 +78,11 @@ const SOLUTION_POINTS = [
   },
   {
     number: '03',
+    title: 'Hot leads book themselves',
+    body: 'Your highest-scored leads see a booking calendar right inside the widget. They pick a date and time. You get an alert. The call is confirmed before they leave your site. No emails, no phone tag, no friction.',
+  },
+  {
+    number: '04',
     title: 'Let the rest nurture themselves',
     body: 'Cold and warm leads enter automated drip sequences. Timed follow-up emails go out over days. When they are ready, they come back warmer. You never lose them.',
   },
@@ -88,6 +94,7 @@ const BENCHMARK_ROWS = [
   { metric: 'Hot lead identification', industry: 'Manual review', withHawkleads: 'Instant, automatic' },
   { metric: 'Cost per qualified lead', industry: '$150-$300', withHawkleads: 'Same ad spend, better yield' },
   { metric: 'Team time on unqualified leads', industry: '75%', withHawkleads: 'Near zero' },
+  { metric: 'Hot lead to booked call', industry: '3-5 day email chain', withHawkleads: 'Instant, in-widget booking' },
 ] as const;
 
 const ROI_MATH = [
@@ -110,6 +117,7 @@ const PROBLEM_ILLUSTRATIONS = [
 const SOLUTION_ILLUSTRATIONS = [
   SolutionScoreIllustration,
   SolutionCallListIllustration,
+  SolutionBookingIllustration,
   SolutionNurtureIllustration,
 ] as const;
 

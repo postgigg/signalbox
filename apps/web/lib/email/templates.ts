@@ -2,6 +2,48 @@ import { APP_NAME, APP_URL, SUPPORT_EMAIL, TIER_CONFIG } from '../constants';
 import { formatDate, formatCurrency, formatNumber } from '../utils';
 
 // ---------------------------------------------------------------------------
+// Booking date/time helper
+// ---------------------------------------------------------------------------
+
+function formatBookingDateTime(
+  startsAt: string,
+  timezone: string,
+  durationMinutes: number
+): { dateStr: string; timeStr: string; endTimeStr: string; tzAbbr: string } {
+  const start = new Date(startsAt);
+  const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+
+  const dateStr = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: timezone,
+  }).format(start);
+
+  const timeStr = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: timezone,
+  }).format(start);
+
+  const endTimeStr = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: timezone,
+  }).format(end);
+
+  const tzAbbr = new Intl.DateTimeFormat('en-US', {
+    timeZoneName: 'short',
+    timeZone: timezone,
+  }).formatToParts(start).find((p) => p.type === 'timeZoneName')?.value ?? timezone;
+
+  return { dateStr, timeStr, endTimeStr, tzAbbr };
+}
+
+// ---------------------------------------------------------------------------
 // Shared layout
 // ---------------------------------------------------------------------------
 
@@ -644,6 +686,228 @@ View lead: ${dashboardUrl}`;
 
   return {
     subject: `[${tierConfig.label}] Lead assigned to you: ${data.visitorName} — ${data.accountName}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Template: Booking confirmation (to visitor)
+// ---------------------------------------------------------------------------
+
+export interface BookingConfirmationData {
+  visitorName: string;
+  accountName: string;
+  startsAt: string;
+  timezone: string;
+  durationMinutes: number;
+  rescheduleUrl: string;
+}
+
+export function renderBookingConfirmation(
+  data: BookingConfirmationData
+): { subject: string; html: string; text: string } {
+  const firstName = data.visitorName.split(' ')[0] ?? data.visitorName;
+  const { dateStr, timeStr, endTimeStr, tzAbbr } = formatBookingDateTime(
+    data.startsAt,
+    data.timezone,
+    data.durationMinutes
+  );
+
+  const html = layout(`
+    <h2>Your call is confirmed</h2>
+    <p>Hey ${firstName}, your call with <strong>${data.accountName}</strong> is booked.</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px;margin:16px 0;text-align:center;">
+      <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#166534;">${dateStr}</p>
+      <p style="margin:0;font-size:14px;color:#166534;">${timeStr} - ${endTimeStr} (${tzAbbr})</p>
+      <p style="margin:8px 0 0;font-size:12px;color:#166534;">${data.durationMinutes} minutes</p>
+    </div>
+    <p>Need to change the time? You can reschedule using the link below.</p>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${data.rescheduleUrl}">Reschedule</a>
+    </div>
+  `);
+
+  const text = `Your call is confirmed
+
+Hey ${firstName}, your call with ${data.accountName} is booked.
+
+${dateStr}
+${timeStr} - ${endTimeStr} (${tzAbbr})
+${data.durationMinutes} minutes
+
+Need to change the time? Reschedule here: ${data.rescheduleUrl}`;
+
+  return {
+    subject: `Your call is confirmed: ${dateStr} at ${timeStr}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Template: Booking alert (to owner)
+// ---------------------------------------------------------------------------
+
+export interface BookingAlertData {
+  accountName: string;
+  widgetName: string;
+  visitorName: string;
+  visitorEmail: string;
+  leadTier: 'hot' | 'warm' | 'cold';
+  leadScore: number;
+  startsAt: string;
+  timezone: string;
+  durationMinutes: number;
+  submissionId: string;
+}
+
+export function renderBookingAlert(
+  data: BookingAlertData
+): { subject: string; html: string; text: string } {
+  const tierConfig = TIER_CONFIG[data.leadTier];
+  const dashboardUrl = `${APP_URL}/dashboard/leads/${data.submissionId}`;
+  const { dateStr, timeStr, endTimeStr, tzAbbr } = formatBookingDateTime(
+    data.startsAt,
+    data.timezone,
+    data.durationMinutes
+  );
+
+  const html = layout(`
+    <h2>New Booking</h2>
+    <p><strong>${data.visitorName}</strong> (${data.visitorEmail}) booked a call on <strong>${data.widgetName}</strong>.</p>
+    <div style="text-align:center;margin:16px 0;">
+      <span class="tier-badge" style="background-color:${tierConfig.bgColor};color:${tierConfig.textColor};">
+        ${tierConfig.label} - Score: ${data.leadScore}/100
+      </span>
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:20px;margin:16px 0;text-align:center;">
+      <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#1e40af;">${dateStr}</p>
+      <p style="margin:0;font-size:14px;color:#1e40af;">${timeStr} - ${endTimeStr} (${tzAbbr})</p>
+    </div>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${dashboardUrl}">View Lead</a>
+    </div>
+  `);
+
+  const text = `New Booking
+
+${data.visitorName} (${data.visitorEmail}) booked a call on ${data.widgetName}.
+
+Tier: ${tierConfig.label} - Score: ${data.leadScore}/100
+
+${dateStr}
+${timeStr} - ${endTimeStr} (${tzAbbr})
+
+View lead: ${dashboardUrl}`;
+
+  return {
+    subject: `New booking: ${data.visitorName} - ${dateStr} at ${timeStr}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Template: Booking reminder (to visitor)
+// ---------------------------------------------------------------------------
+
+export interface BookingReminderData {
+  visitorName: string;
+  accountName: string;
+  startsAt: string;
+  timezone: string;
+  durationMinutes: number;
+  rescheduleUrl: string;
+}
+
+export function renderBookingReminder(
+  data: BookingReminderData
+): { subject: string; html: string; text: string } {
+  const firstName = data.visitorName.split(' ')[0] ?? data.visitorName;
+  const { dateStr, timeStr, endTimeStr, tzAbbr } = formatBookingDateTime(
+    data.startsAt,
+    data.timezone,
+    data.durationMinutes
+  );
+
+  const html = layout(`
+    <h2>Reminder: Your call is coming up</h2>
+    <p>Hey ${firstName}, just a reminder about your upcoming call with <strong>${data.accountName}</strong>.</p>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:20px;margin:16px 0;text-align:center;">
+      <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#1e40af;">${dateStr}</p>
+      <p style="margin:0;font-size:14px;color:#1e40af;">${timeStr} - ${endTimeStr} (${tzAbbr})</p>
+    </div>
+    <p>Need to change the time? You can still reschedule.</p>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${data.rescheduleUrl}">Reschedule</a>
+    </div>
+  `);
+
+  const text = `Reminder: Your call is coming up
+
+Hey ${firstName}, just a reminder about your upcoming call with ${data.accountName}.
+
+${dateStr}
+${timeStr} - ${endTimeStr} (${tzAbbr})
+
+Need to change the time? ${data.rescheduleUrl}`;
+
+  return {
+    subject: `Reminder: Your call is tomorrow at ${timeStr}`,
+    html,
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Template: Booking rescheduled (to visitor)
+// ---------------------------------------------------------------------------
+
+export interface BookingRescheduledData {
+  visitorName: string;
+  accountName: string;
+  startsAt: string;
+  timezone: string;
+  durationMinutes: number;
+  rescheduleUrl: string;
+}
+
+export function renderBookingRescheduled(
+  data: BookingRescheduledData
+): { subject: string; html: string; text: string } {
+  const firstName = data.visitorName.split(' ')[0] ?? data.visitorName;
+  const { dateStr, timeStr, endTimeStr, tzAbbr } = formatBookingDateTime(
+    data.startsAt,
+    data.timezone,
+    data.durationMinutes
+  );
+
+  const html = layout(`
+    <h2>Your call has been rescheduled</h2>
+    <p>Hey ${firstName}, your call with <strong>${data.accountName}</strong> has been updated to a new time.</p>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px;margin:16px 0;text-align:center;">
+      <p style="margin:0 0 4px;font-size:16px;font-weight:700;color:#166534;">${dateStr}</p>
+      <p style="margin:0;font-size:14px;color:#166534;">${timeStr} - ${endTimeStr} (${tzAbbr})</p>
+    </div>
+    <p>Need to change again?</p>
+    <div style="text-align:center;margin:24px 0;">
+      <a class="btn" href="${data.rescheduleUrl}">Reschedule</a>
+    </div>
+  `);
+
+  const text = `Your call has been rescheduled
+
+Hey ${firstName}, your call with ${data.accountName} has been updated.
+
+New time:
+${dateStr}
+${timeStr} - ${endTimeStr} (${tzAbbr})
+
+Need to change again? ${data.rescheduleUrl}`;
+
+  return {
+    subject: `Call rescheduled: ${dateStr} at ${timeStr}`,
     html,
     text,
   };

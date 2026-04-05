@@ -82,6 +82,7 @@ export default async function WidgetDetailPage({ params }: WidgetDetailPageProps
 
   if (accountPlan === 'pro' || accountPlan === 'agency') {
     baseNavItems.push({ href: `/dashboard/widgets/${id}/routing`, label: 'Routing' });
+    baseNavItems.push({ href: `/dashboard/widgets/${id}/bookings`, label: 'Bookings' });
   }
 
   const subNavItems = baseNavItems;
