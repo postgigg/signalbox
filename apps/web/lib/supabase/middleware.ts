@@ -81,17 +81,9 @@ export async function updateSession(request: NextRequest) {
       .maybeSingle();
 
     if (member) {
-      const { data: account } = await supabase
-        .from('accounts')
-        .select('onboarding_completed_at')
-        .eq('id', member.account_id)
-        .single();
-
-      if (account && account.onboarding_completed_at === null) {
-        const url = request.nextUrl.clone();
-        url.pathname = '/onboarding';
-        return NextResponse.redirect(url);
-      }
+      // Member exists — account was created during onboarding form.
+      // Allow through to dashboard; the dashboard layout shows an
+      // onboarding overlay tour if onboarding_completed_at is still null.
     } else {
       // No member record: redirect to onboarding to create one
       const url = request.nextUrl.clone();
